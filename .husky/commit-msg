@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+pnpm exec commitlint --edit "$1"
+status=$?
+
+if [ $status -ne 0 ]; then
+  echo ""
+  echo "❌ Commit 失败：提交信息不符合规范（Conventional Commits）。"
+  echo "👉 详细规范请查看 CONTRIBUTING.md 。"
+  exit $status
+fi

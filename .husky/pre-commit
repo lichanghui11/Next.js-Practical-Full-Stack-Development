@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# pnpm  永远都是执行 scripts 里的 ，而不是执行 node_modules 里的 CLI 程序。
+# npx  是直接执行 node_modules/.bin/，不依赖 scripts。
+pnpm exec lint-staged
+# $?：shell 里一个特殊变量，永远表示上一条命令的退出码。
+status=$?
+
+# -ne：not equal，整数不等于。
+if [ "$status" -ne 0 ]; then
+  echo ""
+  echo "❌ Commit 失败：代码格式 / Lint 未通过。"
+  echo "👉 建议先手动运行："
+  # 这里后续需要配置实际的格式化命令，然后把这个注释也删除，没删除说明还没配对应的命令。
+  echo "   pnpm lint:fix    # [项目不同：也可能叫 pnpm lint 或 pnpm eslint:fix]"
+  exit $status
+fi
