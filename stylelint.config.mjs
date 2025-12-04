@@ -2,64 +2,90 @@
 export default {
   extends: [
     'stylelint-config-standard',
-    'stylelint-config-tailwindcss',
+    'stylelint-config-css-modules',
+    'stylelint-config-recess-order',
+    'stylelint-prettier/recommended',
   ],
-  plugins: ['stylelint-order'],
   rules: {
-    // 通用规则：所有 css / css modules 都生效
-    'color-hex-alpha': null,
-    'color-hex-length': 'short',
-    'block-no-empty': true,
-    'no-duplicate-selectors': true,
-    // 属性顺序（可选，看你喜好）
-    'order/properties-order': [
-      // 这里只是示例，你可以以后再精细化
-      'position',
-      'top',
-      'right',
-      'bottom',
-      'left',
-      'display',
-      'flex',
-      'flex-direction',
-      'justify-content',
-      'align-items',
-      'width',
-      'height',
-      'margin',
-      'padding',
-      'background',
-      'color',
-      'font-size',
-    ],
-  },
-  // ⭐ 下面用 overrides 区分“全局 css”和“module css”
-  overrides: [
-    // 1️⃣ CSS Modules 规则
-    {
-      files: ['**/*.module.css'],
-      extends: ['stylelint-config-css-modules'],
-      rules: {
-        // 限制类名风格（你可以自己改 regex）
-        // 例如：驼峰 or 小写中划线，根据你习惯来
-        'selector-class-pattern': [
-          '^[a-z][a-zA-Z0-9]+$', // camelCase 示例
-          {
-            message: 'CSS Module 类名请使用 camelCase 命名',
-          },
+    'import-notation': 'string', // 使用string方式引入其它css文件，而不是url()
+    'selector-type-no-unknown': null,
+    'selector-class-pattern': null,
+    'custom-property-pattern': null,
+    'no-duplicate-selectors': null, // 取消禁止重复定义,这样可以在css module中单独定义变量
+    'block-no-empty': null, // 禁止出现空块
+    'declaration-empty-line-before': 'never',
+    'declaration-block-no-duplicate-properties': true, // 在声明的块中中禁止出现重复的属性
+    'declaration-block-no-redundant-longhand-properties': true, // 禁止使用可以缩写却不缩写的属性
+    'shorthand-property-no-redundant-values': true, // 禁止在简写属性中使用冗余值
+    'color-hex-length': 'short', // 指定十六进制颜色是否使用缩写
+    'comment-no-empty': true, // 禁止空注释
+    'font-family-name-quotes': 'always-unless-keyword', // 指定字体名称是否需要使用引号引起来 | 期待每一个不是关键字的字体名都使用引号引起来
+    // 'font-weight-notation': 'numeric', // 要求使用数字或命名的 (可能的情况下) font-weight 值
+    'function-url-quotes': 'always', // 要求或禁止 url 使用引号
+    'property-no-vendor-prefix': true, // 禁止属性使用浏览器引擎前缀
+    'value-no-vendor-prefix': true, // 禁止给值添加浏览器引擎前缀
+    'selector-no-vendor-prefix': true, // 禁止使用浏览器引擎前缀
+    'no-descending-specificity': null, // 禁止低优先级的选择器出现在高优先级的选择器之后
+    'at-rule-no-deprecated': null, // 禁止使用未知指令报错
+    'at-rule-no-unknown': null, // 禁止使用未知指令报错
+    'property-no-unknown': [
+      true,
+      {
+        ignoreProperties: [
+          // CSS Modules composition
+          // https://github.com/css-modules/css-modules#composition
+          'composes',
         ],
       },
-    },
+    ],
 
-    // 2️⃣ 全局 css 规则（非 module）
-    {
-      files: ['**/*.css', '!**/*.module.css'],
-      rules: {
-        // 全局 css 通常是 reset / layout，可以适当放宽
-        // 不强制 class 命名模式
-        'selector-class-pattern': null,
-        // 全局可以容忍较多 id、element 选择器，根据习惯调整
+    'selector-pseudo-class-no-unknown': [
+      true,
+      {
+        ignorePseudoClasses: [
+          // CSS Modules :global scope
+          // https://github.com/css-modules/css-modules#exceptions
+          'global',
+          'local',
+        ],
       },
-    },
+    ],
+    'rule-empty-line-before': [
+      // 要求或禁止在规则声明之前有空行
+      'always-multi-line',
+      {
+        except: ['first-nested'],
+        ignore: ['after-comment'],
+      },
+    ],
+    'at-rule-empty-line-before': [
+      // 要求或禁止在 at 规则之前有空行
+      'always',
+      {
+        except: ['blockless-after-same-name-blockless', 'first-nested'],
+        ignore: ['after-comment'],
+      },
+    ],
+    'comment-empty-line-before': [
+      // 要求或禁止在注释之前有空行
+      'always',
+      {
+        except: ['first-nested'],
+        ignore: ['stylelint-commands'],
+      },
+    ],
+  },
+  ignoreFiles: [
+    'public',
+    'node_modules',
+    'build',
+    '.history',
+    '.next',
+    '**/*.js',
+    '**/*.jsx',
+    '**/*.tsx',
+    '**/*.ts',
+    '**/*.json',
+    '**/*.md',
   ],
 };
