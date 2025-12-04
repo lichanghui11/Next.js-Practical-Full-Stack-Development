@@ -1,5 +1,8 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+# #!/usr/bin/env sh
+# . "$(dirname -- "$0")/_/husky.sh"
+# 以上两行在v10.0.0版本之前的husky中是必须的，
+# 但在v10.0.0版本之后的husky中已经不需要了，
+# 因为husky会自动处理这个问题。
 
 # pnpm  永远都是执行 scripts 里的 ，而不是执行 node_modules 里的 CLI 程序。
 # npx  是直接执行 node_modules/.bin/，不依赖 scripts。
