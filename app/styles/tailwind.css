@@ -1,0 +1,14 @@
+@layer theme, base,  antd, components, utilities;
+
+/* “我声明了五个 CSS 层，优先级从低到高分别是：theme < base < antd < components < utilities” */
+
+@import 'tailwindcss'; /* 这个是官方 tailwindcss 自带的，不用单独安装 */
+@import 'tw-animate-css'; /* 这个是动画库 tw-animate-css，需要单独安装 */
+@import './tailwind/base.css';
+@import './tailwind/utilities.css';
+@import './tailwind/theme.css';
+@import './tailwind/shadcn.css';
+
+@custom-variant dark (&:is(.dark, .dark *,[data-theme=dark], [data-theme=dark] *));
+
+/* 定义了一个名为 dark 的变体。 定义好之后，你就可以在 HTML 中使用 dark: 前缀了，例如 dark:bg-black */

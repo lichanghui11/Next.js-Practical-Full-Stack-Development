@@ -1,0 +1,78 @@
+/* 
+   :root 选择器匹配文档树的根元素 (<html>)。
+   它是定义全局 CSS 变量 (Custom Properties) 的最佳位置。
+   
+   变量定义规范：
+   1. 必须以两个减号 (--) 开头。
+   2. 命名规范：推荐使用 Kebab-case (连字符分割)，格式通常为 "--类别-属性-修饰"。
+      - 例如: --color-primary-500, --spacing-lg
+      - 本文件采用了 "--z-index-业务场景" 的命名方式，语义清晰。
+   3. 使用方法：在 CSS 任何地方通过 var(--变量名) 读取。
+      - 例如: z-index: var(--z-index-header);
+*/
+:root {
+  /* 首页鼠标交互元素的层级，z-index 为 30 */
+  --z-index-home-mouse: 30;
+
+  /* 移动端目录（Table of Contents）的层级，z-index 为 40 */
+  --z-index-mobile-toc: 40;
+
+  /* 禁用状态（通常用于遮罩层）的层级，z-index 为 45 */
+  --z-index-disable-before: 45;
+
+  /* 页头的层级，z-index 为 49 */
+  --z-index-header: 49;
+
+  /* 模态框的层级，z-index 为 50 */
+  --z-index-modal: 50;
+
+  /* 移动端页头模态框的层级，z-index 为 60 */
+  --z-index-mobile-header-modal: 60;
+
+  /* 移动端页头的层级，设置为极高的 999 确保始终在最顶层 */
+  --z-index-mobile-header: 999;
+}
+
+html {
+  @apply scroll-smooth;
+}
+
+.ant-app {
+  @apply h-[100vh] w-full p-0 m-0;
+}
+
+.lucide {
+  @apply w-4 h-4 stroke-[1px];
+}
+
+/* 自定义图标组件样式 */
+.xicon {
+  /* 
+       原理：创建一个相对于字号大小自适应的图标容器 (Relative Sizing)。
+       w-[1em] h-[1em]: 设置宽高为 1em。
+       em 是相对单位，永远等于当前元素的 font-size。
+       这意味着：如果你设置 font-size: 24px，图标就会自动变成 24px * 24px。
+       inline-flex: 让图标像文字一样在行内排列，但内部保持 Flex 布局特性。
+    */
+  @apply w-[1em] h-[1em] inline-flex;
+
+  /* 嵌套选择器 (CSS Nesting)，选中 .xicon 内部的 svg 标签 */
+  & svg {
+    /* !w-full !h-full: 使用 ! (CSS !important) 强制覆盖 svg 可能自带的尺寸，
+           让它强制 100% 填满父容器 (.xicon) 的大小。
+        */
+    @apply !w-full !h-full;
+
+    /* 选择器逻辑：选中所有没有明确 fill 属性的 svg 元素 */
+    &:not([fill]) {
+      /* 
+               fill: currentcolor;
+               这是 CSS 中最实用的技巧之一。
+               currentColor 关键字代表“元素当前的 color 属性值”。
+               效果：图标颜色会自动跟随文字颜色变化。
+               比如：<div class="xicon text-red-500">，图标就会变成红色。
+            */
+      fill: currentcolor;
+    }
+  }
+}
