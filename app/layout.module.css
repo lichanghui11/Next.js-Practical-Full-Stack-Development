@@ -1,0 +1,5 @@
+@reference '#tailwind.css';
+
+.topBody {
+  @apply text-test1;
+}

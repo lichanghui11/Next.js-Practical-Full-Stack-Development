@@ -77,7 +77,7 @@ html {
   }
 }
 
-body {
+xbody {
   /* 场景1: 默认背景为 PC端 亮色 */
   background-image: url('/images/bg-pc-light.png');
   background-repeat: no-repeat;
@@ -87,13 +87,13 @@ body {
 }
 
 /* 场景2: PC端 暗色 */
-html.dark body {
+xhtml.dark xbody {
   background-image: url('/images/bg-pc-dark.png');
 }
 
 @media (width <= 768px) {
   /* 场景3: mobile端 亮色 */
-  body {
+  xbody {
     background-image: url('/images/bg-mobile-light.png');
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -102,7 +102,7 @@ html.dark body {
   }
 
   /* 场景4: mobile端 暗色 */
-  html.dark body {
+  xhtml.dark body {
     background-image: url('/images/bg-mobile-dark.png');
   }
 }

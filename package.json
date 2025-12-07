@@ -2,6 +2,9 @@
   "name": "esti-react-blog",
   "version": "0.1.0",
   "private": true,
+  "imports": {
+    "#tailwind.css": "./app/styles/tailwind.css"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

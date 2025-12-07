@@ -1,4 +1,4 @@
-@layer theme, base,  antd, components, utilities;
+@layer theme, base, utilities;
 
 /* “我声明了五个 CSS 层，优先级从低到高分别是：theme < base < antd < components < utilities” */
 

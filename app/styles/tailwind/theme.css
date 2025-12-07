@@ -23,6 +23,7 @@
        使用方式：直接在类名前加前缀，如 xs:hidden, 2xl:block
        默认 1rem = 16px
     */
+  --color-test1: orange; /* 这个是用于测试是否可以直接使用 text-test1，但是不要使用这个测试配色 */
   --breakpoint-xs: 30rem; /* 480px  (超大屏手机/小平板) */
   --breakpoint-sm: 36rem; /* 576px  (平板竖屏) */
   --breakpoint-md: 48rem; /* 768px  (iPad竖屏 / 常用平板尺寸) */
