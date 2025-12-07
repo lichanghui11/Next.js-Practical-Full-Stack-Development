@@ -1,6 +1,6 @@
-@layer theme, base, utilities;
+@layer theme, base, components, utilities;
 
-/* “我声明了五个 CSS 层，优先级从低到高分别是：theme < base < antd < components < utilities” */
+/* “我声明了四个 CSS 层，优先级从低到高分别是：theme < base < components < utilities” */
 
 @import 'tailwindcss'; /* 这个是官方 tailwindcss 自带的，不用单独安装 */
 @import 'tw-animate-css'; /* 这个是动画库 tw-animate-css，需要单独安装 */
