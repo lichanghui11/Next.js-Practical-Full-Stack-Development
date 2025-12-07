@@ -12,7 +12,6 @@
 - **🎨 [样式架构设计 (CSS Architecture)](./docs/css-architecture.md)**
   - Tailwind v4 模块化配置
   - CSS Modules 与全局作用域
-  - Meriad 架构图与命名规范
 
 - **🔧 [工程化规范 (Engineering Standards)](./docs/engineering.md)**
   - Linting & Formatting (ESLint, Prettier, Stylelint)
