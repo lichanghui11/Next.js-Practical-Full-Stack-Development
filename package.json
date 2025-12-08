@@ -6,8 +6,8 @@
     "#tailwind.css": "./app/styles/tailwind.css"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "rimraf -rf .next && next dev",
+    "build": "rimraf -rf .next && next build",
     "start": "next start",
     "lint": "eslint",
     "prepare": "husky",
