@@ -7,8 +7,8 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "paths": {
-      "@/*": ["./*"],
-      "ui/*": ["./app/_components/shadcn/ui/*"]
+      "@/*": ["./src/*"],
+      "ui/*": ["./src/app/_components/shadcn/ui/*"]
     },
     "resolveJsonModule": true,
     "allowJs": true,
