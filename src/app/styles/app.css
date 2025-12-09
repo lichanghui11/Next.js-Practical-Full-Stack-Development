@@ -37,46 +37,6 @@ html {
   @apply scroll-smooth;
 }
 
-.ant-app {
-  @apply h-[100vh] w-full p-0 m-0;
-}
-
-.lucide {
-  @apply w-4 h-4 stroke-[1px];
-}
-
-/* 自定义图标组件样式 */
-.xicon {
-  /* 
-       原理：创建一个相对于字号大小自适应的图标容器 (Relative Sizing)。
-       w-[1em] h-[1em]: 设置宽高为 1em。
-       em 是相对单位，永远等于当前元素的 font-size。
-       这意味着：如果你设置 font-size: 24px，图标就会自动变成 24px * 24px。
-       inline-flex: 让图标像文字一样在行内排列，但内部保持 Flex 布局特性。
-    */
-  @apply w-[1em] h-[1em] inline-flex;
-
-  /* 嵌套选择器 (CSS Nesting)，选中 .xicon 内部的 svg 标签 */
-  & svg {
-    /* !w-full !h-full: 使用 ! (CSS !important) 强制覆盖 svg 可能自带的尺寸，
-           让它强制 100% 填满父容器 (.xicon) 的大小。
-        */
-    @apply !w-full !h-full;
-
-    /* 选择器逻辑：选中所有没有明确 fill 属性的 svg 元素 */
-    &:not([fill]) {
-      /* 
-               fill: currentcolor;
-               这是 CSS 中最实用的技巧之一。
-               currentColor 关键字代表“元素当前的 color 属性值”。
-               效果：图标颜色会自动跟随文字颜色变化。
-               比如：<div class="xicon text-red-500">，图标就会变成红色。
-            */
-      fill: currentcolor;
-    }
-  }
-}
-
 xbody {
   /* 场景1: 默认背景为 PC端 亮色 */
   background-image: url('/images/bg-pc-light.png');
@@ -101,7 +61,6 @@ xhtml.dark xbody {
     background-size: cover;
   }
 
-  /* 场景4: mobile端 暗色 */
   xhtml.dark body {
     background-image: url('/images/bg-mobile-dark.png');
   }
