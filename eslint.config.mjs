@@ -78,13 +78,21 @@ export default antfu(
       'import/order': 'off',
       'sort-imports': 'off',
       'perfectionist/sort-imports':
-        perfectionist.configs['recommended-natural'].rules['perfectionist/sort-imports'],
+        perfectionist.configs['recommended-natural'].rules[
+          'perfectionist/sort-imports'
+        ],
       'perfectionist/sort-exports':
-        perfectionist.configs['recommended-natural'].rules['perfectionist/sort-exports'],
+        perfectionist.configs['recommended-natural'].rules[
+          'perfectionist/sort-exports'
+        ],
       'perfectionist/sort-named-imports':
-        perfectionist.configs['recommended-natural'].rules['perfectionist/sort-named-imports'],
+        perfectionist.configs['recommended-natural'].rules[
+          'perfectionist/sort-named-imports'
+        ],
       'perfectionist/sort-named-exports':
-        perfectionist.configs['recommended-natural'].rules['perfectionist/sort-named-exports'],
+        perfectionist.configs['recommended-natural'].rules[
+          'perfectionist/sort-named-exports'
+        ],
     },
   },
   {

@@ -8,6 +8,9 @@
     "*.mdx": "mdx"
   },
   // 保存时自动格式化
+  // Editor settings
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
   "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
@@ -94,5 +97,7 @@
     "markdown": false,
     "scminput": false
   },
-  "tailwindCSS.experimental.configFile": "src/app/styles/tailwind.css"
+  "tailwindCSS.experimental.configFile": "src/app/styles/tailwind.css",
+  // Vim settings
+  "editor.lineNumbers": "relative"
 }
