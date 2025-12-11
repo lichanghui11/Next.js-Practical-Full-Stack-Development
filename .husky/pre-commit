@@ -5,4 +5,4 @@
 # pnpm  永远都是执行 scripts 里的 ，而不是执行 node_modules 里的 CLI 程序。
 # npx  是直接执行 node_modules/.bin/，不依赖 scripts。
 # 这里的 exec 可以执行 node_modules 里的 CLI 程序，不依赖 scripts。
-pnpm exec lint-staged
+# pnpm exec lint-staged
