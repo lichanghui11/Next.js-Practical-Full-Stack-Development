@@ -19,8 +19,12 @@ export default function Error({
     <div className="flex h-screen items-center justify-center p-4">
       <div className={clsx('page-blank p-10 text-center')}>
         <div className="flex flex-col items-center">
-          <h2 className="text-4xl font-bold text-red-500">Something went wrong!</h2>
-          <p className="mt-2 text-xl text-zinc-600 dark:text-zinc-400">应用程序遇到错误</p>
+          <h2 className="text-4xl font-bold text-red-500">
+            Something went wrong!
+          </h2>
+          <p className="mt-2 text-xl text-zinc-600 dark:text-zinc-400">
+            应用程序遇到错误
+          </p>
           <p className="mt-4 max-w-md text-wrap break-words text-sm text-red-400/80">
             {error.message || '未知错误'}
           </p>
