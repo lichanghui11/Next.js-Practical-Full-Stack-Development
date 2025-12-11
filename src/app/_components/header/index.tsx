@@ -3,6 +3,7 @@ import type { FC } from 'react';
 
 import { useState } from 'react';
 
+import { useScroll } from '@/app/utils/browser';
 import { cn } from '@/app/utils/utils';
 
 import $styles from './header.module.css';
@@ -17,9 +18,9 @@ import { Search } from './ui/search';
 // 右侧： 登录、模式切换、API文档
 const Header: FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  const isScrolled = useScroll(50);
   return (
-    <div className={cn($styles.header)}>
+    <div className={cn($styles.header, isScrolled ? $styles.isScrolled : '')}>
       <div className="flex items-center gap-1">
         <div className="md:hidden">
           <List size={18} onClick={() => setIsSidebarOpen(true)} />
