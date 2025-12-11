@@ -1,9 +1,9 @@
 @reference '#tailwind.css';
 
 .header {
-  @apply flex items-center justify-between h-[50px] w-full bg-background/30 backdrop-blur-sm px-2 sticky top-0 z-40 transparent-scrollbar transition-transform duration-500;
+  @apply flex items-center justify-between h-[50px] w-full bg-background/30 backdrop-blur-sm px-2 sticky top-0 z-40 transparent-scrollbar transition-all duration-300;
 }
 
-.isScrolled {
-  @apply -translate-y-full;
+.headerScrolled {
+  @apply border-b border-muted shadow-md bg-background/30  backdrop-blur-md transition-all duration-300 h-[55px];
 }

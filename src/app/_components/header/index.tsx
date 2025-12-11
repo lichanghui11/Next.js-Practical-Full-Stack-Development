@@ -20,27 +20,30 @@ const Header: FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isScrolled = useScroll(50);
   return (
-    <div className={cn($styles.header, isScrolled ? $styles.isScrolled : '')}>
-      <div className="flex items-center gap-1">
-        <div className="md:hidden">
-          <List size={18} onClick={() => setIsSidebarOpen(true)} />
+    <>
+      <div
+        className={cn($styles.header, { [$styles.headerScrolled]: isScrolled })}
+      >
+        <div className="flex items-center gap-1">
+          <div className="md:hidden">
+            <List size={18} onClick={() => setIsSidebarOpen(true)} />
+          </div>
+          <Logo />
+          <div className="hidden md:block">
+            <HeaderMiddlePc />
+          </div>
         </div>
-        <Logo />
-        <div className="hidden md:block">
-          <HeaderMiddlePc />
+        <div className="flex-1 flex justify-center max-w-[200px] mx-4">
+          <Search />
         </div>
+        <HeaderRight />
       </div>
-      <div className="flex-1 flex justify-center max-w-[200px] mx-4">
-        <Search />
-      </div>
-      <HeaderRight />
-
       {/* Mobile Sidebar */}
       <HeaderMiddleMobile
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
       />
-    </div>
+    </>
   );
 };
 
