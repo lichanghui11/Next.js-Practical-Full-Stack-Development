@@ -1,4 +1,17 @@
 /************ 自定义tailwind基本样式 ************/
+:root {
+  /* --overlay: rgba(0, 0, 0, 0.08); */
+  --overlay: rgb(0 0 0 / 25%);
+}
+
+.dark {
+  /* --overlay: rgba(255, 255, 255, 0.08); */
+  --overlay: rgb(255 255 255 / 35%);
+}
+
+@theme {
+  --color-overlay: var(--overlay);
+}
 
 @layer base {
   html {

@@ -27,7 +27,7 @@ export const HeaderMiddleMobile: FC<HeaderMiddleMobileProps> = ({
       <div
         role="button"
         tabIndex={isOpen ? 0 : -1}
-        aria-label="Close mobile menu"
+        aria-label="Close menu"
         className={cn(
           $styles.overlay,
           isOpen
