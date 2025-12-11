@@ -1,20 +1,11 @@
 'use client';
 import { theme } from 'antd';
 import { debounce } from 'lodash';
-import {
-  use,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { use, useCallback, useEffect, useMemo, useState } from 'react';
 import { useStore } from 'zustand';
 import { useShallow } from 'zustand/shallow';
 
-import type {
-  ThemeMode,
-  ThemeStateType,
-} from './constants';
+import type { ThemeMode, ThemeStateType } from './constants';
 
 import { ThemeActions, ThemeContext } from './constants';
 import { getSystemMode } from './utils';
@@ -29,9 +20,7 @@ export const useThemeStore = () => {
 };
 
 // 这里的 selector 传入的是整个对象的变更函数，包含 mode, compact, dispatch，可以根据需要返回对应的值
-export const useThemeState = <T>(
-  selecter: (state: ThemeStateType) => T,
-): T => {
+export const useThemeState = <T>(selecter: (state: ThemeStateType) => T): T => {
   const themeStore = useThemeStore();
   return useStore(themeStore, useShallow(selecter));
 };
@@ -62,10 +51,7 @@ export const useThemeActions = () => {
 
   // 切换 暗/亮 模式
   const toggleMode = useMemo(() => {
-    return debounce(
-      () => dispatch({ type: ThemeActions.TOGGLE_MODE }),
-      100,
-    );
+    return debounce(() => dispatch({ type: ThemeActions.TOGGLE_MODE }), 100);
   }, [dispatch]);
 
   // 设置紧凑模式
@@ -103,16 +89,11 @@ export const useThemeActions = () => {
 // 监听并获取系统主题
 // use开头表示 hook 函数，功能和 getSystemMode() 是相同的，但是会自动更新
 export const useSystemTheme = () => {
-  const [systemThemeMode, setSystemThemeMode] = useState(
-    () => getSystemMode(),
-  );
+  const [systemThemeMode, setSystemThemeMode] = useState(() => getSystemMode());
 
   useEffect(() => {
-    const handleChange = () =>
-      setSystemThemeMode(getSystemMode());
-    const media = window.matchMedia(
-      '(prefers-color-scheme: dark)',
-    );
+    const handleChange = () => setSystemThemeMode(getSystemMode());
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
     media.addEventListener('change', handleChange);
 
     return () => {
@@ -127,8 +108,7 @@ export const useSystemTheme = () => {
 export const useUserThemeMode = () => {
   const { mode, compact } = useThemeMode();
   const sysMode = useSystemTheme();
-  const finalMode =
-    mode === 'system' ? sysMode || 'light' : mode;
+  const finalMode = mode === 'system' ? sysMode || 'light' : mode;
 
   return {
     mode: finalMode,

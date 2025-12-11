@@ -19,10 +19,7 @@ export const Search: FC = () => {
         <LucideSearch className={$styles.search} />
 
         {/* 输入框本体 */}
-        <Input
-          placeholder="Search it"
-          className={$styles.input}
-        />
+        <Input placeholder="Search it" className={$styles.input} />
       </div>
     </form>
   );

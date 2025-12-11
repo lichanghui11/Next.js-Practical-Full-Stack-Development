@@ -15,9 +15,10 @@ interface HeaderMiddleMobileProps {
   onClose: () => void;
 }
 
-export const HeaderMiddleMobile: FC<
-  HeaderMiddleMobileProps
-> = ({ isOpen, onClose }) => {
+export const HeaderMiddleMobile: FC<HeaderMiddleMobileProps> = ({
+  isOpen,
+  onClose,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (

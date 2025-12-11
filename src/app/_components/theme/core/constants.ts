@@ -50,5 +50,4 @@ export type ThemeStateType = ThemeOption & {
 };
 
 // 创建主题上下文
-export const ThemeContext =
-  createContext<ThemeStoreType | null>(null);
+export const ThemeContext = createContext<ThemeStoreType | null>(null);

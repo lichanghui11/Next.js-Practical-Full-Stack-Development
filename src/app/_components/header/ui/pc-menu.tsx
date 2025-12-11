@@ -29,10 +29,7 @@ export const HeaderMiddlePc: FC = () => {
           return (
             <NavigationMenuItem key={item.href}>
               <NavigationMenuLink asChild>
-                <Link
-                  href={item.href}
-                  className={cn($styles.menuItem)}
-                >
+                <Link href={item.href} className={cn($styles.menuItem)}>
                   <Icon className="h-4 w-4" />
                   <span>{item.label}</span>
                 </Link>

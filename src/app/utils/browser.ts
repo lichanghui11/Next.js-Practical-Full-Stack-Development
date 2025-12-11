@@ -44,8 +44,5 @@ export function useIsMobile() {
 }
 
 export function useIsPC() {
-  return useMedia(
-    `(min-width: ${SCREENS.xl + 1}px)`,
-    false,
-  );
+  return useMedia(`(min-width: ${SCREENS.xl + 1}px)`, false);
 }

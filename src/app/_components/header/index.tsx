@@ -22,10 +22,7 @@ const Header: FC = () => {
     <div className={cn($styles.header)}>
       <div className="flex items-center gap-1">
         <div className="md:hidden">
-          <List
-            size={18}
-            onClick={() => setIsSidebarOpen(true)}
-          />
+          <List size={18} onClick={() => setIsSidebarOpen(true)} />
         </div>
         <Logo />
         <div className="hidden md:block">
