@@ -1,0 +1,5 @@
+@reference '#tailwind.css';
+
+.menuItem {
+  @apply flex flex-row items-center gap-2 border-b-2 border-transparent pb-1 text-sm text-muted-foreground hover:text-foreground hover:border-foreground/50;
+}

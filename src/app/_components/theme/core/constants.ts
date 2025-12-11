@@ -27,15 +27,21 @@ export interface ThemeOption {
 
 // 默认配置
 export const defaultThemeOption: ThemeOption = {
-  mode: ThemeMode.LIGHT,
+  mode: ThemeMode.SYSTEM,
   compact: false,
 };
 
 // 模拟 redux dispatch
 export type ThemeDispatch =
-  | { type: `${ThemeActions.CHANGE_MODE}`; payload: `${ThemeMode}` }
+  | {
+      type: `${ThemeActions.CHANGE_MODE}`;
+      payload: `${ThemeMode}`;
+    }
   | { type: `${ThemeActions.TOGGLE_MODE}` }
-  | { type: `${ThemeActions.CHANGE_COMPACT}`; payload: boolean }
+  | {
+      type: `${ThemeActions.CHANGE_COMPACT}`;
+      payload: boolean;
+    }
   | { type: `${ThemeActions.TOGGLE_COMPACT}` };
 
 // 主题模式 所有状态 的类型
@@ -44,4 +50,5 @@ export type ThemeStateType = ThemeOption & {
 };
 
 // 创建主题上下文
-export const ThemeContext = createContext<ThemeStoreType | null>(null);
+export const ThemeContext =
+  createContext<ThemeStoreType | null>(null);

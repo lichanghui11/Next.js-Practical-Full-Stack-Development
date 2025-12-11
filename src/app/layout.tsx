@@ -1,6 +1,10 @@
 import './styles/index.css';
 import type { Metadata } from 'next';
 
+import { AntdRegistry } from '@ant-design/nextjs-registry';
+
+import ThemeProvider from '@/app/_components/theme';
+
 import styles from './layout.module.css';
 import { cn } from './utils/utils';
 export const metadata: Metadata = {
@@ -65,7 +69,11 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: themeScript }}
         />
       </head>
-      <body className={cn(styles.topBody)}>{children}</body>
+      <body className={cn(styles.topBody)}>
+        <AntdRegistry>
+          <ThemeProvider>{children}</ThemeProvider>
+        </AntdRegistry>
+      </body>
     </html>
   );
 }

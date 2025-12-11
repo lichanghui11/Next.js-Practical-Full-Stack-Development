@@ -1,0 +1,18 @@
+@reference '#tailwind.css';
+
+.search {
+  @apply pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground;
+}
+
+.input {
+  @apply w-full
+          rounded-full           /* 做成胶囊形状 */
+          bg-muted/60            /* 灰一点的背景 */
+          border-transparent     /* 边框淡掉 */
+          pl-9                   /* 给图标预留位置 */
+          h-9                    /* 比默认矮一点 */
+          text-base
+          placeholder:text-muted-foreground
+          focus-visible:ring-0
+          focus-visible:ring-offset-0;
+}
