@@ -22,11 +22,16 @@ const Header: FC = () => {
   return (
     <>
       <div
-        className={cn($styles.header, { [$styles.headerScrolled]: isScrolled })}
+        className={cn($styles.header, {
+          [$styles.headerScrolled]: isScrolled,
+        })}
       >
         <div className="flex items-center gap-1">
           <div className="md:hidden">
-            <List size={18} onClick={() => setIsSidebarOpen(true)} />
+            <List
+              size={18}
+              onClick={() => setIsSidebarOpen(true)}
+            />
           </div>
           <Logo />
           <div className="hidden md:block">

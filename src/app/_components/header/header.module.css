@@ -1,9 +1,31 @@
 @reference '#tailwind.css';
 
 .header {
-  @apply flex items-center justify-between h-[50px] w-full bg-background/30 backdrop-blur-sm px-2 sticky top-0 z-40 transparent-scrollbar transition-all duration-300;
+  @apply flex items-center justify-between h-[50px] w-full px-2 sticky top-0 z-40 transparent-scrollbar;
+
+  /* Background with backdrop blur for content visibility */
+  background-color: hsl(var(--background) / 70%);
+  /* stylelint-disable-next-line declaration-block-no-duplicate-properties */
+  backdrop-filter: blur(8px);
+
+  /* Smooth transitions with ease-in-out for natural feel */
+  transition:
+    height 300ms ease-in-out,
+    backdrop-filter 300ms ease-in-out,
+    box-shadow 300ms ease-in-out,
+    border-color 300ms ease-in-out,
+    background-color 300ms ease-in-out;
 }
 
 .headerScrolled {
-  @apply border-b border-muted shadow-md bg-background/30  backdrop-blur-md transition-all duration-300 h-[55px];
+  /* Expanded height on scroll */
+  @apply h-[55px] border-b border-border/50;
+
+  /* Enhanced background opacity and blur for scrolled state */
+  background-color: hsl(var(--background) / 85%);
+
+  /* Subtle shadow for depth */
+  box-shadow: 0 2px 8px rgb(0 0 0 / 5%);
+  /* stylelint-disable-next-line declaration-block-no-duplicate-properties */
+  backdrop-filter: blur(12px);
 }
