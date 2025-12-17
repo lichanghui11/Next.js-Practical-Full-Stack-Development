@@ -6,10 +6,10 @@ import { Pencil } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useMemo } from 'react';
-// 封装编辑文章的按钮
-// 根据外部传入的 id 决定编辑哪一篇文章
 import { Button } from 'ui/button';
 
+import styles from '@/app/_toturial-components/shared/button-styles.module.css';
+import { useIsMobile } from '@/app/utils/browser';
 import { cn } from '@/app/utils/utils';
 
 export const EditButton: FC<{
@@ -17,19 +17,32 @@ export const EditButton: FC<{
   className?: string;
 }> = ({ id, className }) => {
   const searchParams = useSearchParams();
+  const isMobile = useIsMobile();
+
   const getQuery = useMemo(() => {
     const query = new URLSearchParams(
       searchParams.toString(),
     ).toString();
     return isNil(query) ? '' : `?${query}`;
   }, [searchParams]);
+
   return (
     <>
       <Suspense fallback={<div>加载中...</div>}>
         <div className={cn(className)}>
-          <Button variant="outline" asChild>
+          <Button
+            variant="outline"
+            asChild
+            className={cn(
+              styles.iconButton,
+              isMobile ? styles.mobile : styles.pc,
+            )}
+          >
             <Link href={`/blog-edit/${id}${getQuery}`}>
-              <Pencil />
+              <Pencil className={styles.buttonIcon} />
+              <span className={styles.buttonText}>
+                编辑
+              </span>
             </Link>
           </Button>
         </div>

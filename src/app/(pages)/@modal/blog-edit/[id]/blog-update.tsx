@@ -8,6 +8,5 @@ export const BlogUpdate: FC<
   PropsWithChildren<{ id: string }>
 > = async ({ id }) => {
   const post = await queryPostById(id);
-  console.log('update a blog: ', post);
   return <BlogForm type="update" blog={post}></BlogForm>;
 };

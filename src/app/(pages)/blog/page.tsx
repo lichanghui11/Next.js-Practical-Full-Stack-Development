@@ -39,7 +39,7 @@ const BlogListPage: FC<{
     page: currentPage,
     pageSize,
   });
-  console.log(posts.data.length);
+  console.log('blogs: ', posts.data);
   return (
     <Suspense
       fallback={
@@ -60,27 +60,35 @@ const BlogListPage: FC<{
                 key={item.id}
                 className={styles.blogCard}
               >
-                <div className={styles.thumbnailContainer}>
-                  <Image
-                    src={'/placeholder-blog.png'}
-                    fill
-                    className={styles.thumbnail}
-                    alt={item.title}
-                  />
-                </div>
-
-                <div className={styles.cardContent}>
-                  <div className={styles.contentMain}>
+                {/* 头部行：头像 + 标题 */}
+                <div className={styles.cardHeader}>
+                  <div
+                    className={styles.thumbnailContainer}
+                  >
+                    <Image
+                      src={
+                        item.thumbnail ||
+                        '/placeholder-blog.png'
+                      }
+                      fill
+                      className={styles.thumbnail}
+                      alt={item.title}
+                    />
+                  </div>
+                  <div className={styles.titleWrapper}>
                     <Link href={`/blog/${item.id}`}>
                       <h2 className={styles.title}>
                         {item.title}
                       </h2>
                     </Link>
-
-                    <p className={styles.summary}>
-                      {item.summary || '暂无摘要'}
-                    </p>
                   </div>
+                </div>
+
+                {/* 内容区：摘要 + 元数据 */}
+                <div className={styles.cardContent}>
+                  <p className={styles.summary}>
+                    {item.summary || '暂无摘要'}
+                  </p>
 
                   <div className={styles.metadata}>
                     <Calendar

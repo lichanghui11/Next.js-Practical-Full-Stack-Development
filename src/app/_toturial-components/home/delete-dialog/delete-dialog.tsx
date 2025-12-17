@@ -1,9 +1,9 @@
 'use client';
 import type { FC, MouseEventHandler } from 'react';
 
+import { Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
-import { FaTrashAlt } from 'react-icons/fa';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,17 +18,23 @@ import {
 import { Button } from 'ui/button';
 
 import { Spinner } from '@/app/_components/spinner';
+import styles from '@/app/_toturial-components/shared/button-styles.module.css';
 import { deletePost } from '@/app/fake-database/fake-data-actions';
+import { useIsMobile } from '@/app/utils/browser';
+import { cn } from '@/app/utils/utils';
 
 export const DeleteDialog: FC<{ id: string | number }> = ({
   id,
 }) => {
   const router = useRouter();
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
+
   const handleOpen = useCallback((val: boolean) => {
     setOpen(val);
   }, []);
+
   const handleCancel: MouseEventHandler<HTMLButtonElement> =
     useCallback(
       (e) => {
@@ -37,6 +43,7 @@ export const DeleteDialog: FC<{ id: string | number }> = ({
       },
       [pending],
     );
+
   const handleDelete: MouseEventHandler<HTMLButtonElement> =
     useCallback(
       async (e) => {
@@ -52,14 +59,21 @@ export const DeleteDialog: FC<{ id: string | number }> = ({
           setPending(false);
         }
       },
-      [id],
+      [id, router],
     );
 
   return (
     <AlertDialog open={open} onOpenChange={handleOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="outline">
-          <FaTrashAlt />
+        <Button
+          variant="outline"
+          className={cn(
+            styles.iconButton,
+            isMobile ? styles.mobile : styles.pc,
+          )}
+        >
+          <Trash2 className={styles.buttonIcon} />
+          <span className={styles.buttonText}>删除</span>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent

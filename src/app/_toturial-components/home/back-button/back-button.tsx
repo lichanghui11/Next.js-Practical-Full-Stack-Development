@@ -1,15 +1,14 @@
 'use client';
 import type { FC } from 'react';
 
-import { Button } from 'antd';
 import { Undo2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
+import { Button } from 'ui/button';
 
+import styles from '@/app/_toturial-components/shared/button-styles.module.css';
 import { useIsMobile } from '@/app/utils/browser';
 import { cn } from '@/app/utils/utils';
-
-import styles from './back-button.module.css';
 
 export const BackButton: FC = () => {
   const router = useRouter();
@@ -38,18 +37,17 @@ export const BackButton: FC = () => {
 
   return (
     <Button
-      variant="outlined"
+      variant="outline"
       disabled={disabled}
       onClick={goBack}
-      className={cn(styles.backButton, {
-        [styles.mobile]: isMobile,
-        [styles.pc]: !isMobile,
-        [styles.disabled]: disabled,
-      })}
+      className={cn(
+        styles.iconButton,
+        isMobile ? styles.mobile : styles.pc,
+      )}
       aria-disabled={disabled}
     >
-      <Undo2 className={styles.icon} />
-      {isMobile ? '' : '返回'}
+      <Undo2 className={styles.buttonIcon} />
+      <span className={styles.buttonText}>返回</span>
     </Button>
   );
 };

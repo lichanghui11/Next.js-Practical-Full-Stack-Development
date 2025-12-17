@@ -10,6 +10,12 @@ import type { IPost } from './fake-data-types';
 
 // 生成假数据的内部函数（不导出）
 const generateFakePosts = (): IPost[] => {
+  // 本地博客缩略图列表（public/blog-demo-images/）
+  const blogImages = Array.from(
+    { length: 11 },
+    (_, i) => `/blog-demo-images/blog-${i + 1}.png`,
+  );
+
   return Array.from({ length: 30 })
     .fill(0)
     .map((_) => {
@@ -27,10 +33,8 @@ const generateFakePosts = (): IPost[] => {
           Math.random() < 0.5
             ? faker.lorem.sentences({ min: 1, max: 3 })
             : undefined,
-        thumbnail: faker.image.urlPicsumPhotos({
-          width: 640,
-          height: 360,
-        }),
+        // 随机选择一张本地图片
+        thumbnail: faker.helpers.arrayElement(blogImages),
       };
     });
 };

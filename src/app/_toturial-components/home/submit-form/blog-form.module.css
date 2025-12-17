@@ -1,5 +1,19 @@
 /* 博客表单样式 */
 
+/* 表单容器 - 限制宽度，居中显示 */
+.formContainer {
+  max-width: 800px;
+  padding: 2rem 1rem;
+  margin: 0 auto;
+}
+
+/* PC端增加内边距 */
+@media (width >= 768px) {
+  .formContainer {
+    padding: 3rem 2rem;
+  }
+}
+
 .blogForm {
   display: flex;
   flex-direction: column;
@@ -43,7 +57,9 @@
 .textarea {
   width: 100%;
   padding: 0.875rem 1rem;
-  font-size: 0.9375rem;
+
+  /* 16px 防止移动端自动放大 */
+  font-size: 1rem;
   line-height: 1.5;
   color: oklch(25% 0.01 260deg);
   background: oklch(99% 0 0deg);

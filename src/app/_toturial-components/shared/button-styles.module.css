@@ -1,0 +1,71 @@
+/* 统一按钮样式 */
+
+/* 基础按钮样式 */
+.iconButton {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: oklch(40% 0.02 260deg);
+  background: oklch(100% 0 0deg);
+  border: 1px solid oklch(88% 0.01 260deg);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.iconButton:hover {
+  color: oklch(30% 0.05 260deg);
+  background: oklch(98% 0.01 260deg);
+  border-color: oklch(75% 0.05 260deg);
+}
+
+.iconButton:active {
+  transform: scale(0.95);
+}
+
+:global(.dark) .iconButton {
+  color: oklch(80% 0.02 80deg);
+  background: oklch(20% 0.015 260deg);
+  border-color: oklch(35% 0.02 260deg);
+}
+
+:global(.dark) .iconButton:hover {
+  color: oklch(90% 0.02 80deg);
+  background: oklch(25% 0.02 260deg);
+  border-color: oklch(50% 0.05 260deg);
+}
+
+/* PC 端：显示图标和文字 */
+.iconButton.pc {
+  padding: 0.625rem 1rem;
+}
+
+/* 移动端：只显示图标 */
+.iconButton.mobile {
+  padding: 0.5rem;
+}
+
+.iconButton.mobile .buttonText {
+  display: none;
+}
+
+/* 禁用状态 */
+.iconButton:disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* 图标样式 */
+.buttonIcon {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* 文字样式 */
+.buttonText {
+  white-space: nowrap;
+}

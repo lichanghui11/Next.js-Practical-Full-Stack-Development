@@ -48,7 +48,19 @@ export const addPost = async (
   post: Omit<IPost, 'id'>,
 ): Promise<IPost> => {
   const posts = await readDbFile();
-  const newPost = { ...post, id: uuid() } as IPost;
+
+  // 自动生成缺失的字段
+  const newPost = {
+    ...post,
+    id: uuid(),
+    // 如果没有 createdAt，使用当前时间
+    createdAt: post.createdAt || new Date().toISOString(),
+    // 如果没有 thumbnail，随机选择一张本地图片
+    thumbnail:
+      post.thumbnail ||
+      `/blog-demo-images/blog-${Math.floor(Math.random() * 11) + 1}.png`,
+  } as IPost;
+
   const newPosts = [...posts, newPost];
 
   await resetDbFile(newPosts);

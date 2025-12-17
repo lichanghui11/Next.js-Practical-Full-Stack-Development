@@ -15,32 +15,42 @@
   @apply flex flex-col gap-6;
 }
 
-/* 博客卡片 - 横向布局 */
+/* 博客卡片 - 垂直布局 */
 .blogCard {
   @apply relative overflow-hidden rounded-lg border border-border bg-card transition-all duration-300;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  padding: 1rem;
   box-shadow: var(--shadow-ny);
 }
 
 .blogCard:hover {
   @apply border-ring;
   box-shadow: var(--shadow-nymd);
-  transform: translateX(4px);
+  transform: translateY(-2px);
 }
 
-/* 缩略图容器 - 固定宽度 */
+/* 头部行：头像 + 标题 */
+.cardHeader {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+/* 缩略图容器 - 圆形头像 */
 .thumbnailContainer {
   @apply relative flex-shrink-0 overflow-hidden bg-muted;
-  width: 80px;
-  height: 80px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 
-/* 移动端缩略图尺寸保持不变，继续横向布局 */
+/* 移动端头像尺寸 */
 @media (width <= 640px) {
   .thumbnailContainer {
-    width: 80px;
-    height: 80px;
+    width: 36px;
+    height: 36px;
   }
 }
 
@@ -52,9 +62,9 @@
   transform: scale(1.05);
 }
 
-/* 卡片内容 */
+/* 卡片内容（摘要和元数据区域） */
 .cardContent {
-  @apply flex-1 p-6 flex flex-col justify-between;
+  @apply flex flex-col gap-2;
 }
 
 /* 内容主体 */
@@ -62,12 +72,22 @@
   @apply flex-1;
 }
 
-/* 标题样式 - 带眩晕效果 */
+/* 标题容器 - 占据剩余空间 */
+.titleWrapper {
+  flex: 1;
+  min-width: 0; /* 允许 flex 子元素收缩 */
+}
+
+/* 标题样式 - 单行省略 */
 .title {
-  @apply text-xl font-bold mb-3 text-foreground;
-  position: relative;
-  display: inline-block;
+  @apply text-lg font-bold text-foreground;
+
+  /* 单行省略 */
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: var(--font-base);
+  white-space: nowrap;
   transition: all 0.3s ease;
 }
 
