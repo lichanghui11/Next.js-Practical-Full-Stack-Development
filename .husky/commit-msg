@@ -1,2 +1,7 @@
+#!/usr/bin/env sh
+
+# 确保 pnpm 可以被找到 (使用 nvm 管理的 node 路径)
+export PATH="$HOME/.nvm/versions/node/v22.19.0/bin:$PATH"
+
 pnpm exec commitlint --edit "$1"
 # 这里的 --edit "$1" 参数是必须的，用来指定要校验的 commit message 文件。
