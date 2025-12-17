@@ -32,6 +32,7 @@ export default antfu(
       'pnpm-lock.yaml',
       'package-lock.json',
       'next-env.d.ts',
+      'src/app/fake-database/db.json',
     ],
   },
   {

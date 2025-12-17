@@ -1,0 +1,60 @@
+@reference '#tailwind.css';
+
+/* 创建按钮样式 */
+
+.createButton {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-family: var(--font-base);
+  color: var(--foreground);
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease-in-out;
+}
+
+.createButton:hover {
+  color: var(--accent-foreground);
+  background-color: var(--accent);
+  border-color: var(--ring);
+  transform: translateX(2px);
+}
+
+.createButton:active {
+  transform: translateX(4px);
+}
+
+/* 移动端样式 */
+.mobile {
+  padding: 0.625rem 1rem; /* 10px 16px */
+  font-size: 0.875rem; /* 14px */
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-nysm);
+}
+
+.mobile:hover {
+  box-shadow: var(--shadow-ny);
+}
+
+/* PC端样式 */
+.pc {
+  padding: 0.75rem 1.5rem; /* 12px 24px */
+  font-size: 1rem; /* 16px */
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-ny);
+}
+
+.pc:hover {
+  box-shadow: var(--shadow-nymd);
+}
+
+/* 图标样式 */
+.icon {
+  width: 1.125rem; /* 18px */
+  height: 1.125rem; /* 18px */
+  transition: transform 0.2s ease-in-out;
+}
+
+.createButton:hover .icon {
+  transform: translateX(2px);
+}

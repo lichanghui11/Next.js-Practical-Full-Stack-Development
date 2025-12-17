@@ -1,0 +1,171 @@
+/* 编辑博客弹窗样式 */
+
+/* 弹窗容器 - 增加尺寸和玻璃拟态效果 */
+.dialogContent {
+  max-width: 720px;
+  max-height: 90vh;
+  padding: 2rem;
+  overflow-y: auto;
+  background: linear-gradient(
+    135deg,
+    oklch(100% 0 0deg / 95%) 0%,
+    oklch(98% 0.002 240deg / 90%) 100%
+  );
+  border: 1px solid oklch(90% 0 0deg / 60%);
+  border-radius: 1.25rem;
+  box-shadow:
+    0 25px 80px -12px oklch(20% 0.03 250deg / 25%),
+    0 0 40px -8px oklch(60% 0.15 260deg / 15%),
+    inset 0 1px 1px oklch(100% 0 0deg / 40%);
+  backdrop-filter: blur(20px);
+}
+
+/* 暗色模式弹窗 */
+:global(.dark) .dialogContent {
+  background: linear-gradient(
+    135deg,
+    oklch(18% 0.015 260deg / 95%) 0%,
+    oklch(15% 0.02 250deg / 90%) 100%
+  );
+  border: 1px solid oklch(40% 0.02 260deg / 30%);
+  box-shadow:
+    0 25px 80px -12px oklch(0% 0 0deg / 50%),
+    0 0 60px -10px oklch(50% 0.2 260deg / 20%),
+    inset 0 1px 1px oklch(100% 0 0deg / 5%);
+}
+
+/* 弹窗头部样式 */
+.dialogHeader {
+  position: relative;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid oklch(80% 0 0deg / 30%);
+}
+
+.dialogHeader::before {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  content: '';
+  background: linear-gradient(
+    90deg,
+    oklch(65% 0.2 260deg),
+    oklch(70% 0.18 300deg)
+  );
+  border-radius: 3px;
+}
+
+:global(.dark) .dialogHeader {
+  border-bottom-color: oklch(40% 0.02 260deg / 30%);
+}
+
+/* 标题样式 */
+.dialogTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: transparent;
+  letter-spacing: -0.02em;
+  background: linear-gradient(
+    135deg,
+    oklch(30% 0.05 260deg) 0%,
+    oklch(45% 0.1 280deg) 100%
+  );
+  /* stylelint-disable-next-line declaration-block-no-duplicate-properties */
+  background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+:global(.dark) .dialogTitle {
+  color: transparent;
+  background: linear-gradient(
+    135deg,
+    oklch(90% 0.02 80deg) 0%,
+    oklch(80% 0.08 50deg) 100%
+  );
+  /* stylelint-disable-next-line declaration-block-no-duplicate-properties */
+  background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 描述文字样式 */
+.dialogDescription {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: oklch(55% 0.01 260deg);
+}
+
+:global(.dark) .dialogDescription {
+  color: oklch(70% 0.01 80deg);
+}
+
+/* 自定义滚动条 */
+.dialogContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dialogContent::-webkit-scrollbar-track {
+  background: oklch(95% 0 0deg);
+  border-radius: 3px;
+}
+
+.dialogContent::-webkit-scrollbar-thumb {
+  background: oklch(80% 0.02 260deg);
+  border-radius: 3px;
+}
+
+.dialogContent::-webkit-scrollbar-thumb:hover {
+  background: oklch(70% 0.03 260deg);
+}
+
+:global(.dark) .dialogContent::-webkit-scrollbar-track {
+  background: oklch(25% 0.01 260deg);
+}
+
+:global(.dark) .dialogContent::-webkit-scrollbar-thumb {
+  background: oklch(45% 0.02 260deg);
+}
+
+:global(.dark)
+  .dialogContent::-webkit-scrollbar-thumb:hover {
+  background: oklch(55% 0.02 260deg);
+}
+
+/* 关闭按钮增强 */
+.closeButton {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  color: oklch(50% 0 0deg);
+  cursor: pointer;
+  background: oklch(95% 0 0deg);
+  border: 1px solid oklch(90% 0 0deg);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  color: oklch(60% 0.2 20deg);
+  background: oklch(92% 0.02 0deg);
+  transform: scale(1.05);
+}
+
+:global(.dark) .closeButton {
+  color: oklch(70% 0 0deg);
+  background: oklch(25% 0.01 260deg);
+  border-color: oklch(35% 0.02 260deg);
+}
+
+:global(.dark) .closeButton:hover {
+  color: oklch(70% 0.15 20deg);
+  background: oklch(30% 0.02 260deg);
+}

@@ -19,7 +19,9 @@ export default function Error({
   return (
     <div className="flex h-[50vh] flex-col items-center justify-center gap-4">
       <h2 className="text-2xl font-bold">出错了!</h2>
-      <p className="text-muted-foreground">发生了意外错误。</p>
+      <p className="text-muted-foreground">
+        发生了意外错误。
+      </p>
       <Button
         onClick={
           // Attempt to recover by trying to re-render the segment

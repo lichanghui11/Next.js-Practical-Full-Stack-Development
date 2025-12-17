@@ -1,0 +1,242 @@
+/* 博客表单样式 */
+
+.blogForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 表单项样式增强 */
+.formItem {
+  position: relative;
+}
+
+/* 表单标签样式 */
+.formLabel {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: oklch(35% 0.02 260deg);
+}
+
+.formLabel::before {
+  width: 3px;
+  height: 14px;
+  content: '';
+  background: linear-gradient(
+    180deg,
+    oklch(65% 0.2 260deg),
+    oklch(70% 0.18 300deg)
+  );
+  border-radius: 2px;
+}
+
+:global(.dark) .formLabel {
+  color: oklch(80% 0.02 80deg);
+}
+
+/* 输入框样式增强 */
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: oklch(25% 0.01 260deg);
+  background: oklch(99% 0 0deg);
+  border: 1.5px solid oklch(88% 0.01 260deg);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px oklch(0% 0 0deg / 3%);
+  transition: all 0.25s ease;
+}
+
+.input:hover,
+.textarea:hover {
+  border-color: oklch(75% 0.05 260deg);
+  box-shadow: 0 4px 8px oklch(60% 0.1 260deg / 8%);
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: oklch(65% 0.15 260deg);
+  box-shadow:
+    0 0 0 3px oklch(65% 0.15 260deg / 15%),
+    0 4px 12px oklch(60% 0.1 260deg / 12%);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: oklch(65% 0.01 260deg);
+}
+
+:global(.dark) .input,
+:global(.dark) .textarea {
+  color: oklch(90% 0.01 80deg);
+  background: oklch(20% 0.015 260deg);
+  border-color: oklch(35% 0.02 260deg);
+  box-shadow: 0 2px 4px oklch(0% 0 0deg / 15%);
+}
+
+:global(.dark) .input:hover,
+:global(.dark) .textarea:hover {
+  border-color: oklch(50% 0.05 260deg);
+  box-shadow: 0 4px 8px oklch(50% 0.15 260deg / 15%);
+}
+
+:global(.dark) .input:focus,
+:global(.dark) .textarea:focus {
+  border-color: oklch(60% 0.12 260deg);
+  box-shadow:
+    0 0 0 3px oklch(60% 0.12 260deg / 20%),
+    0 4px 12px oklch(50% 0.15 260deg / 15%);
+}
+
+:global(.dark) .input::placeholder,
+:global(.dark) .textarea::placeholder {
+  color: oklch(50% 0.02 260deg);
+}
+
+/* 文本域特殊样式 */
+.textarea {
+  min-height: 200px;
+  resize: vertical;
+}
+
+.textareaContent {
+  min-height: 280px;
+}
+
+/* 详情摘要折叠区域 */
+.detailSummary {
+  padding: 0 1rem;
+  margin: 0.5rem 0;
+  background: oklch(98% 0.005 260deg);
+  border: 1px solid oklch(92% 0.01 260deg);
+  border-radius: 0.75rem;
+}
+
+:global(.dark) .detailSummary {
+  background: oklch(18% 0.01 260deg);
+  border-color: oklch(30% 0.02 260deg);
+}
+
+/* 表单描述文字 */
+.formDescription {
+  display: flex;
+  gap: 0.375rem;
+  align-items: center;
+  margin-top: 0.375rem;
+  font-size: 0.8125rem;
+  color: oklch(55% 0.01 260deg);
+}
+
+.formDescription::before {
+  font-size: 0.75rem;
+  content: '💡';
+}
+
+:global(.dark) .formDescription {
+  color: oklch(60% 0.01 80deg);
+}
+
+/* 表单错误消息 */
+.formMessage {
+  display: flex;
+  gap: 0.375rem;
+  align-items: center;
+  margin-top: 0.375rem;
+  font-size: 0.8125rem;
+  color: oklch(55% 0.2 25deg);
+}
+
+:global(.dark) .formMessage {
+  color: oklch(70% 0.18 25deg);
+}
+
+/* 提交按钮样式 */
+.submitButton {
+  position: relative;
+  padding: 0.875rem 2rem;
+  margin-top: 1rem;
+  overflow: hidden;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: oklch(100% 0 0deg);
+  cursor: pointer;
+  background: linear-gradient(
+    135deg,
+    oklch(55% 0.18 260deg) 0%,
+    oklch(50% 0.2 280deg) 100%
+  );
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow:
+    0 4px 15px oklch(55% 0.18 260deg / 35%),
+    inset 0 1px 1px oklch(100% 0 0deg / 20%);
+  transition: all 0.3s ease;
+}
+
+.submitButton::before {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  content: '';
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(100% 0 0deg / 20%),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.submitButton:hover {
+  box-shadow:
+    0 8px 25px oklch(55% 0.18 260deg / 45%),
+    inset 0 1px 1px oklch(100% 0 0deg / 25%);
+  transform: translateY(-2px);
+}
+
+.submitButton:hover::before {
+  left: 100%;
+}
+
+.submitButton:active {
+  box-shadow:
+    0 2px 10px oklch(55% 0.18 260deg / 30%),
+    inset 0 1px 1px oklch(100% 0 0deg / 20%);
+  transform: translateY(0);
+}
+
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
+
+/* 加载动画容器 */
+.spinnerWrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 禁用状态的输入框 */
+.input:disabled,
+.textarea:disabled {
+  cursor: not-allowed;
+  background: oklch(96% 0 0deg);
+  opacity: 0.6;
+}
+
+:global(.dark) .input:disabled,
+:global(.dark) .textarea:disabled {
+  background: oklch(22% 0.01 260deg);
+}

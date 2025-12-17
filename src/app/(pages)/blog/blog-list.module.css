@@ -1,0 +1,138 @@
+@reference '#tailwind.css';
+
+/* 容器样式 */
+.container {
+  @apply max-w-5xl mx-auto px-4 py-8;
+}
+
+/* 工具栏样式 */
+.toolbar {
+  @apply mb-8;
+}
+
+/* 博客列表 - 单列布局 */
+.blogGrid {
+  @apply flex flex-col gap-6;
+}
+
+/* 博客卡片 - 横向布局 */
+.blogCard {
+  @apply relative overflow-hidden rounded-lg border border-border bg-card transition-all duration-300;
+  display: flex;
+  flex-direction: row;
+  box-shadow: var(--shadow-ny);
+}
+
+.blogCard:hover {
+  @apply border-ring;
+  box-shadow: var(--shadow-nymd);
+  transform: translateX(4px);
+}
+
+/* 缩略图容器 - 固定宽度 */
+.thumbnailContainer {
+  @apply relative flex-shrink-0 overflow-hidden bg-muted;
+  width: 80px;
+  height: 80px;
+}
+
+/* 移动端缩略图尺寸保持不变，继续横向布局 */
+@media (width <= 640px) {
+  .thumbnailContainer {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+.thumbnail {
+  @apply w-full h-full object-cover transition-transform duration-500;
+}
+
+.blogCard:hover .thumbnail {
+  transform: scale(1.05);
+}
+
+/* 卡片内容 */
+.cardContent {
+  @apply flex-1 p-6 flex flex-col justify-between;
+}
+
+/* 内容主体 */
+.contentMain {
+  @apply flex-1;
+}
+
+/* 标题样式 - 带眩晕效果 */
+.title {
+  @apply text-xl font-bold mb-3 text-foreground;
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-base);
+  transition: all 0.3s ease;
+}
+
+/* 眩晕效果 - hover时触发 */
+.title:hover {
+  text-shadow:
+    2px 2px 4px hsl(var(--primary) / 30%),
+    -2px -2px 4px hsl(var(--accent) / 30%);
+  animation: dizzy 0.6s ease-in-out;
+}
+
+@keyframes dizzy {
+  0% {
+    filter: blur(0);
+    transform: rotate(0deg) scale(1);
+  }
+
+  20% {
+    filter: blur(0.5px);
+    transform: rotate(-2deg) scale(1.02);
+  }
+
+  40% {
+    filter: blur(1px);
+    transform: rotate(2deg) scale(0.98);
+  }
+
+  60% {
+    filter: blur(0.5px);
+    transform: rotate(-1deg) scale(1.01);
+  }
+
+  80% {
+    filter: blur(0.3px);
+    transform: rotate(1deg) scale(0.99);
+  }
+
+  100% {
+    filter: blur(0);
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+/* 摘要样式 */
+.summary {
+  @apply text-sm text-muted-foreground mb-4 line-clamp-2;
+}
+
+/* 元数据容器 */
+.metadata {
+  @apply flex items-center gap-2 text-xs text-muted-foreground mt-auto;
+}
+
+.metadataIcon {
+  @apply w-4 h-4;
+}
+
+/* 加载状态 */
+.loading {
+  @apply flex items-center justify-center min-h-[400px] text-muted-foreground;
+  font-family: var(--font-lxgw);
+}
+
+/* 空状态 */
+.empty {
+  @apply text-center py-16 text-muted-foreground;
+  font-family: var(--font-lxgw);
+}

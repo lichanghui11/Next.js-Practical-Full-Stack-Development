@@ -1,0 +1,85 @@
+/* 详情摘要组件样式 */
+
+.details {
+  margin: 0.75rem 0;
+  overflow: hidden;
+  background: oklch(98% 0.005 260deg);
+  border: 1px solid oklch(92% 0.01 260deg);
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.details:hover {
+  border-color: oklch(85% 0.03 260deg);
+  box-shadow: 0 2px 8px oklch(60% 0.1 260deg / 8%);
+}
+
+:global(.dark) .details {
+  background: oklch(18% 0.01 260deg);
+  border-color: oklch(30% 0.02 260deg);
+}
+
+:global(.dark) .details:hover {
+  border-color: oklch(40% 0.03 260deg);
+  box-shadow: 0 2px 8px oklch(50% 0.15 260deg / 15%);
+}
+
+/* Summary 标题样式 */
+.summary {
+  position: relative;
+  display: flex;
+  gap: 0.625rem;
+  align-items: center;
+  padding: 0.875rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: oklch(35% 0.02 260deg);
+  cursor: pointer;
+  user-select: none;
+  list-style: none; /* 移除默认三角形 */
+  transition: all 0.2s ease;
+}
+
+.summary::-webkit-details-marker {
+  display: none; /* Chrome/Safari 移除默认标记 */
+}
+
+/* 自定义图标样式 */
+.icon {
+  font-size: 1.125rem;
+  transition: transform 0.2s ease;
+}
+
+.summary:hover .icon {
+  transform: scale(1.1);
+}
+
+.summary:hover {
+  color: oklch(45% 0.1 260deg);
+  background: oklch(96% 0.01 260deg);
+}
+
+:global(.dark) .summary {
+  color: oklch(80% 0.02 80deg);
+}
+
+:global(.dark) .summary:hover {
+  color: oklch(85% 0.05 80deg);
+  background: oklch(22% 0.015 260deg);
+}
+
+/* 内容区域样式 */
+.content {
+  max-height: 0;
+  padding: 0 1rem 1rem;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 0.3s ease-out,
+    opacity 0.2s ease-out,
+    padding 0.3s ease-out;
+}
+
+.details[open] .content {
+  opacity: 1;
+}

@@ -19,7 +19,7 @@
 
 .headerScrolled {
   /* Expanded height on scroll */
-  @apply h-[55px] border-b border-border/50;
+  @apply h-[60px] border-b border-border/50;
 
   /* Enhanced background opacity and blur for scrolled state */
   background-color: hsl(var(--background) / 85%);
