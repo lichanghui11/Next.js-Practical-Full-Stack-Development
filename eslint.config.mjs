@@ -12,7 +12,6 @@ import unusedImports from 'eslint-plugin-unused-imports'; // 检测并删除未�
  */
 export default antfu(
   {
-    isInEditor: false,
     react: {
       overrides: {
         'react/no-comment-textnodes': 'off',
@@ -79,21 +78,13 @@ export default antfu(
       'import/order': 'off',
       'sort-imports': 'off',
       'perfectionist/sort-imports':
-        perfectionist.configs['recommended-natural'].rules[
-          'perfectionist/sort-imports'
-        ],
+        perfectionist.configs['recommended-natural'].rules['perfectionist/sort-imports'],
       'perfectionist/sort-exports':
-        perfectionist.configs['recommended-natural'].rules[
-          'perfectionist/sort-exports'
-        ],
+        perfectionist.configs['recommended-natural'].rules['perfectionist/sort-exports'],
       'perfectionist/sort-named-imports':
-        perfectionist.configs['recommended-natural'].rules[
-          'perfectionist/sort-named-imports'
-        ],
+        perfectionist.configs['recommended-natural'].rules['perfectionist/sort-named-imports'],
       'perfectionist/sort-named-exports':
-        perfectionist.configs['recommended-natural'].rules[
-          'perfectionist/sort-named-exports'
-        ],
+        perfectionist.configs['recommended-natural'].rules['perfectionist/sort-named-exports'],
     },
   },
   {

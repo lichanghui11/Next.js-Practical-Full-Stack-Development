@@ -11,10 +11,7 @@ import type { IPost } from './fake-data-types';
 // 生成假数据的内部函数（不导出）
 const generateFakePosts = (): IPost[] => {
   // 本地博客缩略图列表（public/blog-demo-images/）
-  const blogImages = Array.from(
-    { length: 11 },
-    (_, i) => `/blog-demo-images/blog-${i + 1}.png`,
-  );
+  const blogImages = Array.from({ length: 11 }, (_, i) => `/blog-demo-images/blog-${i + 1}.png`);
 
   return Array.from({ length: 30 })
     .fill(0)
@@ -22,17 +19,9 @@ const generateFakePosts = (): IPost[] => {
       return {
         id: uuid(),
         title: faker.lorem.sentence().replace(/\.$/, ''),
-        content: faker.lorem.paragraphs(
-          { min: 3, max: 6 },
-          '\n\n',
-        ),
-        createdAt: faker.date
-          .recent({ days: 90 })
-          .toISOString(),
-        summary:
-          Math.random() < 0.5
-            ? faker.lorem.sentences({ min: 1, max: 3 })
-            : undefined,
+        content: faker.lorem.paragraphs({ min: 3, max: 6 }, '\n\n'),
+        createdAt: faker.date.recent({ days: 90 }).toISOString(),
+        summary: Math.random() < 0.5 ? faker.lorem.sentences({ min: 1, max: 3 }) : undefined,
         // 随机选择一张本地图片
         thumbnail: faker.helpers.arrayElement(blogImages),
       };
@@ -45,11 +34,7 @@ const dbPath = path.join(process.cwd(), 'db.json');
 export const checkDbFile = async () => {
   if (!existsSync(dbPath)) {
     const fakePosts = generateFakePosts();
-    await fs.writeFile(
-      dbPath,
-      JSON.stringify(fakePosts, null, 2),
-      'utf-8',
-    );
+    await fs.writeFile(dbPath, JSON.stringify(fakePosts, null, 2), 'utf-8');
   }
 };
 
@@ -69,9 +54,5 @@ export const readDbFile = async (): Promise<IPost[]> => {
 // 重写数据库
 export const resetDbFile = async (data: IPost[]) => {
   await checkDbFile();
-  await fs.writeFile(
-    dbPath,
-    JSON.stringify(data, null, 2),
-    'utf-8',
-  );
+  await fs.writeFile(dbPath, JSON.stringify(data, null, 2), 'utf-8');
 };
