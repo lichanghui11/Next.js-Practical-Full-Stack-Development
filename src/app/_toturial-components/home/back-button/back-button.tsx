@@ -25,7 +25,19 @@ export const BackButton: FC = () => {
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       if (historyLen > 1) {
+        // 使用 setTimeout 确保在导航完成后再刷新
+        // 这样可以确保刷新的是目标页面而不是当前页面
         router.back();
+
+        // 如果当前不在首页，返回后可能到首页，所以刷新
+        // 首页可能是 '/' 或 '/page/1' 或其他页码
+        setTimeout(() => {
+          // 检测返回后是否在首页或列表页
+          const currentPath = window.location.pathname;
+          if (currentPath === '/blog' || currentPath.startsWith('/blog/page/')) {
+            router.refresh();
+          }
+        }, 100);
       }
     },
     [historyLen, router],
@@ -40,10 +52,7 @@ export const BackButton: FC = () => {
       variant="outline"
       disabled={disabled}
       onClick={goBack}
-      className={cn(
-        styles.iconButton,
-        isMobile ? styles.mobile : styles.pc,
-      )}
+      className={cn(styles.iconButton, isMobile ? styles.mobile : styles.pc)}
       aria-disabled={disabled}
     >
       <Undo2 className={styles.buttonIcon} />

@@ -33,8 +33,6 @@ const BlogListPage: FC<{
     currentPage,
     limit: pageSize,
   });
-  console.log('blogs: ', posts.data);
-  console.log('posts.meta: ', posts.meta);
   return (
     <Suspense fallback={<div className={styles.loading}>加载中...</div>}>
       <div className={styles.container}>

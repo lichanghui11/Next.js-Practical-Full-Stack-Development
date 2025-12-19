@@ -13,11 +13,15 @@ const PostRepo = {
    * @returns 分页结果
    */
   queryPosts: async (options: PageParams): Promise<PageResult<Post>> => {
-    const posts = await prismaClient.post.paginate().withPages({
-      limit: options.limit || 10,
-      page: options.currentPage || 1,
-      includePageCount: true, // 这里手动配置这个值，让返回值始终都有页数相关的数据
-    });
+    const posts = await prismaClient.post
+      .paginate({
+        orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
+      })
+      .withPages({
+        limit: options.limit || 10,
+        page: options.currentPage || 1,
+        includePageCount: true, // 这里手动配置这个值，让返回值始终都有页数相关的数据
+      });
 
     return paginationAdapter(posts);
   },
