@@ -9,11 +9,15 @@
 
 为了保持清晰，我将详细的技术笔记拆分到了 `docs/` 目录下：
 
-- **🎨 [样式架构设计 (CSS Architecture)](./docs/css-architecture.md)**
+- **🎨 [样式架构设计 (CSS Architecture)](./src/docs/css-architecture.md)**
   - Tailwind v4 模块化配置
   - CSS Modules 与全局作用域
 
-- **🔧 [工程化规范 (Engineering Standards)](./docs/engineering.md)**
+- **🌗 [主题配置 (Theme Architecture)](./src/docs/theme-architecture.md)**
+  - 暗色模式实现
+  - 主题切换逻辑
+
+- **🔧 [工程化规范 (Engineering Standards)](./src/docs/engineering.md)**
   - Linting & Formatting (ESLint, Prettier, Stylelint)
   - Git 提交规范 (Conventional Commits)
 
@@ -22,7 +26,7 @@
   - PostgreSQL Adapter 配置
   - Migration 工作流程
 
-- **📝 [博客编辑弹窗实现](./docs/blog-edit-modal-implementation.md)**
+- **📝 [博客编辑弹窗实现](./src/docs/blog-edit-modal-implementation.md)**
   - 拦截路由与弹窗组件
   - CSS 玻璃拟态效果与暗色模式
 
