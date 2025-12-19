@@ -66,11 +66,7 @@
   font-weight: 600;
   color: oklch(100% 0 0deg);
   cursor: pointer;
-  background: linear-gradient(
-    135deg,
-    oklch(55% 0.18 260deg),
-    oklch(50% 0.2 280deg)
-  );
+  background: linear-gradient(135deg, oklch(55% 0.18 260deg), oklch(50% 0.2 280deg));
   border: none;
   border-radius: 0.5rem;
   box-shadow:

@@ -49,11 +49,7 @@
   width: 100%;
   height: 3px;
   content: '';
-  background: linear-gradient(
-    90deg,
-    oklch(65% 0.2 260deg),
-    oklch(70% 0.18 300deg)
-  );
+  background: linear-gradient(90deg, oklch(65% 0.2 260deg), oklch(70% 0.18 300deg));
   border-radius: 3px;
 }
 
@@ -67,11 +63,7 @@
   font-weight: 700;
   color: transparent;
   letter-spacing: -0.02em;
-  background: linear-gradient(
-    135deg,
-    oklch(30% 0.05 260deg) 0%,
-    oklch(45% 0.1 280deg) 100%
-  );
+  background: linear-gradient(135deg, oklch(30% 0.05 260deg) 0%, oklch(45% 0.1 280deg) 100%);
   /* stylelint-disable-next-line declaration-block-no-duplicate-properties */
   background-clip: text;
   background-clip: text;
@@ -80,11 +72,7 @@
 
 :global(.dark) .dialogTitle {
   color: transparent;
-  background: linear-gradient(
-    135deg,
-    oklch(90% 0.02 80deg) 0%,
-    oklch(80% 0.08 50deg) 100%
-  );
+  background: linear-gradient(135deg, oklch(90% 0.02 80deg) 0%, oklch(80% 0.08 50deg) 100%);
   /* stylelint-disable-next-line declaration-block-no-duplicate-properties */
   background-clip: text;
   background-clip: text;
@@ -130,8 +118,7 @@
   background: oklch(45% 0.02 260deg);
 }
 
-:global(.dark)
-  .dialogContent::-webkit-scrollbar-thumb:hover {
+:global(.dark) .dialogContent::-webkit-scrollbar-thumb:hover {
   background: oklch(55% 0.02 260deg);
 }
 

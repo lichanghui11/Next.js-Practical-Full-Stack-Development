@@ -22,10 +22,7 @@ const EditBlogModal: FC<{
   const { id } = await params;
   if (isNil(id)) return notFound();
   return (
-    <ModalProvider
-      title="编辑博客"
-      matchedPath={['/blog-edit/*']}
-    >
+    <ModalProvider title="编辑博客" matchedPath={['/blog-edit/*']}>
       <BlogUpdate id={id} />
     </ModalProvider>
   );

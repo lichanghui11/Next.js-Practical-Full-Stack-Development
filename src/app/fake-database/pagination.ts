@@ -7,12 +7,9 @@ export const paginate = <T extends Record<string, any>>(
   pageParams: PageParams,
 ): PageResult<T> => {
   // 确认每页数量、当前页数
-  const limit =
-    isNil(pageParams.limit) || pageParams.limit < 1 ? 1 : pageParams.limit;
+  const limit = isNil(pageParams.limit) || pageParams.limit < 1 ? 1 : pageParams.limit;
   const currentPage =
-    isNil(pageParams.currentPage) || pageParams.currentPage < 1
-      ? 1
-      : pageParams.currentPage;
+    isNil(pageParams.currentPage) || pageParams.currentPage < 1 ? 1 : pageParams.currentPage;
 
   // 数据游标，当前页大于1时，从当前页的前一页的最后一条数据开始
   const startIndex = currentPage > 1 ? (currentPage - 1) * limit : 0;

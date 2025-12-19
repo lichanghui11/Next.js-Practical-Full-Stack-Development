@@ -1,7 +1,7 @@
 // 在这里定义一个 Post 表
 model Post {
   id        String   @id @default(uuid())
-  thumbnail String
+  thumbnail String?
   title     String
   summary   String?
   content   String

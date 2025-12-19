@@ -6,11 +6,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
+import { queryPosts } from '@/app/_actions/post';
 import { BackCreateTool } from '@/app/_toturial-components/home/back-create-tool/back-create-tool';
 import { DeleteButton } from '@/app/_toturial-components/home/delete-dialog/delete-button';
 import { EditButton } from '@/app/_toturial-components/home/edit-button/edit-button';
 import { Pagination } from '@/app/_toturial-components/home/pagination/pagination';
-import { queryPosts } from '@/app/fake-database/fake-data-actions';
 import { formatDate } from '@/app/utils/format-time';
 
 import styles from './blog-list.module.css';
@@ -18,9 +18,7 @@ import styles from './blog-list.module.css';
 // 通过地址栏的 query 拿到 page limit 渲染出博客列表页面
 // 定义这个组件的prop参数，参数来源就是地址栏的query
 // 这里的 Record<never, never> 表示默认值为空对象
-type BlogListPageProps<
-  T extends Record<string, any> = Record<never, never>,
-> = {
+type BlogListPageProps<T extends Record<string, any> = Record<never, never>> = {
   page?: string;
   limit?: string;
 } & T;
@@ -30,22 +28,15 @@ const BlogListPage: FC<{
 }> = async ({ searchParams }) => {
   const { page, limit } = await searchParams;
   const currentPage = isNil(page) ? 1 : Number(page);
-  const pageSize = isNil(limit)
-    ? 10
-    : Number(limit) > 50
-      ? 50
-      : Number(limit);
+  const pageSize = isNil(limit) ? 10 : Number(limit) > 50 ? 50 : Number(limit);
   const posts = await queryPosts({
-    page: currentPage,
-    pageSize,
+    currentPage,
+    limit: pageSize,
   });
   console.log('blogs: ', posts.data);
+  console.log('posts.meta: ', posts.meta);
   return (
-    <Suspense
-      fallback={
-        <div className={styles.loading}>加载中...</div>
-      }
-    >
+    <Suspense fallback={<div className={styles.loading}>加载中...</div>}>
       <div className={styles.container}>
         <div className={styles.toolbar}>
           <BackCreateTool />
@@ -56,20 +47,12 @@ const BlogListPage: FC<{
         ) : (
           <div className={styles.blogGrid}>
             {posts.data.map((item) => (
-              <article
-                key={item.id}
-                className={styles.blogCard}
-              >
+              <article key={item.id} className={styles.blogCard}>
                 {/* 头部行：头像 + 标题 */}
                 <div className={styles.cardHeader}>
-                  <div
-                    className={styles.thumbnailContainer}
-                  >
+                  <div className={styles.thumbnailContainer}>
                     <Image
-                      src={
-                        item.thumbnail ||
-                        '/placeholder-blog.png'
-                      }
+                      src={item.thumbnail || '/placeholder-blog.png'}
                       fill
                       className={styles.thumbnail}
                       alt={item.title}
@@ -77,49 +60,32 @@ const BlogListPage: FC<{
                   </div>
                   <div className={styles.titleWrapper}>
                     <Link href={`/blog/${item.id}`}>
-                      <h2 className={styles.title}>
-                        {item.title}
-                      </h2>
+                      <h2 className={styles.title}>{item.title}</h2>
                     </Link>
                   </div>
                 </div>
 
                 {/* 内容区：摘要 + 元数据 */}
                 <div className={styles.cardContent}>
-                  <p className={styles.summary}>
-                    {item.summary || '暂无摘要'}
-                  </p>
+                  <p className={styles.summary}>{item.summary || '暂无摘要'}</p>
 
                   <div className={styles.metadata}>
-                    <Calendar
-                      className={styles.metadataIcon}
-                    />
+                    <Calendar className={styles.metadataIcon} />
                     <time>
                       {formatDate(item.createdAt, {
                         withTime: true,
                         withSeconds: true,
                       })}
                     </time>
-                    <EditButton
-                      id={item.id}
-                      className="ml-auto"
-                    />
-                    <DeleteButton
-                      className=""
-                      id={item.id}
-                    />
+                    <EditButton id={item.id} className="ml-auto" />
+                    <DeleteButton className="" id={item.id} />
                   </div>
                 </div>
               </article>
             ))}
           </div>
         )}
-        {posts.meta.totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPage={posts.meta.totalPages}
-          />
-        )}
+        {posts.meta.totalPages > 1 && <Pagination meta={posts.meta} />}
       </div>
     </Suspense>
   );

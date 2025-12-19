@@ -1,11 +1,12 @@
 import 'dotenv/config';
 
-import prisma from '../client';
-import { createSeedPosts } from './generator';
+import prisma from '../client/admin-client';
+import { createSeedPosts, createSeedUsers } from './seed-helpers';
 
 async function main() {
   try {
     await createSeedPosts();
+    await createSeedUsers();
     console.log('✅ Seed data created successfully');
   } catch (error) {
     console.error('❌ Error seeding data:', error);

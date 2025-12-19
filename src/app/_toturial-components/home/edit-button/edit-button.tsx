@@ -20,9 +20,7 @@ export const EditButton: FC<{
   const isMobile = useIsMobile();
 
   const getQuery = useMemo(() => {
-    const query = new URLSearchParams(
-      searchParams.toString(),
-    ).toString();
+    const query = new URLSearchParams(searchParams.toString()).toString();
     return isNil(query) ? '' : `?${query}`;
   }, [searchParams]);
 
@@ -33,16 +31,11 @@ export const EditButton: FC<{
           <Button
             variant="outline"
             asChild
-            className={cn(
-              styles.iconButton,
-              isMobile ? styles.mobile : styles.pc,
-            )}
+            className={cn(styles.iconButton, isMobile ? styles.mobile : styles.pc)}
           >
             <Link href={`/blog-edit/${id}${getQuery}`}>
               <Pencil className={styles.buttonIcon} />
-              <span className={styles.buttonText}>
-                编辑
-              </span>
+              <span className={styles.buttonText}>编辑</span>
             </Link>
           </Button>
         </div>

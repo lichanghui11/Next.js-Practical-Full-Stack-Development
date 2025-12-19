@@ -1,0 +1,10 @@
+// 这个表是示例代码，用于测试，实际业务中的用户表还没有定义
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}

@@ -17,15 +17,13 @@ import {
 } from 'ui/alert-dialog';
 import { Button } from 'ui/button';
 
+import { deletePost } from '@/app/_actions/post';
 import { Spinner } from '@/app/_components/spinner';
 import styles from '@/app/_toturial-components/shared/button-styles.module.css';
-import { deletePost } from '@/app/fake-database/fake-data-actions';
 import { useIsMobile } from '@/app/utils/browser';
 import { cn } from '@/app/utils/utils';
 
-export const DeleteDialog: FC<{ id: string | number }> = ({
-  id,
-}) => {
+export const DeleteDialog: FC<{ id: string | number }> = ({ id }) => {
   const router = useRouter();
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
@@ -35,66 +33,50 @@ export const DeleteDialog: FC<{ id: string | number }> = ({
     setOpen(val);
   }, []);
 
-  const handleCancel: MouseEventHandler<HTMLButtonElement> =
-    useCallback(
-      (e) => {
-        e.preventDefault();
-        if (!pending) setOpen(false);
-      },
-      [pending],
-    );
+  const handleCancel: MouseEventHandler<HTMLButtonElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (!pending) setOpen(false);
+    },
+    [pending],
+  );
 
-  const handleDelete: MouseEventHandler<HTMLButtonElement> =
-    useCallback(
-      async (e) => {
-        try {
-          e.preventDefault();
-          setPending(true);
-          await deletePost(String(id));
-          setOpen(false);
-          router.refresh();
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setPending(false);
-        }
-      },
-      [id, router],
-    );
+  const handleDelete: MouseEventHandler<HTMLButtonElement> = useCallback(
+    async (e) => {
+      try {
+        e.preventDefault();
+        setPending(true);
+        await deletePost(String(id));
+        setOpen(false);
+        router.refresh();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setPending(false);
+      }
+    },
+    [id, router],
+  );
 
   return (
     <AlertDialog open={open} onOpenChange={handleOpen}>
       <AlertDialogTrigger asChild>
         <Button
           variant="outline"
-          className={cn(
-            styles.iconButton,
-            isMobile ? styles.mobile : styles.pc,
-          )}
+          className={cn(styles.iconButton, isMobile ? styles.mobile : styles.pc)}
         >
           <Trash2 className={styles.buttonIcon} />
           <span className={styles.buttonText}>删除</span>
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent
-        onEscapeKeyDown={(e) =>
-          pending ? e.preventDefault() : null
-        }
-      >
+      <AlertDialogContent onEscapeKeyDown={(e) => (pending ? e.preventDefault() : null)}>
         <AlertDialogHeader>
           <AlertDialogTitle>确定删除吗？</AlertDialogTitle>
-          <AlertDialogDescription>
-            此操作将删除本篇文章
-          </AlertDialogDescription>
+          <AlertDialogDescription>此操作将删除本篇文章</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={handleCancel}>
-            取消
-          </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleDelete}
-            disabled={pending}
-          >
+          <AlertDialogCancel onClick={handleCancel}>取消</AlertDialogCancel>
+          <AlertDialogAction onClick={handleDelete} disabled={pending}>
             {pending ? <Spinner /> : '确定'}
           </AlertDialogAction>
         </AlertDialogFooter>
