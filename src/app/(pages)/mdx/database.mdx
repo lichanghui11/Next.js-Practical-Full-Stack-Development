@@ -2,7 +2,7 @@
 
 ### Prisma 分层架构
 
-```
+```text
 PostgreSQL (真实数据库)
     ↑
 DATABASE_URL (连接字符串)
@@ -83,7 +83,7 @@ pnpm run db:dev:reset
 
 存储在 [`src/database/prisma/migrations/`]
 
-```
+```text
 migrations/
 ├── 20231201120000_init/
 │   └── migration.sql
@@ -175,7 +175,7 @@ CREATE DATABASE esti_blog;
 
 #### SQLite（文件型数据库）
 
-```
+```text
 项目目录/
 ├── src/
 │   └── database/
@@ -190,7 +190,7 @@ CREATE DATABASE esti_blog;
 
 #### PostgreSQL/MySQL（服务型数据库）
 
-```
+```text
 系统数据目录/
 ├── /var/lib/postgresql/data/
 │   ├── base/
@@ -246,7 +246,7 @@ CREATE DATABASE esti_blog;
 
 **默认配置**（本项目使用）:
 
-```prisma
+```text
 generator client {
   provider = "prisma-client-js"
   # 默认输出到 node_modules/@prisma/client
@@ -257,7 +257,7 @@ generator client {
 
 **自定义输出路径**:
 
-```prisma
+```text
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/client"  # 自定义路径
@@ -268,7 +268,7 @@ generator client {
 
 ### 为什么 .env 必须忽略？
 
-```env
+```text
 DATABASE_URL="postgresql://postgres:SECRET_PASSWORD@localhost:5432/esti_blog"
                                     ↑
                           这里有密码，绝对不能提交！
@@ -279,3 +279,12 @@ DATABASE_URL="postgresql://postgres:SECRET_PASSWORD@localhost:5432/esti_blog"
 - 🚨 密码泄露到 GitHub
 - 🚨 生产环境数据库可能被入侵
 - 🚨 API 密钥暴露
+
+### 写一段 JavaScript 代码测试行号
+
+```javascript
+console.log('Hello World');
+const a = 1;
+const b = 2;
+const c = 3;
+```

@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
    */
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   reactStrictMode: true,
+  // 如果使用 turbopack, 就不打包这两个插件，因为这两个插件里面的 commonJS 有可能在打包阶段触发 ESM 解析错误。
+  serverExternalPackages: ['next-mdx-remote', 'rehype-prism-plus'],
   images: {
     remotePatterns: [
       {
