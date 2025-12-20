@@ -1,0 +1,305 @@
+/* MDX 页面样式 - 匹配博客详情页布局 */
+
+/* 页面容器 */
+.mdx-container {
+  max-width: 900px;
+  padding: 2rem 1rem;
+  margin: 0 auto;
+  background-color: var(--card);
+  border-radius: 0.75rem;
+}
+
+@media (width >= 768px) {
+  .mdx-container {
+    padding: 3rem 2rem;
+  }
+}
+
+/* 页面标题 */
+.mdx-page-title {
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--card-foreground);
+}
+
+@media (width >= 768px) {
+  .mdx-page-title {
+    font-size: 2.5rem;
+  }
+}
+
+.dark .mdx-page-title {
+  background: linear-gradient(135deg, oklch(85% 0.05 80deg), oklch(75% 0.12 300deg));
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* MDX 内容区域 */
+.mdx-content {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--card-foreground);
+}
+
+@media (width >= 768px) {
+  .mdx-content {
+    font-size: 1.0625rem;
+  }
+}
+
+.dark .mdx-content {
+  color: oklch(85% 0.01 80deg);
+}
+
+/* 通用排版样式 */
+.mdx-content h1,
+.mdx-content h2,
+.mdx-content h3 {
+  margin: 2rem 0 1rem;
+  font-weight: 600;
+  color: var(--card-foreground);
+}
+
+.dark .mdx-content h1,
+.dark .mdx-content h2,
+.dark .mdx-content h3 {
+  color: oklch(90% 0.02 80deg);
+}
+
+.mdx-content h1 {
+  font-size: 1.75rem;
+}
+
+.mdx-content h2 {
+  padding-bottom: 0.5rem;
+  font-size: 1.5rem;
+  border-bottom: 2px solid oklch(90% 0 0deg / 40%);
+}
+
+.dark .mdx-content h2 {
+  border-bottom-color: oklch(40% 0.02 260deg / 40%);
+}
+
+.mdx-content h3 {
+  font-size: 1.25rem;
+}
+
+.mdx-content p {
+  margin-bottom: 1.5rem;
+}
+
+/* 表格样式 */
+.mdx-content table {
+  width: 100%;
+  margin: 1.5rem 0;
+  overflow-y: auto;
+  font-size: 0.875rem;
+  border-collapse: collapse;
+}
+
+.mdx-content table th,
+.mdx-content table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+}
+
+.mdx-content table th {
+  font-weight: 600;
+  color: var(--foreground);
+  text-align: left;
+  background-color: var(--muted);
+}
+
+.mdx-content table tr:nth-child(even) {
+  background-color: var(--muted);
+}
+
+.mdx-content table tr:hover {
+  background-color: var(--accent);
+}
+
+/* 代码块样式 */
+.mdx-content pre {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+}
+
+.mdx-content code {
+  font-family: var(--font-code);
+  font-size: 0.875em;
+}
+
+.mdx-content :not(pre) > code {
+  padding: 0.2em 0.4em;
+  background: var(--muted);
+  border-radius: 0.25rem;
+}
+
+/* 列表样式 */
+.mdx-content ul,
+.mdx-content ol {
+  margin: 1rem 0 1.5rem 1.5rem;
+}
+
+.mdx-content li {
+  margin-bottom: 0.5rem;
+}
+
+/* 引用样式 */
+.mdx-content blockquote {
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  background: linear-gradient(135deg, oklch(98% 0.01 260deg), oklch(96% 0.015 280deg));
+  border-left: 4px solid oklch(55% 0.18 260deg);
+  border-radius: 0.5rem;
+}
+
+.dark .mdx-content blockquote {
+  background: linear-gradient(135deg, oklch(22% 0.02 260deg), oklch(20% 0.025 280deg));
+  border-left-color: oklch(60% 0.15 280deg);
+}
+
+/* 分隔线 */
+.mdx-content hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 2px solid oklch(90% 0 0deg / 40%);
+}
+
+.dark .mdx-content hr {
+  border-top-color: oklch(40% 0.02 260deg / 40%);
+}
+
+/* =========================================================
+   MDX Table Styles (Improved)
+   Scope: .mdx-content
+   Design goals:
+   - readable + responsive
+   - good in dark/light
+   - sticky header (optional)
+   - safe overflow (no page break)
+   ========================================================= */
+
+/* Wrap tables safely on small screens */
+.mdx-content table {
+  /* if your layout is narrow, allow horizontal scroll */
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: 1.25rem 0;
+  overflow: hidden;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  border-spacing: 0;
+  border-collapse: separate;
+
+  /* visual */
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Make header/body keep their widths when table becomes block */
+.mdx-content table thead,
+.mdx-content table tbody,
+.mdx-content table tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed; /* prevents cells from exploding layout */
+}
+
+/* Cells */
+.mdx-content table th,
+.mdx-content table td {
+  padding: 0.75rem 1rem;
+  vertical-align: top;
+  word-break: break-all;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Remove last column right border for clean edge */
+.mdx-content table th:last-child,
+.mdx-content table td:last-child {
+  border-right: 0;
+}
+
+/* Header */
+.mdx-content table th {
+  font-weight: 600;
+  color: var(--foreground);
+  text-align: left;
+  white-space: nowrap;
+  background-color: var(--muted);
+}
+
+/* Optional: sticky header (works best when table scrolls) */
+.mdx-content table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* Body background + zebra */
+.mdx-content table tbody tr {
+  background: color-mix(in oklab, var(--background, transparent) 80%, var(--muted) 20%);
+}
+
+.mdx-content table tbody tr:nth-child(even) {
+  background: var(--muted);
+}
+
+/* Hover: subtle highlight + keep text readable */
+.mdx-content table tbody tr:hover {
+  background: color-mix(in oklab, var(--accent) 22%, transparent);
+}
+
+/* Remove bottom border on last row */
+.mdx-content table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Alignment helpers (optional, works with markdown alignment syntax) */
+.mdx-content table th[align='center'],
+.mdx-content table td[align='center'] {
+  text-align: center;
+}
+
+.mdx-content table th[align='right'],
+.mdx-content table td[align='right'] {
+  text-align: right;
+}
+
+/* Code inside table cells */
+.mdx-content table td code,
+.mdx-content table th code {
+  padding: 0.15em 0.35em;
+  font-size: 0.825em;
+  background: color-mix(in oklab, var(--muted) 65%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  border-radius: 0.4em;
+}
+
+/* Links inside table cells */
+.mdx-content table td a,
+.mdx-content table th a {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklab, var(--foreground) 35%, transparent);
+  text-underline-offset: 0.18em;
+}
+
+.mdx-content table td a:hover,
+.mdx-content table th a:hover {
+  text-decoration-color: color-mix(in oklab, var(--foreground) 60%, transparent);
+}
+
+/* Better focus outline if table contains interactive elements */
+.mdx-content table :is(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent) 70%, transparent);
+  outline-offset: 2px;
+  border-radius: 0.4rem;
+}

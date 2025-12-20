@@ -7,3 +7,4 @@
 @import './fonts/lxgwwenkaimono-bold.css'; */
 @import './tailwind.css';
 @import './app.css';
+@import 'prism-themes/themes/prism-gruvbox-dark.css';

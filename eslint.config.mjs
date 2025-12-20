@@ -3,6 +3,7 @@ import antfu from '@antfu/eslint-config'; // 配置核心，包含通用配置
 import nextPlugin from '@next/eslint-plugin-next'; // Next.js 官方 ESLint 插件，避免违背 Next.js 约定的代码
 import eslintConfigPrettier from 'eslint-config-prettier'; // 关闭所有不必要或可能与 Prettier 冲突的规则
 import jsxA11y from 'eslint-plugin-jsx-a11y'; // 提供 JSX 可访问性检查规则
+import * as mdx from 'eslint-plugin-mdx'; // MDX 文件的 ESLint 支持
 import perfectionist from 'eslint-plugin-perfectionist';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'; // 把 Prettier 当成一个 ESLint 规则执行（错误显示在 ESLint 层）;
 import unusedImports from 'eslint-plugin-unused-imports'; // 检测并删除未使用的 import 语句
@@ -119,6 +120,36 @@ export default antfu(
   //       'tailwindcss/no-contradicting-classname': 'error',
   //     },
   //   },
+
+  // MDX 文件支持
+  // BUG tofix: 这里的mdx没有配置好，不能正确检测mdx文件的导入与使用，这里只是利用最后一份规则强制关闭了提示
+  {
+    ...mdx.flat,
+    // 只处理 .mdx 文件
+    processor: mdx.createRemarkProcessor({
+      lintCodeBlocks: true,
+    }),
+  },
+  {
+    files: ['**/*.md', '**/*.mdx'],
+    ...mdx.flatCodeBlocks,
+    rules: {
+      ...mdx.flatCodeBlocks.rules,
+      // 可以在这里覆盖规则
+      'no-unused-vars': 'off',
+      'unused-imports/no-unused-imports': 'off',
+      'unused-imports/no-unused-vars': 'off',
+    },
+  },
+  {
+    files: ['**/*.md', '**/*.mdx'],
+    rules: {
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'unused-imports/no-unused-imports': 'off',
+      'unused-imports/no-unused-vars': 'off',
+    },
+  },
 
   eslintConfigPrettier,
   eslintPluginPrettierRecommended,
