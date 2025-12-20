@@ -1,8 +1,8 @@
 /* 创建博客页面按钮样式 */
 
-/* 页面容器 - 限制宽度，适配移动和PC */
+/* 页面容器 - 限制宽度，与文章列表宽度一致 */
 .formContainer {
-  max-width: 800px;
+  max-width: 64rem; /* max-w-5xl = 1024px */
   padding: 1.5rem 1rem;
   margin: 0 auto;
 }

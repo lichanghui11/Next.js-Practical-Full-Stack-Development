@@ -6,7 +6,7 @@ import { BlogForm } from '@/app/_components/blog-components/submit-form/blog-for
 // 这里封装的是 编辑博客 使用的type:update的表单组件
 export const BlogUpdate: FC<PropsWithChildren<{ id: string }>> = async ({ id }) => {
   const post = await queryPostById(id);
-
+  console.log('post', post);
   if (!post) {
     return <div>文章未找到</div>;
   }

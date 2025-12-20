@@ -10,9 +10,7 @@ export const BackCreateTool: FC<{
   className?: string;
 }> = ({ back, className }) => {
   return (
-    <div
-      className={cn('flex items-center gap-2', className)}
-    >
+    <div className={cn('flex items-center gap-2', className)}>
       {back && <BackButton />}
       <CreateButton />
     </div>

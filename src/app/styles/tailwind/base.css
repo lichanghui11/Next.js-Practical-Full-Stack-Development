@@ -15,17 +15,31 @@
 
 @layer base {
   html {
+    /* 禁止横向滚动，防止移动端左右滑动 */
+    overflow-x: hidden;
+
+    /* 禁止overscroll弹性效果 */
+    overscroll-behavior: none;
     font-size: 100%;
   }
 
   /* 以下为自定义样式 */
   html,
   body {
-    @apply font-base h-[100vh] w-full p-0 m-0;
+    @apply font-base w-full p-0 m-0;
+
+    /* 使用 min-height 替代 height，允许内容超出时正常滚动 */
+    min-height: 100vh;
   }
 
   body {
     @apply text-sm;
+
+    /* 禁止横向滚动，防止移动端左右滑动 */
+    overflow-x: hidden;
+
+    /* 禁止overscroll弹性效果 */
+    overscroll-behavior-y: contain;
   }
 
   h1 {

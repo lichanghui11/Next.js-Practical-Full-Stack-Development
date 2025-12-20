@@ -34,7 +34,7 @@ export const EditButton: FC<{
             asChild
             className={cn(styles.iconButton, isMobile ? styles.mobile : styles.pc)}
           >
-            <Link href={`/blog-edit/${id}${getQuery}`}>
+            <Link href={`/blog/blog-edit/${id}${getQuery}`}>
               <Pencil className={styles.buttonIcon} />
               <span className={styles.buttonText}>编辑</span>
             </Link>

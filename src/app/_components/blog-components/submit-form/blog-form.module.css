@@ -1,8 +1,8 @@
 /* 博客表单样式 */
 
-/* 表单容器 - 限制宽度，居中显示 */
+/* 表单容器 - 限制宽度，居中显示，与文章列表宽度一致 */
 .formContainer {
-  max-width: 800px;
+  max-width: 64rem; /* max-w-5xl = 1024px */
   padding: 2rem 1rem;
   margin: 0 auto;
 }
@@ -14,10 +14,21 @@
   }
 }
 
+/* 表单样式 - 自带宽度限制和居中 */
 .blogForm {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  max-width: 64rem; /* max-w-5xl = 1024px，与博客列表宽度一致 */
+  padding: 2rem 1rem;
+  margin: 0 auto;
+}
+
+/* PC端增加内边距 */
+@media (width >= 768px) {
+  .blogForm {
+    padding: 3rem 2rem;
+  }
 }
 
 /* 表单项样式增强 */

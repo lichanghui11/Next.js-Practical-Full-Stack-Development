@@ -13,15 +13,23 @@
   transition: all 0.2s ease-in-out;
 }
 
-.createButton:hover {
-  color: var(--accent-foreground);
-  background-color: var(--accent);
-  border-color: var(--ring);
-  transform: translateX(2px);
+/* PC端 hover 放大效果（仅支持 hover 的设备） */
+@media (hover: hover) {
+  .createButton:hover {
+    color: var(--accent-foreground);
+    background-color: var(--accent);
+    border-color: var(--ring);
+    transform: scale(1.05);
+  }
 }
 
-.createButton:active {
-  transform: translateX(4px);
+/* 移动端点击效果（无放大） */
+@media (hover: none) {
+  .createButton:active {
+    color: var(--accent-foreground);
+    background-color: var(--accent);
+    border-color: var(--ring);
+  }
 }
 
 /* 移动端样式 */
@@ -32,8 +40,10 @@
   box-shadow: var(--shadow-nysm);
 }
 
-.mobile:hover {
-  box-shadow: var(--shadow-ny);
+@media (hover: hover) {
+  .mobile:hover {
+    box-shadow: var(--shadow-ny);
+  }
 }
 
 /* PC端样式 */
@@ -44,8 +54,10 @@
   box-shadow: var(--shadow-ny);
 }
 
-.pc:hover {
-  box-shadow: var(--shadow-nymd);
+@media (hover: hover) {
+  .pc:hover {
+    box-shadow: var(--shadow-nymd);
+  }
 }
 
 /* 图标样式 */
@@ -53,8 +65,4 @@
   width: 1.125rem; /* 18px */
   height: 1.125rem; /* 18px */
   transition: transform 0.2s ease-in-out;
-}
-
-.createButton:hover .icon {
-  transform: translateX(2px);
 }

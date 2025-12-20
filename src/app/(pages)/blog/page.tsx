@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 
 import { queryPosts } from '@/app/_actions/post';
-import { BackCreateTool } from '@/app/_components/blog-components/back-create-tool/back-create-tool';
 import { DeleteButton } from '@/app/_components/blog-components/delete-dialog/delete-button';
 import { EditButton } from '@/app/_components/blog-components/edit-button/edit-button';
 import { Pagination } from '@/app/_components/blog-components/pagination/pagination';
@@ -36,10 +35,6 @@ const BlogListPage: FC<{
   return (
     <Suspense fallback={<div className={styles.loading}>加载中...</div>}>
       <div className={styles.container}>
-        <div className={styles.toolbar}>
-          <BackCreateTool />
-        </div>
-
         {posts.data.length === 0 ? (
           <div className={styles.empty}>暂无博客文章</div>
         ) : (
