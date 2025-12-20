@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import { isNil } from 'lodash';
 import { notFound } from 'next/navigation';
 
-import { ModalProvider } from '@/app/_toturial-components/home/modal/modal';
+import { ModalProvider } from '@/app/_components/blog-components/modal/modal';
 
 import { BlogUpdate } from './blog-update';
 

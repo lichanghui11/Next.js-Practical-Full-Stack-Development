@@ -13,16 +13,12 @@ import {
 import { Input } from 'ui/input';
 import { Textarea } from 'ui/textarea';
 
-import type {
-  BlogFormRef,
-  NewBlogFormProps,
-  UpdateBlogFormProps,
-} from '@/app/_toturial-components/home/submit-form/types';
-
+import { useBlogForm, useBlogSubmit } from '@/app/_components/blog-components/submit-form/hooks';
 import { Spinner } from '@/app/_components/spinner';
-import { DetailSummary } from '@/app/_toturial-components/home/detail-summary/detail-summary';
-import { useBlogForm, useBlogSubmit } from '@/app/_toturial-components/home/submit-form/hooks';
 
+import type { BlogFormRef, NewBlogFormProps, UpdateBlogFormProps } from '../submit-form/types';
+
+import { DetailSummary } from '../detail-summary/detail-summary';
 import styles from './blog-form.module.css';
 
 // 这里是编辑博客的表单组件

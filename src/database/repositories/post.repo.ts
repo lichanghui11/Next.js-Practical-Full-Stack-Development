@@ -73,6 +73,7 @@ const PostRepo = {
         id,
       },
     });
+    console.log('deletedPost', deletedPost);
     return deletedPost;
   },
 };

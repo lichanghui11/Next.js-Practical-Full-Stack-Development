@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { useCallback, useRef, useState } from 'react';
 import { Button } from 'ui/button';
 
-import type { BlogFormRef } from '@/app/_toturial-components/home/submit-form/types';
+import type { BlogFormRef } from '@/app/_components/blog-components/submit-form/types';
 
-import { BlogForm } from '@/app/_toturial-components/home/submit-form/blog-form';
+import { BlogForm } from '@/app/_components/blog-components/submit-form/blog-form';
 
 import styles from './create-page.module.css';
 
@@ -17,9 +17,7 @@ const BlogCreate: FC = () => {
   const createBlogRef = useRef<BlogFormRef | null>(null);
   const [pending, setPending] = useState(false);
 
-  const handleCreate = useCallback<
-    MouseEventHandler<HTMLButtonElement>
-  >(async (e) => {
+  const handleCreate = useCallback<MouseEventHandler<HTMLButtonElement>>(async (e) => {
     e.preventDefault();
     if (createBlogRef.current?.create) {
       await createBlogRef.current.create();
@@ -32,19 +30,11 @@ const BlogCreate: FC = () => {
         <Button asChild className={styles.backButton}>
           <Link href="/blog">返回</Link>
         </Button>
-        <Button
-          disabled={pending}
-          onClick={handleCreate}
-          className={styles.createButton}
-        >
+        <Button disabled={pending} onClick={handleCreate} className={styles.createButton}>
           {pending ? '创建中...' : '创建博客'}
         </Button>
       </div>
-      <BlogForm
-        ref={createBlogRef}
-        type="create"
-        isPending={setPending}
-      ></BlogForm>
+      <BlogForm ref={createBlogRef} type="create" isPending={setPending}></BlogForm>
     </div>
   );
 };

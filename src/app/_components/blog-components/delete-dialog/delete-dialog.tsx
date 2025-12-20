@@ -19,9 +19,10 @@ import { Button } from 'ui/button';
 
 import { deletePost } from '@/app/_actions/post';
 import { Spinner } from '@/app/_components/spinner';
-import styles from '@/app/_toturial-components/shared/button-styles.module.css';
 import { useIsMobile } from '@/app/utils/browser';
 import { cn } from '@/app/utils/utils';
+
+import styles from '../shared/button-styles.module.css';
 
 export const DeleteDialog: FC<{ id: string | number }> = ({ id }) => {
   const router = useRouter();

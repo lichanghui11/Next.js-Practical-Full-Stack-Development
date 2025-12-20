@@ -7,10 +7,10 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 
 import { queryPosts } from '@/app/_actions/post';
-import { BackCreateTool } from '@/app/_toturial-components/home/back-create-tool/back-create-tool';
-import { DeleteButton } from '@/app/_toturial-components/home/delete-dialog/delete-button';
-import { EditButton } from '@/app/_toturial-components/home/edit-button/edit-button';
-import { Pagination } from '@/app/_toturial-components/home/pagination/pagination';
+import { BackCreateTool } from '@/app/_components/blog-components/back-create-tool/back-create-tool';
+import { DeleteButton } from '@/app/_components/blog-components/delete-dialog/delete-button';
+import { EditButton } from '@/app/_components/blog-components/edit-button/edit-button';
+import { Pagination } from '@/app/_components/blog-components/pagination/pagination';
 import { formatDate } from '@/app/utils/format-time';
 
 import styles from './blog-list.module.css';
@@ -45,38 +45,53 @@ const BlogListPage: FC<{
         ) : (
           <div className={styles.blogGrid}>
             {posts.data.map((item) => (
-              <article key={item.id} className={styles.blogCard}>
-                {/* 头部行：头像 + 标题 */}
-                <div className={styles.cardHeader}>
-                  <div className={styles.thumbnailContainer}>
-                    <Image
-                      src={item.thumbnail || '/placeholder-blog.png'}
-                      fill
-                      className={styles.thumbnail}
-                      alt={item.title}
-                    />
+              <article
+                key={item.id}
+                className={styles.blogCard}
+                style={{ '--bg-img': `url(${item.thumbnail})` } as any}
+              >
+                {/* 白色背景内层 */}
+                <div className={styles.cardInner}>
+                  {/* 头部行：头像 + 标题 */}
+                  <div className={styles.cardHeader}>
+                    <div className={styles.thumbnailContainer}>
+                      <Image
+                        src={item.thumbnail || '/placeholder-blog.png'}
+                        fill
+                        className={styles.thumbnail}
+                        alt={item.title}
+                      />
+                    </div>
+                    <div className={styles.titleWrapper}>
+                      <Link href={`/blog/${item.id}`}>
+                        <h2 className={styles.title}>{item.title}</h2>
+                      </Link>
+                    </div>
                   </div>
-                  <div className={styles.titleWrapper}>
-                    <Link href={`/blog/${item.id}`}>
-                      <h2 className={styles.title}>{item.title}</h2>
-                    </Link>
-                  </div>
-                </div>
 
-                {/* 内容区：摘要 + 元数据 */}
-                <div className={styles.cardContent}>
-                  <p className={styles.summary}>{item.summary || '暂无摘要'}</p>
+                  {/* 内容区：摘要 + 元数据 */}
+                  <div className={styles.cardContent}>
+                    <p className={styles.summary}>{item.summary || '暂无摘要'}</p>
 
-                  <div className={styles.metadata}>
-                    <Calendar className={styles.metadataIcon} />
-                    <time>
-                      {formatDate(item.createdAt, {
-                        withTime: true,
-                        withSeconds: true,
-                      })}
-                    </time>
-                    <EditButton id={item.id} className="ml-auto" />
-                    <DeleteButton className="" id={item.id} />
+                    <div className={styles.metadata}>
+                      <Calendar className={styles.metadataIcon} />
+                      <time>
+                        首发于：
+                        {formatDate(item.createdAt, {
+                          withTime: true,
+                          withSeconds: true,
+                        })}
+                      </time>
+                      <time>
+                        更新于：
+                        {formatDate(item.updatedAt, {
+                          withTime: true,
+                          withSeconds: true,
+                        })}
+                      </time>
+                      <EditButton id={item.id} className="ml-auto" />
+                      <DeleteButton className="" id={item.id} />
+                    </div>
                   </div>
                 </div>
               </article>

@@ -6,9 +6,10 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 import { Button } from 'ui/button';
 
-import styles from '@/app/_toturial-components/shared/button-styles.module.css';
 import { useIsMobile } from '@/app/utils/browser';
 import { cn } from '@/app/utils/utils';
+
+import styles from '../shared/button-styles.module.css';
 
 export const BackButton: FC = () => {
   const router = useRouter();

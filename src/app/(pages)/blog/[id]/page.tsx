@@ -4,7 +4,7 @@ import { Calendar, Tag } from 'lucide-react';
 import Image from 'next/image';
 
 import { queryPostById } from '@/app/_actions/post';
-import { BackButton } from '@/app/_toturial-components/home/back-button/back-button';
+import { BackButton } from '@/app/_components/blog-components/back-button/back-button';
 import { formatDate } from '@/app/utils/format-time';
 
 import styles from './blog-detail.module.css';
