@@ -37,6 +37,13 @@
   - CSS 高级技巧（sticky、color-mix、层叠上下文）
   - React Portal 应用
 
+- **📝 [MDX 语法格式说明](./src/docs/mdx-syntax-guide.md)**
+  - 基础 Markdown 语法
+  - GFM 扩展（表格、任务列表、脚注）
+  - 代码块与代码窗口
+  - 自定义 Directive（Admonition、视频嵌入、文字高亮）
+  - TOC 自动生成与阅读时间统计
+
 ---
 
 ## 📅 当前进度
