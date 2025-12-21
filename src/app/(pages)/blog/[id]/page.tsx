@@ -66,7 +66,7 @@ const BlogDetail: FC<{
       {post.summary && <div className={styles.summary}>{post.summary}</div>}
 
       {/* 文章内容 */}
-      <MdxRenderer source={post.content} />
+      <MdxRenderer source={post.content} showReadingTime />
     </div>
   );
 };

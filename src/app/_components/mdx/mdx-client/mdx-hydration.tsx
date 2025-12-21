@@ -5,17 +5,36 @@ import { isNil } from 'lodash';
 // 这个水合函数是核心的关键的逻辑
 import { hydrate } from 'next-mdx-remote-client';
 import { useMemo, useRef, useState } from 'react';
-import { useDeepCompareEffect } from 'react-use';
+import { useDeepCompareEffect, useMount } from 'react-use';
 
+import { useIsMobile } from '@/app/utils/browser';
 import { customMerge } from '@/app/utils/custom-merge';
 
 import type { MdxHydrateProps } from './types';
 
+import { Toc } from './components/toc';
 import { useCodeWindow } from './hooks/code-window';
+import $styles from './mdx-hydration.module.css';
 import { mdxHydrationConfig } from './mdx.hydration.config';
 
 export const MdxHydration: FC<MdxHydrateProps> = (props) => {
-  const { compiledSource, ...rest } = props;
+  useMount(() => {
+    // 确保页面完全加载
+    if (typeof window !== 'undefined') {
+      // 获取当前URL的hash
+      const hash = decodeURIComponent(window.location.hash);
+      if (hash) {
+        // 延迟执行以确保DOM已完全渲染
+        setTimeout(() => {
+          const element = document.querySelector(hash);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    }
+  });
+  const { compiledSource, toc, ...rest } = props;
   const contentRef = useRef<HTMLDivElement>(null);
   const [content, setContent] = useState<JSX.Element | null>(null);
   useCodeWindow(contentRef, content);
@@ -36,11 +55,27 @@ export const MdxHydration: FC<MdxHydrateProps> = (props) => {
       }
     }
   }, [compiledSource, options]);
+
+  // 移动端检测 (使用项目统一的 hook)
+  const isMobile = useIsMobile();
+
   if (isNil(compiledSource)) return null;
 
   return isNil(content) ? null : (
-    <div>
-      <div ref={contentRef}>{content}</div>
+    <div className={$styles.wrapper}>
+      <div ref={contentRef} className={$styles.content}>
+        {content}
+      </div>
+      {toc && !isNil(compiledSource.scope?.toc) && (
+        <>
+          {/* 桌面端：侧边栏 TOC */}
+          <div className={$styles.toc}>
+            <Toc serialized={compiledSource} isMobile={false} />
+          </div>
+          {/* 移动端：浮动按钮 TOC */}
+          {isMobile && <Toc serialized={compiledSource} isMobile />}
+        </>
+      )}
     </div>
   );
 };

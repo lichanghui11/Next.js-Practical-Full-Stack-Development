@@ -3,16 +3,32 @@
 
 import type { FC } from 'react';
 
+import type { ReadingTimeResult } from './custom-plugins/remark-reading-time';
 import type { MdxRendererProps } from './types';
 
+import { ReadingTime } from './components/reading-time';
 import { MdxHydration } from './mdx-hydration';
 import { serializeMdx } from './serialize';
 
-export const MdxRenderer: FC<MdxRendererProps> = async ({
+interface ExtendedMdxRendererProps extends MdxRendererProps {
+  showReadingTime?: boolean; // 是否显示阅读时间
+}
+
+export const MdxRenderer: FC<ExtendedMdxRendererProps> = async ({
   source,
   options,
   hydrate,
-}: MdxRendererProps) => {
+  showReadingTime = false,
+}: ExtendedMdxRendererProps) => {
   const result = await serializeMdx(source, options);
-  return <MdxHydration {...(hydrate || {})} compiledSource={result} />;
+  const toc = !!result.scope.toc;
+  // 从 scope 中获取阅读时间
+  const readingTime = (result as any).scope?.readingTime as ReadingTimeResult | undefined;
+
+  return (
+    <div className="flex flex-col gap-1">
+      {showReadingTime && readingTime && <ReadingTime readingTime={readingTime} />}
+      <MdxHydration {...(hydrate || {})} compiledSource={result} toc={toc} />
+    </div>
+  );
 };

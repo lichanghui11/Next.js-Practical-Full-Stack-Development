@@ -1,0 +1,51 @@
+/* Admonition component dark mode styles */
+
+.dark .admonition[data-type='note'] {
+  background: rgb(71 71 72 / 30%);
+  border-left-color: #a1a1a4;
+}
+
+.dark .admonition[data-type='note'] svg,
+.dark .admonition[data-type='note'] span {
+  color: #6b9eff;
+}
+
+.dark .admonition[data-type='tip'] {
+  background: rgb(20 83 45 / 30%);
+  border-left-color: #2a8c2a;
+}
+
+.dark .admonition[data-type='tip'] svg,
+.dark .admonition[data-type='tip'] span {
+  color: #4ade80;
+}
+
+.dark .admonition[data-type='info'] {
+  background: rgb(23 37 84 / 30%);
+  border-left-color: #2b60b8;
+}
+
+.dark .admonition[data-type='info'] svg,
+.dark .admonition[data-type='info'] span {
+  color: #6b9eff;
+}
+
+.dark .admonition[data-type='warning'] {
+  background: rgb(113 63 18 / 30%);
+  border-left-color: #b88a00;
+}
+
+.dark .admonition[data-type='warning'] svg,
+.dark .admonition[data-type='warning'] span {
+  color: #fbbf24;
+}
+
+.dark .admonition[data-type='danger'] {
+  background: rgb(127 29 29 / 30%);
+  border-left-color: #c82333;
+}
+
+.dark .admonition[data-type='danger'] svg,
+.dark .admonition[data-type='danger'] span {
+  color: #f87171;
+}

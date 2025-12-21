@@ -21,6 +21,8 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   // 如果使用 turbopack, 就不打包这两个插件，因为这些插件里面的 commonJS 有可能在打包阶段触发 ESM 解析错误。
   serverExternalPackages: externals,
+  // 允许局域网内的设备访问开发服务器
+  // allowedDevOrigins: ['192.168.0.105'],
   images: {
     remotePatterns: [
       {

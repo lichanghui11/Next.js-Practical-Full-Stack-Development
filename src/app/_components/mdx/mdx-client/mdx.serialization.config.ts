@@ -9,7 +9,7 @@ export const mdxSerializationConfig: Omit<MDXRemoteProps, 'source'> = {
   options: {
     disableImports: true, // 安全策略，不允许在 mdx 文件中使用 import 语句
     parseFrontmatter: true, // 解析 frontmatter，拿到一些元数据如 title、description 等
-    vfileDataIntoScope: 'toc', // 将 vfileData 注入到 scope 中，方便在 mdx 文件中使用
+    vfileDataIntoScope: ['toc', 'readingTime'], // 将 vfileData 注入到 scope 中
     mdxOptions: mdxPlugins,
   },
 };

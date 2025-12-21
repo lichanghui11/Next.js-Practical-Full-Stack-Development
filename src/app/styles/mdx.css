@@ -7,6 +7,9 @@
 /* Code Window - macOS 风格代码块容器 */
 @import './mdx/code-window.css';
 
+/* Admonition - 提示框暗色模式 */
+@import './mdx/admonition.css';
+
 @reference "#tailwind.css";
 
 /* 使用firecode最为代码字体. 无论使用自定义皮肤还是还是prism-themes中的皮肤,这里都可以设置为自己喜欢的代码字体 */

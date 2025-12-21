@@ -1,10 +1,16 @@
 import type { MDXComponents } from 'mdx/types';
 import type { AnchorHTMLAttributes, ImgHTMLAttributes } from 'react';
 
+import Image from 'next/image';
 // 这里可以替换 mdx 的标签，换上拥有自定义样式的标签
 import Link from 'next/link';
 
 import styles from './component.module.css';
+import { Admonition } from './components/admonition';
+import { Bilibili } from './components/bilibili';
+import { Mark } from './components/mark';
+import { ReadingTime } from './components/reading-time';
+import { YouTube } from './components/youtube';
 
 // 你可以先从最常用的标签开始接管
 export const mdxComponents: MDXComponents = {
@@ -39,6 +45,26 @@ export const mdxComponents: MDXComponents = {
         </Link>
       );
     }
+
+    // Hash 锚点链接 - 平滑滚动
+    if (href.startsWith('#')) {
+      const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        const targetId = href.slice(1); // 去掉 #
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+          // 更新 URL hash（不触发跳转）
+          window.history.pushState(null, '', href);
+        }
+      };
+      return (
+        <a href={href} onClick={handleClick} {...props}>
+          {children}
+        </a>
+      );
+    }
+
     // 外部链接加上安全属性和图标
     return (
       <a
@@ -78,12 +104,32 @@ export const mdxComponents: MDXComponents = {
   // 水平分割线
   hr: (props) => <hr className={styles.hr} {...props} />,
 
-  // 图片
-  img: ({ alt = '', ...props }: ImgHTMLAttributes<HTMLImageElement>) => (
-    <img alt={alt} className={styles.img} {...props} />
-  ),
+  // 图片 - 使用 Next.js Image 优化
+  img: ({ alt = '', src, ...props }: ImgHTMLAttributes<HTMLImageElement>) => {
+    // MDX 中的图片通常没有明确的宽高，使用 fill 模式
+    if (!src) return null;
+    return (
+      <span className={styles.imageWrapper}>
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes="(max-width: 768px) 100vw, 800px"
+          className={styles.img}
+          {...(props as any)}
+        />
+      </span>
+    );
+  },
 
   // 图片标题（如果使用 figure）
   figure: (props) => <figure className={styles.figure} {...props} />,
   figcaption: (props) => <figcaption className={styles.figcaption} {...props} />,
+
+  // 自定义 MDX 组件
+  Admonition,
+  Bilibili,
+  Mark,
+  ReadingTime,
+  YouTube,
 };

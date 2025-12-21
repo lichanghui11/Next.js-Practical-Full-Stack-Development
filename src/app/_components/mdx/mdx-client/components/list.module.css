@@ -1,0 +1,114 @@
+/* TOC List Styles */
+
+.toc-container {
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+.toc-list {
+  gap: 0.25rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.toc-list li {
+  position: relative;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+.toc-list li a {
+  display: block;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.toc-list li a:hover {
+  color: var(--primary);
+}
+
+/* Active state */
+.toc-list li[data-active='true'] {
+  background: var(--accent);
+}
+
+.toc-list li[data-active='true'] a {
+  font-weight: 500;
+  color: var(--primary);
+}
+
+.toc-list li[data-active='true']::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 3px;
+  height: 60%;
+  content: '';
+  background: var(--primary);
+  border-radius: 0 2px 2px 0;
+  transform: translateY(-50%);
+}
+
+/* Heading indentation - 使用更高优先级的选择器 */
+.toc-list li.h2indent {
+  padding-left: 1rem;
+}
+
+.toc-list li.h3indent {
+  padding-left: 2rem;
+}
+
+.toc-list li.h4indent {
+  padding-left: 3rem;
+}
+
+.toc-list li.h5indent {
+  padding-left: 4rem;
+}
+
+.toc-list li.h6indent {
+  padding-left: 5rem;
+}
+
+/* Tight mode */
+.tight {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+}
+
+/* Numbering style */
+.numbering {
+  margin-right: 0.5rem;
+  color: var(--muted-foreground);
+  opacity: 0.7;
+}
+
+.ellips {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Dark mode adjustments */
+:global(.dark) .toc-list li[data-active='true'] {
+  background: rgb(255 255 255 / 5%);
+}
+
+:global(.dark) .toc-list li a {
+  color: rgb(255 255 255 / 60%);
+}
+
+:global(.dark) .toc-list li a:hover {
+  color: rgb(255 255 255 / 90%);
+}
+
+:global(.dark) .toc-list li[data-active='true'] a {
+  color: var(--primary);
+}

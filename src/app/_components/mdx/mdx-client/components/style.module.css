@@ -1,0 +1,149 @@
+/* TOC Component Styles - Desktop & Mobile */
+
+/* =============================================
+   Desktop TOC
+   ============================================= */
+
+.desktopToc {
+  position: sticky;
+  top: 1rem; /* 距离顶部1rem */
+
+  /* max-height 将通过 JavaScript 动态设置为正文高度 */
+
+  /* overflow-y: auto; */
+  font-size: 0.875rem;
+  border-left: 1px solid var(--border);
+}
+
+/* =============================================
+   Mobile TOC - Right Side Drawer
+   ============================================= */
+
+.mobileToc {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  z-index: 39;
+  width: 100%;
+  height: 100%;
+  transform: translateY(-50%);
+}
+
+.mobileTocButton {
+  position: relative;
+  top: 50%;
+  right: -90%;
+  width: 2.5rem;
+  height: 3rem;
+  color: red;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-right: none;
+  border-radius: 0.5rem 0 0 0.5rem;
+  box-shadow: -2px 0 8px rgb(0 0 0 / 10%);
+}
+
+.mobileTocMain {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  max-width: 320px;
+  padding: 1rem;
+  background: var(--card);
+  border-left: 1px solid var(--border);
+  box-shadow: -4px 0 20px rgb(0 0 0 / 15%);
+  transition: transform 0.3s ease;
+}
+
+.mobileToc-collapsed .mobileTocMain {
+  transform: translateX(100%);
+}
+
+.mobileToc-expanded .mobileTocMain {
+  transform: translateX(0);
+}
+
+.mobileToc-collapsed .mobileTocButton {
+  display: flex;
+}
+
+.mobileToc-expanded .mobileTocButton {
+  display: none;
+}
+
+/* 遮罩层 */
+.mobileTocOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 38; /* 低于容器的 39，但高于其他内容 */
+  visibility: hidden;
+  background: rgb(0 0 0 / 40%);
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.mobileToc-expanded .mobileTocOverlay {
+  visibility: visible;
+  opacity: 1;
+}
+
+.mobileTocTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+.mobileTocContent {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* =============================================
+   Dark Mode
+   ============================================= */
+
+/* Dark mode - 桌面端目录取消背景色 */
+:global(.dark) .desktopToc {
+  background: transparent;
+  border-color: rgb(255 255 255 / 10%);
+}
+
+:global(.dark) .mobileTocButton {
+  background: rgb(30 30 30 / 95%);
+  border-color: rgb(255 255 255 / 10%);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
+}
+
+:global(.dark) .mobileTocMain {
+  background: rgb(30 30 30 / 98%);
+  border-color: rgb(255 255 255 / 10%);
+  box-shadow: 0 -4px 20px rgb(0 0 0 / 40%);
+}
+
+/* =============================================
+   Responsive - Hide mobile on desktop
+   ============================================= */
+
+@media (width >= 769px) {
+  .mobileToc {
+    display: none;
+  }
+}
+
+@media (width <= 768px) {
+  .desktopToc {
+    display: none;
+  }
+}

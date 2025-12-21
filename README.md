@@ -30,11 +30,18 @@
   - 拦截路由与弹窗组件
   - CSS 玻璃拟态效果与暗色模式
 
+- **📄 [MDX 功能开发学习笔记](./src/docs/mdx-learning-notes.md)**
+  - MDX 序列化与水合架构
+  - Remark/Rehype 插件系统
+  - TOC 目录组件实现
+  - CSS 高级技巧（sticky、color-mix、层叠上下文）
+  - React Portal 应用
+
 ---
 
 ## 📅 当前进度
 
-> 💡 **当前提交说明**：完成 Prisma + PostgreSQL 数据库集成，配置 Adapter 架构，实现种子数据生成。
+> 💡 **当前提交说明**：完成 MDX 渲染系统、TOC 目录组件、Header 滚动效果、移动端响应式抽屉。
 
 - [x] **项目初始化**: 使用 `create-next-app` 搭建基础环境。
 - [x] **CSS 架构重构**: 模块化 Tailwind v4 配置，解决 CSS Module 引用问题。
@@ -43,6 +50,21 @@
 - [x] **UI 组件开发**: 弹窗组件、表单组件、折叠面板组件。
 - [x] **博客编辑功能**: 拦截路由弹窗编辑，玻璃拟态样式。
 - [x] **数据库集成**: Prisma ORM + PostgreSQL，配置 Adapter 架构。
+- [x] **MDX 渲染系统**:
+  - 序列化/水合分离架构
+  - 代码窗口组件（rehype-code-window）
+  - 阅读时间统计
+- [x] **TOC 目录组件**:
+  - 桌面端侧边栏（IntersectionObserver 活跃追踪）
+  - 移动端抽屉（侧滑 + 遮罩）
+  - 响应式布局切换
+- [x] **Header 滚动效果**:
+  - 滚动时高度变化 (50px → 60px)
+  - 背景透明度渐变 (color-mix)
+- [ ] **待优化**:
+  - [ ] 完善 Header 滚动动画
+  - [ ] 移动端目录按钮图标旋转动画
+  - [ ] PC 端目录 sticky 定位完整实现
 - [ ] **后端 API 对接**: 待开始...
 - [ ] **博客详情页**: 待开始...
 
