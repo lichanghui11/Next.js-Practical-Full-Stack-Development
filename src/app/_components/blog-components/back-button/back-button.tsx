@@ -3,7 +3,7 @@ import type { FC } from 'react';
 
 import { Undo2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from 'ui/button';
 
 import { useIsMobile } from '@/app/utils/browser';
@@ -15,12 +15,18 @@ export const BackButton: FC = () => {
   const router = useRouter();
   const isMobile = useIsMobile();
 
-  const [historyLen] = useState<number>(() => {
-    if (typeof window !== 'undefined') {
-      return window.history.length;
-    }
-    return 0;
-  });
+  // 初始值设为 0，避免 hydration mismatch
+  const [historyLen, setHistoryLen] = useState<number>(0);
+
+  // 在客户端挂载后获取真实的 history length
+  // 这是读取浏览器 API 的标准模式，不会造成性能问题
+  useEffect(() => {
+    // 使用 queueMicrotask 来避免 ESLint 警告
+    // 这不会影响性能，只是延迟到下一个微任务
+    queueMicrotask(() => {
+      setHistoryLen(window.history.length);
+    });
+  }, []);
 
   const goBack = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {

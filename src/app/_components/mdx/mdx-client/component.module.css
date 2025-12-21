@@ -1,4 +1,35 @@
-/* MDX Components Styles - Table focused */
+/* MDX Components Styles */
+
+/* ===========================================
+   Wrapper - 主内容容器
+   =========================================== */
+
+.wrapper {
+  /* 使用 card 背景色作为主内容区，与页面背景(background)形成对比 */
+  max-width: 900px;
+  padding: 2rem 1.5rem;
+  margin: 0 auto;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px color-mix(in oklab, var(--shadow) 8%, transparent);
+}
+
+/* 平板和桌面端增加内边距 */
+@media (width >= 768px) {
+  .wrapper {
+    padding: 3rem 2.5rem;
+  }
+}
+
+/* 暗色模式下增强阴影 */
+:global(.dark) .wrapper {
+  box-shadow: 0 4px 12px color-mix(in oklab, var(--shadow) 15%, transparent);
+}
+
+/* ===========================================
+   Table Styles
+   =========================================== */
 
 /* Table wrapper for responsive scrolling */
 .tableWrapper {

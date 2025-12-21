@@ -1,4 +1,11 @@
-@import 'prism-themes/themes/prism-gruvbox-dark.css';
+/* Prism 代码高亮主题 - 根据主题模式自动切换 */
+
+/* 亮色主题作为默认，暗色主题在 .dark 类下生效 */
+@import './mdx/prism-gruvbox-light.css';
+@import './mdx/prism-gruvbox-dark.css';
+
+/* Code Window - macOS 风格代码块容器 */
+@import './mdx/code-window.css';
 
 @reference "#tailwind.css";
 

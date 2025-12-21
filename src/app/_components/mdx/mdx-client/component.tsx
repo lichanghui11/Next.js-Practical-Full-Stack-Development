@@ -8,6 +8,7 @@ import styles from './component.module.css';
 
 // 你可以先从最常用的标签开始接管
 export const mdxComponents: MDXComponents = {
+  wrapper: ({ children }) => <div className={styles.wrapper}>{children}</div>,
   // Headings
   h1: ({ children, ...props }) => (
     <h1 className="text-3xl font-bold mt-8 mb-4" {...props}>

@@ -1,17 +1,18 @@
-// 这里做最终的渲染出口
+'use server';
+// 这个渲染器是服务端组件
 
-import type { MDXRemoteProps } from 'next-mdx-remote/rsc';
 import type { FC } from 'react';
 
-import { MDXRemote } from 'next-mdx-remote/rsc';
+import type { MdxRendererProps } from './types';
 
-import { customMerge } from '@/app/utils/custom-merge';
+import { MdxHydration } from './mdx-hydration';
+import { serializeMdx } from './serialize';
 
-// 这里是默认的配置项
-import { mdxDefaultConfig } from './mdx.default.config';
-
-// 动态渲染需要传入配置项 mdxDefaultConfig 和数据源 source
-// props 里面有外部的 source 数据
-export const RenderMDX: FC<MDXRemoteProps> = (props) => {
-  return <MDXRemote {...(customMerge(mdxDefaultConfig, props, 'merge') as MDXRemoteProps)} />;
+export const MdxRenderer: FC<MdxRendererProps> = async ({
+  source,
+  options,
+  hydrate,
+}: MdxRendererProps) => {
+  const result = await serializeMdx(source, options);
+  return <MdxHydration {...(hydrate || {})} compiledSource={result} />;
 };

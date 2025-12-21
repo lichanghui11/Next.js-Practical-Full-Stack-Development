@@ -6,7 +6,12 @@ import type { Pluggable } from 'unified';
 import rehypePrism from 'rehype-prism-plus';
 import remarkGfm from 'remark-gfm';
 
+import { rehypeCodeWindow } from './custom-plugins/rehype-code-window';
+
 export const mdxPlugins = {
-  rehypePlugins: [[rehypePrism, { showLineNumbers: true, ignoreMissing: true }] as Pluggable],
+  rehypePlugins: [
+    rehypeCodeWindow, // 先包装代码窗口结构
+    [rehypePrism, { showLineNumbers: true, ignoreMissing: true }], // 再进行语法高亮
+  ] as Pluggable[],
   remarkPlugins: [remarkGfm] as Pluggable[],
 };

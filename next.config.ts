@@ -2,19 +2,25 @@ import type { NextConfig } from 'next';
 
 import createMDX from '@next/mdx';
 
+const externals: string[] = ['next-mdx-remote', 'next-mdx-remote-client'];
+/**
+ * 此处需要说明：
+ *   在浏览器里编译 MDX（客户端 serialize）的情况下，'rehype-prism-plus' 需要被打包进去，但是如果使用 turbopack，可能会在打包阶段触发 ESM 解析错误。
+ *   这里我觉得最好不要用turbopack，因为实时预览的功能需要在客户端编译 MDX
+ */
+if (process.env.TURBOPACK) {
+  externals.push('rehype-prism-plus');
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
   /* config options here */
 
-  // Configure `pageExtensions` to include markdown and MDX files
-  /**
-   * pageExtensions      → 解决「是不是路由文件」
-   * createMDX.extension → 解决「哪些文件要走 MDX 编译器」
-   */
+  // Configure `pageExtensions` to include markdown and MDX files，这样就可以将 page.mdx 视为路由文件了
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   reactStrictMode: true,
-  // 如果使用 turbopack, 就不打包这两个插件，因为这两个插件里面的 commonJS 有可能在打包阶段触发 ESM 解析错误。
-  serverExternalPackages: ['next-mdx-remote', 'rehype-prism-plus'],
+  // 如果使用 turbopack, 就不打包这两个插件，因为这些插件里面的 commonJS 有可能在打包阶段触发 ESM 解析错误。
+  serverExternalPackages: externals,
   images: {
     remotePatterns: [
       {
@@ -29,6 +35,8 @@ const nextConfig: NextConfig = {
 /**
  * remarkPlugins：处理 Markdown/MDX 的“结构层”
  * rehypePlugins：处理 HTML 的“展示结构层”
+ * pageExtensions      → 解决「是不是路由文件」
+ * createMDX.extension → 解决「哪些文件要走 MDX 编译器」
  */
 const withMDX = createMDX({
   // Add markdown plugins here, as desired

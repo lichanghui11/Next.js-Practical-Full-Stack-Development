@@ -1,0 +1,128 @@
+/**
+ * Gruvbox dark theme
+ *
+ * Adapted from a theme based on:
+ * Vim Gruvbox dark Theme (https://github.com/morhetz/gruvbox)
+ *
+ * @author Azat S. <to@azat.io>
+ * @version 1.0
+ */
+
+.dark code[class*='language-'],
+.dark pre[class*='language-'] {
+  font-family: 'Consolas', 'Monaco', 'Andale Mono', monospace;
+  line-height: 1.5; /* fg1 / fg */
+  color: #ebdbb2; /* fg1 / fg */
+  text-align: left;
+  word-spacing: normal;
+  hyphens: none;
+  word-break: normal;
+  tab-size: 4;
+  white-space: pre;
+  direction: ltr;
+}
+
+.dark pre[class*='language-']::selection,
+.dark pre[class*='language-'] ::selection,
+.dark code[class*='language-']::selection,
+.dark code[class*='language-'] ::selection {
+  color: #fbf1c7; /* fg0 */
+  background: #7c6f64; /* bg4 */
+}
+
+/* Code blocks */
+.dark pre[class*='language-'] {
+  padding: 1em;
+  margin: 0.5em 0;
+  overflow: auto;
+}
+
+.dark :not(pre) > code[class*='language-'],
+.dark pre[class*='language-'] {
+  background: #1d2021; /* bg0_h */
+}
+
+/* Inline code */
+.dark :not(pre) > code[class*='language-'] {
+  padding: 0.1em;
+  border-radius: 0.3em;
+}
+
+.dark .token.comment,
+.dark .token.prolog,
+.dark .token.cdata {
+  color: #a89984; /* fg4 / gray1 */
+}
+
+.dark .token.delimiter,
+.dark .token.boolean,
+.dark .token.keyword,
+.dark .token.selector,
+.dark .token.important,
+.dark .token.atrule {
+  color: #fb4934; /* red2 */
+}
+
+.dark .token.operator,
+.dark .token.punctuation,
+.dark .token.attr-name {
+  color: #a89984; /* fg4 / gray1 */
+}
+
+.dark .token.tag,
+.dark .token.tag .punctuation,
+.dark .token.doctype,
+.dark .token.builtin {
+  color: #fabd2f; /* yellow2 */
+}
+
+.dark .token.entity,
+.dark .token.number,
+.dark .token.symbol {
+  color: #d3869b; /* purple2 */
+}
+
+.dark .token.property,
+.dark .token.constant,
+.dark .token.variable {
+  color: #fb4934; /* red2 */
+}
+
+.dark .token.string,
+.dark .token.char {
+  color: #b8bb26; /* green2 */
+}
+
+.dark .token.attr-value,
+.dark .token.attr-value .punctuation {
+  color: #a89984; /* fg4 / gray1 */
+}
+
+.dark .token.url {
+  color: #b8bb26; /* green2 */
+  text-decoration: underline;
+}
+
+.dark .token.function {
+  color: #fabd2f; /* yellow2 */
+}
+
+.dark .token.regex {
+  background: #b8bb26; /* green2 */
+}
+
+.dark .token.bold {
+  font-weight: bold;
+}
+
+.dark .token.italic {
+  font-style: italic;
+}
+
+.dark .token.inserted {
+  background: #a89984; /* fg4 / gray1 */
+}
+
+.dark .token.deleted {
+  background: #fb4934; /* red2 */
+}

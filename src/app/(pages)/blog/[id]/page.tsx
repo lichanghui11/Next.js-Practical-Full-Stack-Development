@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 import { queryPostById } from '@/app/_actions/post';
 import { BackButton } from '@/app/_components/blog-components/back-button/back-button';
-import { RenderMDX } from '@/app/_components/mdx/mdx-server/render';
+import { MdxRenderer } from '@/app/_components/mdx/mdx-client/render';
 import { formatDate } from '@/app/utils/format-time';
 
 import styles from './blog-detail.module.css';
@@ -66,7 +66,7 @@ const BlogDetail: FC<{
       {post.summary && <div className={styles.summary}>{post.summary}</div>}
 
       {/* 文章内容 */}
-      <RenderMDX source={post.content} />
+      <MdxRenderer source={post.content} />
     </div>
   );
 };
