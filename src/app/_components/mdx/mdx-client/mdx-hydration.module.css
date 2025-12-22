@@ -8,7 +8,7 @@
 }
 
 .content {
-  flex: 1;
+  flex: 0 0 70%;
   width: 100%; /* 确保子元素可以占满宽度 */
   min-width: 0;
 }
@@ -16,7 +16,7 @@
 .toc {
   position: sticky;
   top: calc(60px + 1rem); /* 60px header高度 + 1rem间距 */
-  flex-shrink: 0;
+  flex: 0 0 30%;
   width: 400px;
   max-height: calc(100vh - 60px - 2rem); /* 视口高度 - header高度 - 上下边距 */
   overflow-y: auto; /* 超出时显示滚动条 */

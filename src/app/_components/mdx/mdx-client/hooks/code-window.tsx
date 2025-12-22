@@ -5,6 +5,8 @@ import { isNil } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { useIsMobile } from '@/app/utils/browser';
+
 /**
  * CopyButton
  * ----------
@@ -22,14 +24,16 @@ import { createRoot } from 'react-dom/client';
  */
 export const CopyButton: FC<{ wrapperEl: Element | null }> = ({ wrapperEl }) => {
   const [copied, setCopied] = useState(false);
-
+  const [isHovered, setIsHovered] = useState(false);
+  const isMobile = useIsMobile();
+  console.log('copied: ', copied);
   /**
    * 点击复制按钮时的处理函数
    */
   const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
     (e) => {
       e.preventDefault();
-
+      console.log('clicked the copy button: .........');
       // 如果没有传入 code-window 容器，直接退出
       if (isNil(wrapperEl)) return;
 
@@ -38,24 +42,67 @@ export const CopyButton: FC<{ wrapperEl: Element | null }> = ({ wrapperEl }) => 
       if (isNil(contentEl)) return;
 
       // 将代码文本写入剪贴板
-      // 注意：这里没有做错误捕获，假设运行环境支持 clipboard API
       navigator.clipboard.writeText(contentEl.textContent || '');
 
-      // 设置复制状态，用于 UI 提示
+      // 设置复制状态，用于图标切换
       setCopied(true);
 
-      // 2 秒后恢复按钮文案
+      // 1 秒后恢复按钮状态
       setTimeout(() => {
         setCopied(false);
-      }, 2000);
+      }, 1000);
     },
     [wrapperEl],
   );
 
   return (
-    <button className="code-copy" type="button" onClick={handleClick}>
-      {copied ? 'Copied!' : 'Copy'}
-    </button>
+    <div
+      className={`code-copy-wrapper ${isMobile ? 'code-copy-mobile' : ''}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <button
+        className="code-copy"
+        type="button"
+        onClick={handleClick}
+        aria-label={copied ? 'Copied!' : 'Copy code'}
+      >
+        {copied ? (
+          // Check icon for copied state
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        ) : (
+          // Copy icon for default state
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+        )}
+      </button>
+      {isHovered && !copied && <span className="code-copy-hint">Copy</span>}
+      {copied && <span className="code-copy-hint">Copied!</span>}
+    </div>
   );
 };
 

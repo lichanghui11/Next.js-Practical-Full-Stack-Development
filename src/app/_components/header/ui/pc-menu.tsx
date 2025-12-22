@@ -2,7 +2,7 @@
 
 import type { FC } from 'react';
 
-import { Home, PenSquare } from 'lucide-react';
+import { BookText, Home, PenSquare } from 'lucide-react';
 import Link from 'next/link';
 import {
   NavigationMenu,
@@ -18,6 +18,7 @@ import $styles from './pc-menu.module.css';
 export const menus = [
   { href: '/', label: '首页', icon: Home },
   { href: '/blog', label: '博客', icon: PenSquare },
+  { href: '/mdx-syntax-guide', label: 'MDX语法', icon: BookText },
 ];
 
 export const HeaderMiddlePc: FC = () => {

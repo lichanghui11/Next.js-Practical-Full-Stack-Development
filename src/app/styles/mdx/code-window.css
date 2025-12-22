@@ -5,6 +5,7 @@
    =========================================== */
 
 .code-window {
+  position: relative; /* 为绝对定位的复制按钮提供参考 */
   margin: 1.5rem 0;
   overflow: hidden;
   background: var(--card);
@@ -89,32 +90,105 @@
    Code Tools - Copy button container
    =========================================== */
 
+/* 
+ * 调整复制按钮位置：
+ * - top: 控制距离顶部的距离
+ * - right: 控制距离右边的距离
+ * 修改这两个值可以调整按钮位置
+ */
 .code-tools {
+  position: absolute;
+  top: 2.75rem; /* 距离顶部 */
+  right: 0.75rem; /* 距离右边 */
+  z-index: 10;
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  pointer-events: none; /* 让容器本身不影响事件 */
 }
 
-/* Copy button */
+/* Wrapper for copy button and hint text */
+.code-copy-wrapper {
+  position: relative;
+  pointer-events: auto; /* 确保wrapper可以响应事件 */
+
+  /* display: flex;
+  flex-direction: column; */
+
+  /* align-items: flex-start; */
+}
+
+/* Copy button - 默认隐藏，hover代码块时显示 */
 .code-copy {
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--foreground);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  color: var(--muted-foreground);
+  pointer-events: auto; /* 按钮本身可以响应事件 */
   cursor: pointer;
-  background: var(--background);
-  border: 1px solid var(--border);
+  background: transparent; /* 透明背景 */
+  border: none; /* 无边框 */
   border-radius: 0.375rem;
-  transition: all 0.2s ease;
+  opacity: 0;
+  transition:
+    opacity 0.3s ease,
+    color 0.2s ease,
+    transform 0.1s ease;
+}
+
+/* 当鼠标悬停在代码窗口上时显示复制按钮 */
+.code-window:hover .code-copy {
+  opacity: 1;
+}
+
+/* 移动端始终显示复制按钮（因为没有hover） */
+.code-copy-mobile .code-copy {
+  opacity: 1;
 }
 
 .code-copy:hover {
-  background: var(--accent);
-  border-color: var(--accent-foreground);
+  color: var(--foreground); /* 只改变图标颜色 */
 }
 
 .code-copy:active {
   transform: scale(0.95);
+}
+
+/* Simple text hint below the button */
+.code-copy-hint {
+  position: absolute;
+  top: -0.2rem;
+  left: -80%;
+  margin-top: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  opacity: 0;
+  animation: hint-fade-in 0.2s ease forwards;
+}
+
+/* 移动端提示文字位置优化 - 显示在按钮下方更容易看到 */
+.code-copy-mobile .code-copy-hint {
+  top: 0.5rem;
+  left: -100%;
+  transform: translateX(-50%);
+}
+
+@keyframes hint-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ===========================================

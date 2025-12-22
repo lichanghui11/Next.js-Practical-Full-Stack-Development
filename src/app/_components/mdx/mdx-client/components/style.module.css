@@ -36,6 +36,7 @@
   width: 2.5rem;
   height: 3rem;
   color: red;
+  pointer-events: auto; /* 按钮始终可点击 */
   background: var(--card);
   border: 1px solid var(--border);
   border-right: none;
@@ -58,6 +59,16 @@
   border-left: 1px solid var(--border);
   box-shadow: -4px 0 20px rgb(0 0 0 / 15%);
   transition: transform 0.3s ease;
+}
+
+/* 收起状态：不阻挡页面交互 */
+.mobileToc-collapsed {
+  pointer-events: none;
+}
+
+/* 展开状态：启用交互 */
+.mobileToc-expanded {
+  pointer-events: auto;
 }
 
 .mobileToc-collapsed .mobileTocMain {
