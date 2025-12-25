@@ -26,6 +26,12 @@
   - PostgreSQL Adapter 配置
   - Migration 工作流程
 
+- **📘 [数据库学习笔记 (Database Guide)](./src/docs/database-guide.md)**
+  - 全新 Mac 开发环境配置（Git/Node/SSH）
+  - PostgreSQL 实例/数据库/schema/表的模型
+  - `psql`/DBeaver 使用认知、Prisma 迁移与种子
+  - 常用命令速查（终端、psql 元命令、SQL 管理语句）
+
 - **📝 [博客编辑弹窗实现](./src/docs/blog-edit-modal-implementation.md)**
   - 拦截路由与弹窗组件
   - CSS 玻璃拟态效果与暗色模式
