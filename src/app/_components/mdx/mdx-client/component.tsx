@@ -12,7 +12,7 @@ import { Mark } from './components/mark';
 import { ReadingTime } from './components/reading-time';
 import { YouTube } from './components/youtube';
 
-// 你可以先从最常用的标签开始接管
+// 接管最常用的标签
 export const mdxComponents: MDXComponents = {
   wrapper: ({ children }) => <div className={styles.wrapper}>{children}</div>,
   // Headings

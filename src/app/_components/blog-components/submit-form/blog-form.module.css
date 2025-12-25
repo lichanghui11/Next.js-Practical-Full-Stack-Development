@@ -19,7 +19,6 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  max-width: 64rem; /* max-w-5xl = 1024px，与博客列表宽度一致 */
   padding: 2rem 1rem;
   margin: 0 auto;
 }
@@ -45,14 +44,6 @@
   font-size: 0.875rem;
   font-weight: 600;
   color: oklch(35% 0.02 260deg);
-}
-
-.formLabel::before {
-  width: 3px;
-  height: 14px;
-  content: '';
-  background: linear-gradient(180deg, oklch(65% 0.2 260deg), oklch(70% 0.18 300deg));
-  border-radius: 2px;
 }
 
 :global(.dark) .formLabel {
@@ -125,7 +116,7 @@
 
 /* 文本域特殊样式 */
 .textarea {
-  min-height: 200px;
+  min-height: 50px;
   resize: vertical;
 }
 

@@ -9,6 +9,7 @@ import { useDeepCompareEffect, useMount } from 'react-use';
 
 import { useIsMobile } from '@/app/utils/browser';
 import { customMerge } from '@/app/utils/custom-merge';
+import { cn } from '@/app/utils/utils';
 
 import type { MdxHydrateProps } from './types';
 
@@ -61,12 +62,20 @@ export const MdxHydration: FC<MdxHydrateProps> = (props) => {
 
   if (isNil(compiledSource)) return null;
 
+  /* 判断是否显示 TOC */
+  const hasToc = toc && !isNil(compiledSource.scope?.toc);
+
   return isNil(content) ? null : (
     <div className={$styles.wrapper}>
-      <div ref={contentRef} className={$styles.content}>
+      <div
+        ref={contentRef}
+        className={cn($styles.content, {
+          [$styles.fullWidth]: !hasToc,
+        })}
+      >
         {content}
       </div>
-      {toc && !isNil(compiledSource.scope?.toc) && (
+      {hasToc && (
         <>
           {/* 桌面端：侧边栏 TOC */}
           <div className={$styles.toc}>

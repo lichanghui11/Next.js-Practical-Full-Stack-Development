@@ -10,7 +10,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/app/utils/utils';
 
-import $styles from './list.module.css';
+import $styles from './toc-list.module.css';
 
 interface Props {
   toc: TocItem[];
@@ -21,6 +21,7 @@ interface Props {
   exclude?: string | string[];
   skipLevels?: HeadingDepth[];
   skipParents?: Exclude<HeadingParent, 'root'>[];
+  onItemClick?: () => void; // 点击目录项后的回调
 }
 
 export const TocList: FC<Props> = ({
@@ -32,6 +33,7 @@ export const TocList: FC<Props> = ({
   exclude,
   skipLevels = [1],
   skipParents = [],
+  onItemClick,
 }) => {
   const [activeId, setActiveId] = useState('');
   const tocListRef = useRef<HTMLUListElement>(null);
@@ -69,15 +71,24 @@ export const TocList: FC<Props> = ({
   }, [activeId]);
 
   // 处理点击事件
-  const handleClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    const heading = document.getElementById(id);
-    if (heading) {
-      setActiveId(id);
-      window.history.replaceState(null, '', `#${id}`);
-      heading.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, []);
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+      e.preventDefault();
+      const heading = document.getElementById(id);
+      if (heading) {
+        setActiveId(id);
+        window.history.replaceState(null, '', `#${id}`);
+        heading.scrollIntoView({ behavior: 'smooth' });
+
+        // 滚动后调用回调（例如关闭移动端抽屉）
+        if (onItemClick) {
+          // 延迟执行以确保滚动动画开始
+          setTimeout(onItemClick, 300);
+        }
+      }
+    },
+    [onItemClick],
+  );
 
   if (!toc) return null;
 

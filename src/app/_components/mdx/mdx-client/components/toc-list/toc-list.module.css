@@ -32,6 +32,10 @@
   color: var(--primary);
 }
 
+.toc-list li a:hover .ellips {
+  border-bottom-color: var(--primary);
+}
+
 /* Active state */
 .toc-list li[data-active='true'] {
   background: var(--accent);
@@ -40,6 +44,10 @@
 .toc-list li[data-active='true'] a {
   font-weight: 500;
   color: var(--primary);
+}
+
+.toc-list li[data-active='true'] a .ellips {
+  border-bottom-color: var(--primary);
 }
 
 .toc-list li[data-active='true']::before {
@@ -89,11 +97,14 @@
 }
 
 .ellips {
-  display: block;
-  width: 100%;
+  display: inline-block;
+  width: auto;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+  transition: border-color 0.2s ease;
 }
 
 /* Dark mode adjustments */

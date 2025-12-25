@@ -41,3 +41,22 @@ export interface MdxRendererProps {
   options?: MdxSerializeConfig;
   hydrate?: MdxHydrateProps;
 }
+
+// MDX 编辑器组件props
+export interface MdxEditorProps {
+  content?: string;
+  setContent: (value?: string) => void;
+  disabled?: boolean;
+}
+
+// 编辑器模式
+export type EditorMode = 'split' | 'edit' | 'preview';
+
+// 编辑器外壳组件props (与 MdxEditorProps 相同，但可以扩展)
+export type EditorShellProps = MdxEditorProps;
+
+// 编辑器预览组件props
+export interface EditorPreviewProps {
+  serialized: SerializeResult<Record<string, unknown>, Scope> | null;
+  loading?: boolean;
+}

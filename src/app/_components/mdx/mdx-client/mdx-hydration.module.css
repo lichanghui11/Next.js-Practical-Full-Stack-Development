@@ -13,6 +13,10 @@
   min-width: 0;
 }
 
+.fullWidth {
+  flex: 0 0 100%;
+}
+
 .toc {
   position: sticky;
   top: calc(60px + 1rem); /* 60px header高度 + 1rem间距 */

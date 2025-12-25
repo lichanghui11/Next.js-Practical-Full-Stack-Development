@@ -14,6 +14,7 @@ import { Input } from 'ui/input';
 import { Textarea } from 'ui/textarea';
 
 import { useBlogForm, useBlogSubmit } from '@/app/_components/blog-components/submit-form/hooks';
+import { MdxEditor } from '@/app/_components/mdx/mdx-client/components/mdx-editor';
 import { Spinner } from '@/app/_components/spinner';
 
 import type { BlogFormRef, NewBlogFormProps, UpdateBlogFormProps } from '../submit-form/types';
@@ -69,7 +70,6 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
               name="summary"
               render={({ field }) => (
                 <FormItem className={`${styles.formItem} mt-2 pb-1`}>
-                  <FormLabel className={styles.formLabel}>摘要简述</FormLabel>
                   <FormControl>
                     <Textarea
                       {...field}
@@ -94,10 +94,9 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
               <FormItem className={styles.formItem}>
                 <FormLabel className={styles.formLabel}>文章内容</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="请输入内容"
-                    {...field}
-                    className={`${styles.textarea} ${styles.textareaContent}`}
+                  <MdxEditor
+                    content={field.value}
+                    setContent={field.onChange}
                     disabled={blogForm.formState.isSubmitting}
                   />
                 </FormControl>
