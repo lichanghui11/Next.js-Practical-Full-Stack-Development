@@ -32,7 +32,6 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
   const [ratio, setRatio] = useState(55); // 左侧编辑器占比
   const [serialized, setSerialized] = useState<MdxHydrateProps['compiledSource'] | null>(null);
   const [isSerializing, setIsSerializing] = useState(false);
-
   // 异步乱序保护
   const serializeIdRef = useRef(0);
 
@@ -124,6 +123,7 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
       {/* CSS 变量加载 */}
       <div className="wmde-markdown-var" />
 
+      {/* 自定义的  按比例显示编辑与预览、全屏工具栏 */}
       <div className={styles.toolbar}>
         <button
           type="button"
@@ -152,8 +152,9 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
         <button
           type="button"
           className={cn(styles.modeButton, { [styles.active]: mode === 'preview' })}
+          title="全屏"
         >
-          {FullscreenIcon}功能待完善
+          {FullscreenIcon}
         </button>
       </div>
 
@@ -163,9 +164,9 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
         {mode !== 'preview' && (
           <div
             className={styles.editorPane}
-            // style={{
-            //   flexBasis: mode === 'split' ? `${ratio}%` : '100%',
-            // }}
+            style={{
+              flexBasis: mode === 'split' ? `${ratio}%` : '100%',
+            }}
           >
             <MDEditor
               value={content}

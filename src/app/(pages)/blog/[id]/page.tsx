@@ -49,24 +49,31 @@ const BlogDetail: FC<{
         </div>
       </header>
 
-      {/* 文章缩略图 */}
-      {post.thumbnail && (
-        <div className={styles.thumbnail}>
-          <Image
-            src={post.thumbnail}
-            alt={post.title}
-            fill
-            className={styles.thumbnailImage}
-            priority
-          />
+      <div className="flex flex-row ">
+        <div className="flex-1">
+          {/* 文章缩略图 */}
+          {post.thumbnail && (
+            <div className={styles.thumbnail}>
+              <Image
+                src={post.thumbnail}
+                alt={post.title}
+                fill
+                className={styles.thumbnailImage}
+                priority
+              />
+            </div>
+          )}
+
+          {/* 文章摘要 */}
+          {post.summary && <div className={styles.summary}>{post.summary}</div>}
+
+          {/* 文章内容 */}
+          <MdxRenderer source={post.content} showReadingTime />
         </div>
-      )}
-
-      {/* 文章摘要 */}
-      {post.summary && <div className={styles.summary}>{post.summary}</div>}
-
-      {/* 文章内容 */}
-      <MdxRenderer source={post.content} showReadingTime />
+        <div className="" id="toc-portal-root">
+          {/* PC 端悬浮目录 */}
+        </div>
+      </div>
     </div>
   );
 };

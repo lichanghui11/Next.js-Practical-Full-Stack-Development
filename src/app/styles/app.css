@@ -65,3 +65,14 @@ xhtml.dark xbody {
     background-image: url('/images/bg-mobile-dark.png');
   }
 }
+
+/* 悬浮目录容器 */
+#toc-portal-root {
+  position: sticky;
+  top: 60px; /* 距离顶部多远开始吸顶 */
+  right: 1rem;
+  z-index: 1000;
+  width: 250px;
+  max-height: calc(100vh - 4rem); /* 防止目录比屏幕还高 */
+  overflow-y: auto;
+}

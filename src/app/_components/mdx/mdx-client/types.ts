@@ -59,4 +59,5 @@ export type EditorShellProps = MdxEditorProps;
 export interface EditorPreviewProps {
   serialized: SerializeResult<Record<string, unknown>, Scope> | null;
   loading?: boolean;
+  ref?: React.RefObject<HTMLDivElement | null>; // 这里本来是为了同步滚动加的，但是不太好实现了
 }

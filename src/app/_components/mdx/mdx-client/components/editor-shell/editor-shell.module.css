@@ -18,58 +18,61 @@
 /* 工具栏 */
 .toolbar {
   display: flex;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background: oklch(98% 0.005 260deg);
-  border-bottom: 1px solid oklch(92% 0.01 260deg);
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  background: #fff;
+  border-bottom: 1px solid oklch(30% 0.02 260deg);
 }
 
 :global(.dark) .toolbar {
-  background: oklch(18% 0.01 260deg);
+  background: #0c1117;
   border-bottom-color: oklch(30% 0.02 260deg);
 }
 
 /* 模式按钮 */
 .modeButton {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: oklch(50% 0.05 260deg);
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: oklch(80% 0.02 260deg);
   cursor: pointer;
   background: transparent;
-  border: 1px solid oklch(88% 0.01 260deg);
-  border-radius: 0.5rem;
-  transition: all 0.2s ease;
+  transition:
+    color 0.2s ease,
+    var(--background) 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .modeButton:hover {
-  color: oklch(40% 0.1 260deg);
-  background: oklch(96% 0.005 260deg);
-  border-color: oklch(75% 0.05 260deg);
+  color: oklch(92% 0.03 260deg);
+  background: #0c1117;
+  border-color: oklch(40% 0.02 260deg);
 }
 
 .modeButton.active {
   color: oklch(100% 0 0deg);
-  background: linear-gradient(135deg, oklch(55% 0.18 260deg) 0%, oklch(50% 0.2 280deg) 100%);
-  border-color: transparent;
-  box-shadow: 0 2px 8px oklch(55% 0.18 260deg / 30%);
+  background: oklch(35% 0.12 250deg);
+  border-color: oklch(55% 0.12 250deg);
+  box-shadow: 0 0 0 1px oklch(55% 0.12 250deg / 40%);
 }
 
 :global(.dark) .modeButton {
-  color: oklch(70% 0.05 260deg);
-  border-color: oklch(35% 0.02 260deg);
+  color: oklch(80% 0.02 260deg);
+  border-color: oklch(30% 0.02 260deg);
 }
 
 :global(.dark) .modeButton:hover {
-  color: oklch(80% 0.08 260deg);
-  background: oklch(25% 0.015 260deg);
-  border-color: oklch(50% 0.05 260deg);
+  color: oklch(92% 0.03 260deg);
+  background: oklch(24% 0.02 260deg);
+  border-color: oklch(40% 0.02 260deg);
 }
 
 :global(.dark) .modeButton.active {
   color: oklch(100% 0 0deg);
-  background: linear-gradient(135deg, oklch(55% 0.18 260deg) 0%, oklch(50% 0.2 280deg) 100%);
-  border-color: transparent;
+  background: oklch(35% 0.12 250deg);
+  border-color: oklch(55% 0.12 250deg);
 }
 
 /* 内容区域 */
@@ -194,7 +197,7 @@
   width: 8px;
   cursor: col-resize;
   background: oklch(92% 0.01 260deg);
-  transition: background 0.2s ease;
+  transition: var(--background) 0.2s ease;
 }
 
 .resizeHandle:hover,

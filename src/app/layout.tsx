@@ -56,7 +56,6 @@ const themeScript = `
     // 失败就维持默认
   }
 `;
-
 export default function RootLayout({
   children,
 }: Readonly<{

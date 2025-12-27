@@ -5,6 +5,7 @@ import { isNil } from 'lodash';
 // 这个水合函数是核心的关键的逻辑
 import { hydrate } from 'next-mdx-remote-client';
 import { useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useDeepCompareEffect, useMount } from 'react-use';
 
 import { useIsMobile } from '@/app/utils/browser';
@@ -17,6 +18,25 @@ import { Toc } from './components/toc';
 import { useCodeWindow } from './hooks/code-window';
 import $styles from './mdx-hydration.module.css';
 import { mdxHydrationConfig } from './mdx.hydration.config';
+
+export const TOCPortal: FC<{ source: MdxHydrateProps['compiledSource'] }> = ({ source }) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useMount(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  });
+  if (!isMounted) return null;
+
+  const target = document.getElementById('toc-portal-root');
+  if (!target) return null;
+  return createPortal(
+    <div className={$styles.toc}>
+      <Toc serialized={source} isMobile={false} />
+    </div>,
+    target,
+  );
+};
 
 export const MdxHydration: FC<MdxHydrateProps> = (props) => {
   useMount(() => {
@@ -78,9 +98,7 @@ export const MdxHydration: FC<MdxHydrateProps> = (props) => {
       {hasToc && (
         <>
           {/* 桌面端：侧边栏 TOC */}
-          <div className={$styles.toc}>
-            <Toc serialized={compiledSource} isMobile={false} />
-          </div>
+          <TOCPortal source={compiledSource} />
           {/* 移动端：浮动按钮 TOC */}
           {isMobile && <Toc serialized={compiledSource} isMobile />}
         </>
