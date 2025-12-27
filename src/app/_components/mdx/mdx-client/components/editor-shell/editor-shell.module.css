@@ -108,7 +108,25 @@
 
 :global(.w-md-editor-area) {
   height: 100%;
+  min-height: 0;
   overflow: auto;
+}
+
+/* 覆盖全局 mdx 样式，避免预览层 <pre> 被限制高度导致滚动失效 */
+:global(.w-md-editor .w-md-editor-text-pre),
+:global(.w-md-editor .w-md-editor-text-pre > code),
+:global(.w-md-editor pre) {
+  /**
+  覆盖 mdx.css 里对 pre 的 max-height: 50rem 限制。这个限制会让代码块自己形成滚动，干扰编辑器的整体滚动。 */
+  max-height: none;
+
+  /** 防止 pre 自己出现滚动条，把滚动交给 .w-md-editor-area 统一处理。 */
+  overflow: visible;
+}
+
+/* 取消 mdx.css 对 code block 的浮动，避免横向滚动条卡死 */
+:global(.w-md-editor pre[class*='language-'] code) {
+  float: none;
 }
 
 /* 拖拽分隔条 */
