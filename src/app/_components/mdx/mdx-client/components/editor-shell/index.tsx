@@ -116,13 +116,9 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
   return (
     <div
       data-color-mode={theme.mode}
-      className={cn(
-        styles.shell,
-        {
-          [styles.dragging]: isDragging,
-        },
-        'h-full',
-      )}
+      className={cn(styles.shell, {
+        [styles.dragging]: isDragging,
+      })}
       ref={shellRef}
     >
       {/* CSS 变量加载 */}
@@ -169,20 +165,20 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
         {mode !== 'preview' && (
           <div
             className={styles.editorPane}
-            style={{
-              flexBasis: mode === 'split' ? `${ratio}%` : '100%',
-            }}
+            // style={{
+            //   flexBasis: mode === 'split' ? `${ratio}%` : '100%',
+            // }}
           >
             <MDEditor
               value={content}
               onChange={setContent}
-              // height="calc(100vh - 200px)"
+              height="100%"
               textareaProps={{
                 disabled, // 或者你的变量名
               }}
               visibleDragbar={false} // 关闭底部拖拽条
               // 添加这个 style 属性
-              style={{ height: 'calc(100vh - 100px)' }}
+              style={{ height: '100%' }}
             />
           </div>
         )}
