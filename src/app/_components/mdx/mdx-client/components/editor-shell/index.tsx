@@ -116,15 +116,20 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
   return (
     <div
       data-color-mode={theme.mode}
-      className={cn(styles.shell, {
-        [styles.dragging]: isDragging,
-      })}
+      className={cn(
+        styles.shell,
+        {
+          [styles.dragging]: isDragging,
+        },
+        'h-full',
+      )}
       ref={shellRef}
     >
       {/* CSS 变量加载 */}
       <div className="wmde-markdown-var" />
 
-      {/* 模式切换按钮 */}
+      {/**
+ * 
       <div className={styles.toolbar}>
         <button
           type="button"
@@ -157,7 +162,7 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
           {FullscreenIcon}功能待完善
         </button>
       </div>
-
+ */}
       {/* 内容区域 */}
       <div className={styles.content}>
         {/* 编辑器面板 */}
@@ -171,17 +176,17 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
             <MDEditor
               value={content}
               onChange={setContent}
-              preview="edit"
-              extraCommands={[]}
-              hideToolbar={false}
-              height="100%"
-              textareaProps={{ disabled }}
-              visibleDragbar={false}
+              // height="calc(100vh - 200px)"
+              textareaProps={{
+                disabled, // 或者你的变量名
+              }}
+              visibleDragbar={false} // 关闭底部拖拽条
+              // 添加这个 style 属性
+              style={{ height: 'calc(100vh - 100px)' }}
             />
           </div>
         )}
-
-        {/* 拖拽分隔条 */}
+        {/*  这里是自定义的分割条和自定义的预览窗口，由于样式冲突问题，暂时注释掉。
         {mode === 'split' && (
           <div
             role="button"
@@ -194,7 +199,6 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
           </div>
         )}
 
-        {/* 预览面板 */}
         {mode !== 'edit' && (
           <div
             className={styles.previewPane}
@@ -204,7 +208,7 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
           >
             <EditorPreview serialized={serialized} loading={isSerializing} />
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

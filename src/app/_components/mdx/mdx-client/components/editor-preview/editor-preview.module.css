@@ -1,7 +1,8 @@
 /* 预览容器 */
 .previewContainer {
   flex: 1;
-  min-height: 0;
+  height: 600px;
+  min-height: 400px;
   padding: 1rem;
   overflow-y: auto;
   background: var(--background);

@@ -77,12 +77,14 @@
   display: flex;
   flex: 1;
   height: 100%;
+  min-height: 0;
   overflow: auto;
 }
 
 /* 编辑器面板 */
 .editorPane {
   flex: 1;
+  height: 100%;
   min-height: 0;
   overflow: auto;
   border: 1px solid green;
