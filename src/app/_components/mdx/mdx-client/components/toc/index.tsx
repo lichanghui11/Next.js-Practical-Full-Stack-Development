@@ -148,7 +148,9 @@ const MobileToc: FC<{ serialized: Serialized }> = (props) => {
               </div>
 
               <div className={cn($styles.mobileTocContent, 'transparent-scrollbar')}>
-                {serialized.scope?.toc && <TocList toc={serialized.scope.toc} onItemClick={close} />}
+                {serialized.scope?.toc && (
+                  <TocList toc={serialized.scope.toc} onItemClick={close} />
+                )}
               </div>
             </section>
           </div>

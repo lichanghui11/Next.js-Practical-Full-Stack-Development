@@ -70,7 +70,7 @@ const BlogDetail: FC<{
           {/* 文章内容 */}
           <MdxRenderer source={post.content} showReadingTime />
         </div>
-        <div className="" id="toc-portal-root">
+        <div className="bg-background" id="toc-portal-root">
           {/* PC 端悬浮目录 */}
         </div>
       </div>

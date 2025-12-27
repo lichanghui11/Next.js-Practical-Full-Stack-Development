@@ -68,11 +68,11 @@ xhtml.dark xbody {
 
 /* 悬浮目录容器 */
 #toc-portal-root {
-  position: sticky;
+  position: fixed;
   top: 60px; /* 距离顶部多远开始吸顶 */
   right: 1rem;
   z-index: 1000;
   width: 250px;
-  max-height: calc(100vh - 4rem); /* 防止目录比屏幕还高 */
-  overflow-y: auto;
+  height: fit-content;
+  max-height: calc(100vh - 60px - 2rem); /* 防止目录比屏幕还高 */
 }
