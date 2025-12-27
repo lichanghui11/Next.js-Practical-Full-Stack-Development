@@ -124,8 +124,6 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
       {/* CSS 变量加载 */}
       <div className="wmde-markdown-var" />
 
-      {/**
- * 
       <div className={styles.toolbar}>
         <button
           type="button"
@@ -158,7 +156,7 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
           {FullscreenIcon}功能待完善
         </button>
       </div>
- */}
+
       {/* 内容区域 */}
       <div className={styles.content}>
         {/* 编辑器面板 */}
@@ -173,6 +171,8 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
               value={content}
               onChange={setContent}
               height="100%"
+              extraCommands={[]}
+              preview="edit"
               textareaProps={{
                 disabled, // 或者你的变量名
               }}
@@ -182,7 +182,6 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
             />
           </div>
         )}
-        {/*  这里是自定义的分割条和自定义的预览窗口，由于样式冲突问题，暂时注释掉。
         {mode === 'split' && (
           <div
             role="button"
@@ -204,7 +203,7 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
           >
             <EditorPreview serialized={serialized} loading={isSerializing} />
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );

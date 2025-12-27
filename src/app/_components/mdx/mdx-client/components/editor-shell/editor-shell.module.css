@@ -112,13 +112,67 @@
   overflow: auto;
 }
 
+/* 
+  以下进行了许多的样式覆盖，主要是因为部分标签同时存在于 MDX编辑器 和 全局 MDX 样式中，
+  全局 MDX 样式会对编辑器内的标签产生影响，导致编辑器内的显示异常。
+  这些覆盖主要集中在字体、行高、换行、预览层 <pre> 样式等方面。
+
+  TODO：对于光标错位的问题仍然没有解决
+*/
+
+/* 保证输入层与渲染层的字体/行高一致，避免光标错位 */
+:global(.w-md-editor-text),
+:global(.w-md-editor-text-input),
+:global(.w-md-editor-text-pre),
+:global(.w-md-editor-text-pre > code),
+:global(.wmde-markdown-color),
+:global(.wmde-markdown-color pre),
+:global(.wmde-markdown-color code),
+:global(.w-md-editor-markdown-color),
+:global(.w-md-editor-markdown-color pre),
+:global(.w-md-editor-markdown-color code) {
+  font-family: var(--font-code) !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  letter-spacing: 0;
+  tab-size: 2;
+}
+
+/* 关闭连字，避免 textarea 与高亮层字形不一致导致错位 */
+:global(.w-md-editor-text),
+:global(.w-md-editor-text-input),
+:global(.w-md-editor-text-pre) {
+  font-feature-settings:
+    'liga' 0,
+    'calt' 0;
+  font-variant-ligatures: none;
+}
+
+/* 强制编辑层使用同样的换行/断词规则 */
+:global(.w-md-editor-text-input),
+:global(.w-md-editor-text-pre),
+:global(.w-md-editor-text-pre > code),
+:global(.wmde-markdown-color),
+:global(.wmde-markdown-color pre),
+:global(.w-md-editor-markdown-color),
+:global(.w-md-editor-markdown-color pre) {
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
 /* 覆盖全局 mdx 样式，避免预览层 <pre> 被限制高度导致滚动失效 */
 :global(.w-md-editor .w-md-editor-text-pre),
 :global(.w-md-editor .w-md-editor-text-pre > code),
-:global(.w-md-editor pre) {
+:global(.w-md-editor pre),
+:global(.w-md-editor .wmde-markdown-color pre),
+:global(.w-md-editor .w-md-editor-markdown-color pre) {
   /**
   覆盖 mdx.css 里对 pre 的 max-height: 50rem 限制。这个限制会让代码块自己形成滚动，干扰编辑器的整体滚动。 */
   max-height: none;
+  padding: 0;
+
+  /* 去掉 mdx.css 对 pre 的 padding/margin，避免输入层与渲染层错位 */
+  margin: 0;
 
   /** 防止 pre 自己出现滚动条，把滚动交给 .w-md-editor-area 统一处理。 */
   overflow: visible;
@@ -193,6 +247,7 @@
   .editorPane,
   .previewPane {
     flex-basis: 50% !important;
+    height: 100%;
   }
 
   /* 移动端拖拽条改为水平 */
