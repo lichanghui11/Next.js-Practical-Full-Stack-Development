@@ -2,8 +2,7 @@
 .shell {
   display: flex;
   flex-direction: column;
-  height: 600px;
-  min-height: 400px;
+  height: 1000px;
   overflow: hidden;
   background: var(--background);
   border: 1.5px solid oklch(88% 0.01 260deg);
@@ -77,40 +76,21 @@
 .content {
   display: flex;
   flex: 1;
-  overflow: hidden;
+  height: 100%;
+  overflow: auto;
 }
 
 /* 编辑器面板 */
 .editorPane {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* 确保 MDEditor 填充整个面板 */
-.editorPane :global(.w-md-editor) {
-  height: 100% !important;
-  border: none !important;
-  border-radius: 0 !important;
-}
-
-/* 修复光标位置问题 */
-.editorPane :global(.w-md-editor-text-pre),
-.editorPane :global(.w-md-editor-text-input),
-.editorPane :global(.w-md-editor-text) {
-  font-family:
-    'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace !important;
-  font-size: 14px !important;
-  line-height: 1.5 !important;
-  -webkit-font-smoothing: auto;
-  -moz-osx-font-smoothing: auto;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  border: 1px solid green;
 }
 
 /* 预览面板 */
 .previewPane {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  overflow: auto;
   background: var(--background);
 }
 

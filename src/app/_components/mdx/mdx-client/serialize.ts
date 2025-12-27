@@ -17,6 +17,7 @@ export const serializeMdx = async (source: Compatible, options?: MdxSerializeCon
     ? customMerge(mdxSerializationConfig, options, 'merge')
     : mdxSerializationConfig;
   const result = await serialize({ source, ...mergedOptions });
+  console.log('after serialized: ', result);
   return result;
 };
 /**

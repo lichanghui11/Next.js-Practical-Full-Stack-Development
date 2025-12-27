@@ -2,6 +2,7 @@
 import '@uiw/react-md-editor/markdown-editor.css';
 import type { FC } from 'react';
 
+import { commands } from '@uiw/react-md-editor';
 import { debounce, isNil } from 'lodash';
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -106,6 +107,12 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
     }
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
+  // 使用 UIW MDEditor 内置命令的图标
+  const { codeLive, codeEdit, codePreview, fullscreen } = commands;
+  const LiveIcon = codeLive.icon;
+  const EditIcon = codeEdit.icon;
+  const PreviewIcon = codePreview.icon;
+  const FullscreenIcon = fullscreen.icon;
   return (
     <div
       data-color-mode={theme.mode}
@@ -125,7 +132,7 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
           onClick={() => setMode('edit')}
           title="编辑模式"
         >
-          ✏️ 编辑
+          {EditIcon}
         </button>
         <button
           type="button"
@@ -133,7 +140,7 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
           onClick={() => setMode('split')}
           title="分栏模式"
         >
-          ⚡ 分栏
+          {LiveIcon}
         </button>
         <button
           type="button"
@@ -141,7 +148,13 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
           onClick={() => setMode('preview')}
           title="预览模式"
         >
-          👁️ 预览
+          {PreviewIcon}
+        </button>
+        <button
+          type="button"
+          className={cn(styles.modeButton, { [styles.active]: mode === 'preview' })}
+        >
+          {FullscreenIcon}功能待完善
         </button>
       </div>
 
@@ -159,9 +172,11 @@ export const EditorShell: FC<EditorShellProps> = ({ content, setContent, disable
               value={content}
               onChange={setContent}
               preview="edit"
+              extraCommands={[]}
               hideToolbar={false}
               height="100%"
               textareaProps={{ disabled }}
+              visibleDragbar={false}
             />
           </div>
         )}
