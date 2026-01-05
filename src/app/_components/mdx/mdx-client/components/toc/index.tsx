@@ -2,7 +2,7 @@
 import type { FC } from 'react';
 
 import { isNil } from 'lodash';
-import { Menu, NotepadText, X } from 'lucide-react';
+import { LayoutList, NotepadText, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/app/_components/shadcn/ui/button';
@@ -62,41 +62,17 @@ const DesktopToc: FC<{ serialized: Serialized }> = ({ serialized }) => {
 const MobileToc: FC<{ serialized: Serialized }> = (props) => {
   const { serialized } = props;
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const open = useCallback(() => setIsOpen(true), []);
-  const close = useCallback(() => setIsOpen(false), []);
-
-  // 目录展开时禁止背景页面滚动
-  useEffect(() => {
-    if (isOpen) {
-      // 保存当前滚动位置
-      const scrollY = window.scrollY;
-      const body = document.body;
-
-      // 保存原始样式
-      const originalPosition = body.style.position;
-      const originalTop = body.style.top;
-      const originalWidth = body.style.width;
-      const originalOverflow = body.style.overflow;
-
-      // 锁定滚动：使用 fixed 定位
-      body.style.position = 'fixed';
-      body.style.top = `-${scrollY}px`;
-      body.style.width = '100%';
-      body.style.overflow = 'hidden';
-
-      return () => {
-        // 恢复原始样式
-        body.style.position = originalPosition;
-        body.style.top = originalTop;
-        body.style.width = originalWidth;
-        body.style.overflow = originalOverflow;
-
-        // 恢复滚动位置
-        window.scrollTo(0, scrollY);
-      };
-    }
-  }, [isOpen]);
+  const close = useCallback(() => {
+    setIsClosing(true);
+    // 等待动画完成后再卸载
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+    }, 300);
+  }, []);
 
   return (
     <>
@@ -107,16 +83,16 @@ const MobileToc: FC<{ serialized: Serialized }> = (props) => {
         className={cn('btn-icon-transparent', $styles.mobileTocButton)}
         onClick={open}
       >
-        <Menu className="h-5 w-5" />
+        <LayoutList className="h-8 w-8" />
       </Button>
 
-      {/* Overlay 容器 - 只在打开时渲染 */}
-      {isOpen && (
+      {/* Overlay 容器 - 只在打开或关闭动画时渲染 */}
+      {(isOpen || isClosing) && (
         <div
           role="button"
           aria-label="关闭目录"
           tabIndex={0}
-          className={$styles.mobileTocOverlay}
+          className={cn($styles.mobileTocOverlay, isClosing && $styles.closing)}
           onClick={close}
           onKeyDown={(e) => e.key === 'Enter' && close()}
         >
@@ -125,7 +101,7 @@ const MobileToc: FC<{ serialized: Serialized }> = (props) => {
           <div onClick={(e) => e.stopPropagation()}>
             {/* 抽屉内容 */}
             <section
-              className={$styles.mobileTocDrawer}
+              className={cn($styles.mobileTocDrawer, isClosing && $styles.closing)}
               role="dialog"
               aria-modal="true"
               aria-label="目录"
@@ -148,7 +124,7 @@ const MobileToc: FC<{ serialized: Serialized }> = (props) => {
               </div>
 
               <div className={cn($styles.mobileTocContent, 'transparent-scrollbar')}>
-                {serialized.scope?.toc && <TocList toc={serialized.scope.toc} onItemClick={close} />}
+                {serialized.scope?.toc && <TocList toc={serialized.scope.toc} />}
               </div>
             </section>
           </div>

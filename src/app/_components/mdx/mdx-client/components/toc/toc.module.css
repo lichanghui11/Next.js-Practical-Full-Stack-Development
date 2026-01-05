@@ -22,8 +22,8 @@
 /* 触发按钮 - 固定在右侧中间 */
 .mobileTocButton {
   position: fixed;
-  top: 50%;
-  right: 0;
+  top: 20%;
+  right: 10px;
   z-index: 40;
   width: 2.5rem;
   height: 3rem;
@@ -53,16 +53,6 @@
   animation: fade-in 0.3s ease;
 }
 
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
 /* 抽屉内容 */
 .mobileTocDrawer {
   position: relative;
@@ -70,7 +60,7 @@
   bottom: 50px;
   display: flex;
   flex-direction: column;
-  width: 60%;
+  width: 100%;
   max-width: 320px;
   height: calc(100vh - 100px);
   padding: 0.5rem;
@@ -81,6 +71,17 @@
   animation: slide-in 0.3s ease;
 }
 
+/* 抽屉打开时的动画 */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes slide-in {
   from {
     transform: translateX(100%);
@@ -89,6 +90,36 @@
   to {
     transform: translateX(0);
   }
+}
+
+/* 抽屉关闭时的动画 */
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* 关闭状态的动画 */
+.mobileTocOverlay.closing {
+  animation: fade-out 0.3s ease forwards;
+}
+
+.mobileTocDrawer.closing {
+  animation: slide-out 0.3s ease forwards;
 }
 
 .mobileTocTitle {

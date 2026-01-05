@@ -15,7 +15,6 @@ import { Textarea } from 'ui/textarea';
 
 import { useBlogForm, useBlogSubmit } from '@/app/_components/blog-components/submit-form/hooks';
 import { MdxEditor } from '@/app/_components/mdx/mdx-client/components/mdx-editor';
-import { Spinner } from '@/app/_components/spinner';
 
 import type { BlogFormRef, NewBlogFormProps, UpdateBlogFormProps } from '../submit-form/types';
 
@@ -111,10 +110,7 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
               className={styles.submitButton}
             >
               {blogForm.formState.isSubmitting ? (
-                <span className={styles.spinnerWrapper}>
-                  <Spinner />
-                  保存中...
-                </span>
+                <span className={styles.spinnerWrapper}>保存中...</span>
               ) : (
                 '✨ 保存修改'
               )}
