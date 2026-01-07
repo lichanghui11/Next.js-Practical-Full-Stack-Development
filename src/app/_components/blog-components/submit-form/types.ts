@@ -3,6 +3,7 @@
 
 import type { Post } from '@prisma/client';
 import type { BaseSyntheticEvent } from 'react';
+
 // 创建 博客 的组件只有一个，但是分为 新建 和 更新 两个逻辑
 // 创建 Blog 的组件参数类型，
 export interface NewBlogFormProps {

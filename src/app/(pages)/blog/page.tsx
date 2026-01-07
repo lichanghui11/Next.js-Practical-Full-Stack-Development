@@ -55,10 +55,12 @@ const BlogListPage: FC<{
                         fill
                         className={styles.thumbnail}
                         alt={item.title}
+                        // 如果使用bun,请务必加上这个,因为bun中启用远程图片优化会报错
+                        unoptimized
                       />
                     </div>
                     <div className={styles.titleWrapper}>
-                      <Link href={`/blog/${item.id}`}>
+                      <Link href={`/blog/${item.slug || item.id}`}>
                         <h2 className={styles.title}>{item.title}</h2>
                       </Link>
                     </div>

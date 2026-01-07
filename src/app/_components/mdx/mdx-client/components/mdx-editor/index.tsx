@@ -1,11 +1,12 @@
 import type { FC } from 'react';
 
-import MDEditor from '@uiw/react-md-editor';
+import MDEditor, { commands } from '@uiw/react-md-editor';
 import { isNil } from 'lodash';
 import debounce from 'lodash/debounce';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useThemeMode } from '@/app/_components/theme/core/hooks';
+import { useIsMobile } from '@/app/utils/browser';
 import { cn } from '@/app/utils/utils';
 
 import type { MdxEditorProps, MdxHydrateProps } from '../../types';
@@ -19,7 +20,7 @@ export const MdxEditor: FC<MdxEditorProps> = (props) => {
   const theme = useThemeMode();
   const containerRef = useRef<HTMLDivElement>(null);
   const [editorHeight, setEditorHeight] = useState<number>(400);
-
+  const isMobile = useIsMobile();
   // 防抖效果，减少序列化次数
   const debouncedSerialize = useMemo(
     () =>
@@ -61,6 +62,12 @@ export const MdxEditor: FC<MdxEditorProps> = (props) => {
       window.removeEventListener('resize', updateHeight);
     };
   }, [serialized, updateHeight]);
+  const extraCommands = useMemo(() => {
+    let data = [commands.codeEdit];
+    if (!isMobile) data.push(commands.codeLive);
+    data = [...data, commands.codePreview, commands.fullscreen];
+    return data;
+  }, [isMobile]);
 
   if (isNil(serialized)) {
     return <div ref={containerRef} className={cn('wmde-markdown-var')} />;
@@ -71,6 +78,8 @@ export const MdxEditor: FC<MdxEditorProps> = (props) => {
       <div>
         <div className="wmde-markdown-var"> </div>
         <MDEditor
+          preview={isMobile ? 'edit' : 'live'}
+          extraCommands={extraCommands}
           value={content}
           onChange={setContent}
           height={editorHeight}

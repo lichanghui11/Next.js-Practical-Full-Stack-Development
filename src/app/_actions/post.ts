@@ -18,9 +18,14 @@ export const queryPostTotalPage = async (options: { pageSize?: number }): Promis
   return PostRepo.queryPostTotalPage(options);
 };
 
-// 根据 id 查询文章信息
-export const queryPostById = async (id: string): Promise<Post | null> => {
-  return PostRepo.queryPostById(id);
+// 根据 id 或 slug 查询文章信息
+export const queryPostByIdOrSlug = async (item: string): Promise<Post | null> => {
+  return PostRepo.queryPostByIdOrSlug(item);
+};
+
+// 根据 Slug 查询文章信息
+export const queryPostBySlug = async (slug: string): Promise<Post | null> => {
+  return PostRepo.queryPostBySlug(slug);
 };
 
 // 新增文章

@@ -1,3 +1,5 @@
+@reference "#tailwind.css";
+
 /* 博客表单样式 */
 
 /* 表单容器 - 限制宽度，居中显示，与文章列表宽度一致 */
@@ -35,12 +37,20 @@
   position: relative;
 }
 
+/* 内容区域头部 - 标签和按钮并排 */
+.contentHeader {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
 /* 表单标签样式 */
 .formLabel {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
   font-size: 0.875rem;
   font-weight: 600;
   color: oklch(35% 0.02 260deg);
@@ -138,25 +148,6 @@
   border-color: oklch(30% 0.02 260deg);
 }
 
-/* 表单描述文字 */
-.formDescription {
-  display: flex;
-  gap: 0.375rem;
-  align-items: center;
-  margin-top: 0.375rem;
-  font-size: 0.8125rem;
-  color: oklch(55% 0.01 260deg);
-}
-
-.formDescription::before {
-  font-size: 0.75rem;
-  content: '💡';
-}
-
-:global(.dark) .formDescription {
-  color: oklch(60% 0.01 80deg);
-}
-
 /* 表单错误消息 */
 .formMessage {
   display: flex;
@@ -173,49 +164,25 @@
 
 /* 提交按钮样式 */
 .submitButton {
-  position: relative;
-  padding: 0.875rem 2rem;
-  margin-top: 1rem;
-  overflow: hidden;
+  display: inline-flex;
   font-size: 0.9375rem;
   font-weight: 600;
-  color: oklch(100% 0 0deg);
+  color: hsl(var(--primary-foreground));
+  white-space: nowrap;
   cursor: pointer;
-  background: linear-gradient(135deg, oklch(55% 0.18 260deg) 0%, oklch(50% 0.2 280deg) 100%);
-  border: none;
+  background: hsl(var(--primary));
   border-radius: 0.75rem;
-  box-shadow:
-    0 4px 15px oklch(55% 0.18 260deg / 35%),
-    inset 0 1px 1px oklch(100% 0 0deg / 20%);
   transition: all 0.3s ease;
-}
 
-.submitButton::before {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  content: '';
-  background: linear-gradient(90deg, transparent, oklch(100% 0 0deg / 20%), transparent);
-  transition: left 0.5s ease;
+  @apply border-1 border-ring;
 }
 
 .submitButton:hover {
-  box-shadow:
-    0 8px 25px oklch(55% 0.18 260deg / 45%),
-    inset 0 1px 1px oklch(100% 0 0deg / 25%);
   transform: translateY(-2px);
 }
 
-.submitButton:hover::before {
-  left: 100%;
-}
-
 .submitButton:active {
-  box-shadow:
-    0 2px 10px oklch(55% 0.18 260deg / 30%),
-    inset 0 1px 1px oklch(100% 0 0deg / 20%);
+  box-shadow: inset 0 1px 1px hsl(var(--primary-foreground) / 20%);
   transform: translateY(0);
 }
 
@@ -223,14 +190,6 @@
   cursor: not-allowed;
   opacity: 0.7;
   transform: none;
-}
-
-/* 加载动画容器 */
-.spinnerWrapper {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  justify-content: center;
 }
 
 /* 禁用状态的输入框 */

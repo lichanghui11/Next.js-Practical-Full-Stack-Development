@@ -19,6 +19,9 @@ const pool =
   globalThis.pgPool ??
   new Pool({
     connectionString,
+    max: 30, // 最大连接数
+    idleTimeoutMillis: 60000, // 连接空闲超时
+    connectionTimeoutMillis: 2000, // 连接超时
   });
 /**
  	•	✅ dev 热更新不会重复 new Pool / PrismaClient

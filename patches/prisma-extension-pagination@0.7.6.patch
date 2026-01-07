@@ -1,0 +1,33 @@
+diff --git a/dist/helpers.d.ts b/dist/helpers.d.ts
+index fae409cb89450cbc5606e67be751e7f69fd47ecf..427e0299f18fc828baaebab0361ab264c92f7b09 100644
+--- a/dist/helpers.d.ts
++++ b/dist/helpers.d.ts
+@@ -1,8 +1,2 @@
+-export declare const resetSelection: {
+-    select: undefined;
+-    include: undefined;
+-    omit: undefined;
+-};
+-export declare const resetOrdering: {
+-    orderBy: undefined;
+-};
++export declare const resetSelection: {};
++export declare const resetOrdering: {};
+diff --git a/dist/helpers.js b/dist/helpers.js
+index 064f05d84370ecb2a2bda8e86d7663631f904154..8db001aa95e991959fbfa831abe3fc6e7181b30c 100644
+--- a/dist/helpers.js
++++ b/dist/helpers.js
+@@ -1,11 +1,5 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.resetOrdering = exports.resetSelection = void 0;
+-exports.resetSelection = {
+-    select: undefined,
+-    include: undefined,
+-    omit: undefined,
+-};
+-exports.resetOrdering = {
+-    orderBy: undefined,
+-};
++exports.resetSelection = {};
++exports.resetOrdering = {};

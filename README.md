@@ -50,6 +50,10 @@
   - 自定义 Directive（Admonition、视频嵌入、文字高亮）
   - TOC 自动生成与阅读时间统计
 
+- **🧩 [Prisma Pagination Patch 记录](./src/docs/prisma-pagination-patch.md)**
+  - Prisma 7.2 的显式 `undefined` 校验问题
+  - `pnpm patch` 修复第三方依赖流程
+
 ---
 
 ## 📅 当前进度

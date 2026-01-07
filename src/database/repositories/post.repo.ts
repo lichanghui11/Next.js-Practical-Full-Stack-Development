@@ -37,11 +37,21 @@ const PostRepo = {
     return meta.pageCount;
   },
 
-  // 根据 id 查询文章信息
-  queryPostById: async (id: string): Promise<Post | null> => {
+  // 根据 id 或 slug  查询文章信息
+  queryPostByIdOrSlug: async (item: string): Promise<Post | null> => {
+    const post = await prismaClient.post.findFirst({
+      where: {
+        OR: [{ id: item }, { slug: item }],
+      },
+    });
+    return post;
+  },
+
+  // 根据 Slug 查询文章信息
+  queryPostBySlug: async (slug: string): Promise<Post | null> => {
     const post = await prismaClient.post.findUnique({
       where: {
-        id,
+        slug,
       },
     });
     return post;

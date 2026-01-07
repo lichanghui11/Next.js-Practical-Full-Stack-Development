@@ -1,0 +1,2 @@
+patchedDependencies:
+  prisma-extension-pagination@0.7.6: patches/prisma-extension-pagination@0.7.6.patch

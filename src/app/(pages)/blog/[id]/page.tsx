@@ -1,20 +1,34 @@
+import type { Metadata, ResolvingMetadata } from 'next';
 import type { FC } from 'react';
 
 import { Calendar, Tag } from 'lucide-react';
 import Image from 'next/image';
 
-import { queryPostById } from '@/app/_actions/post';
+import { queryPostByIdOrSlug } from '@/app/_actions/post';
 import { BackButton } from '@/app/_components/blog-components/back-button/back-button';
 import { MdxRenderer } from '@/app/_components/mdx/mdx-client/render';
 import { formatDate } from '@/app/utils/format-time';
 
 import styles from './blog-detail.module.css';
+export const generateMetadata = async (
+  { params }: { params: Promise<{ id: string }> },
+  parent: ResolvingMetadata,
+): Promise<Metadata> => {
+  const id = (await params).id;
+
+  const post = await queryPostByIdOrSlug(id);
+  return {
+    title: `${post?.title || '博客详情'} - ${(await parent).title?.absolute}`,
+    description: post ? post.description || post.title : '您访问的文章不存在或已被删除',
+    keywords: post?.keywords ? post.keywords.split(',').map((kw) => kw.trim()) : [],
+  };
+};
 
 const BlogDetail: FC<{
   params: Promise<{ id: string }>;
 }> = async ({ params }) => {
   const { id } = await params;
-  const post = await queryPostById(id);
+  const post = await queryPostByIdOrSlug(id);
 
   if (!post) {
     return (

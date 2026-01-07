@@ -1,8 +1,9 @@
 // TOC = Table Of Contents（目录）
 import type { FC } from 'react';
 
+import BookNumber24Filled from '@ricons/fluent/BookNumber24Filled';
 import { isNil } from 'lodash';
-import { LayoutList, NotepadText, X } from 'lucide-react';
+import { NotepadText, X } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/app/_components/shadcn/ui/button';
@@ -83,7 +84,7 @@ const MobileToc: FC<{ serialized: Serialized }> = (props) => {
         className={cn('btn-icon-transparent', $styles.mobileTocButton)}
         onClick={open}
       >
-        <LayoutList className="h-8 w-8" />
+        <BookNumber24Filled />
       </Button>
 
       {/* Overlay 容器 - 只在打开或关闭动画时渲染 */}
