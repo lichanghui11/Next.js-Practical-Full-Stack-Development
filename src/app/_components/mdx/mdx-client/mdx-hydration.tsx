@@ -7,6 +7,7 @@ import { hydrate } from 'next-mdx-remote-client';
 import { useMemo, useRef, useState } from 'react';
 import { useDeepCompareEffect, useMount } from 'react-use';
 
+import { PageSkeleton } from '@/app/_components/skeleton';
 import { useIsMobile } from '@/app/utils/browser';
 import { customMerge } from '@/app/utils/custom-merge';
 import { cn } from '@/app/utils/utils';
@@ -65,7 +66,9 @@ export const MdxHydration: FC<MdxHydrateProps> = (props) => {
   /* 判断是否显示 TOC */
   const hasToc = toc && !isNil(compiledSource.scope?.toc);
 
-  return isNil(content) ? null : (
+  return isNil(content) ? (
+    <PageSkeleton />
+  ) : (
     <div className={$styles.wrapper}>
       <div
         ref={contentRef}

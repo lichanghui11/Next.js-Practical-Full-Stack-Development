@@ -54,7 +54,39 @@
   - Prisma 7.2 的显式 `undefined` 校验问题
   - `pnpm patch` 修复第三方依赖流程
 
+- **🧱 [Suspense 与骨架屏](./src/docs/suspense-skeleton.md)**
+  - 路由级 loading 与 Suspense fallback 的适用场景
+  - 骨架显示条件与常见坑点
+
 ---
+
+## 🗂️ 项目结构
+
+```bash
+.
+├── src
+│   ├── app                # Next.js App Router（页面、布局、组件、actions）
+│   │   ├── (pages)
+│   │   ├── _actions
+│   │   ├── _components
+│   │   ├── styles
+│   │   └── utils
+│   ├── database           # 数据库层：client/repo/adapter/seed/prisma
+│   │   ├── adapters
+│   │   ├── client
+│   │   ├── extentions
+│   │   ├── prisma
+│   │   ├── repositories
+│   │   ├── seed
+│   │   └── types
+│   ├── docs               # 项目文档
+│   └── mdx-env.d.ts
+├── public                 # 静态资源
+├── patches                # pnpm patch 生成的补丁
+├── next.config.ts
+├── package.json
+└── ...
+```
 
 ## 📅 当前进度
 

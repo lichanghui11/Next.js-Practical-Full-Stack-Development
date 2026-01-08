@@ -1,5 +1,6 @@
-import Header from '../_components/header';
+import { Toaster } from 'ui/sonner';
 
+import Header from '../_components/header';
 export default function Layout({
   children,
   modal,
@@ -12,6 +13,7 @@ export default function Layout({
       <Header />
       {children}
       {modal}
+      <Toaster />
     </div>
   );
 }

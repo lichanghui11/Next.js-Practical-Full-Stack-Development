@@ -3,10 +3,12 @@ import type { FC } from 'react';
 
 import { Calendar, Tag } from 'lucide-react';
 import Image from 'next/image';
+import { Suspense } from 'react';
 
 import { queryPostByIdOrSlug } from '@/app/_actions/post';
 import { BackButton } from '@/app/_components/blog-components/back-button/back-button';
 import { MdxRenderer } from '@/app/_components/mdx/mdx-client/render';
+import { PostContentSkeleton } from '@/app/_components/skeleton';
 import { formatDate } from '@/app/utils/format-time';
 
 import styles from './blog-detail.module.css';
@@ -80,7 +82,9 @@ const BlogDetail: FC<{
       {post.summary && <div className={styles.summary}>{post.summary}</div>}
 
       {/* 文章内容 */}
-      <MdxRenderer source={post.content} showReadingTime />
+      <Suspense fallback={<PostContentSkeleton />}>
+        <MdxRenderer source={post.content} showReadingTime />
+      </Suspense>
     </div>
   );
 };

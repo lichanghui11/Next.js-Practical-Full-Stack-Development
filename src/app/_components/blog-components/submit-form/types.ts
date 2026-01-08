@@ -3,6 +3,9 @@
 
 import type { Post } from '@prisma/client';
 import type { BaseSyntheticEvent } from 'react';
+import type { z } from 'zod';
+
+import type { formValidator } from './validation';
 
 // 创建 博客 的组件只有一个，但是分为 新建 和 更新 两个逻辑
 // 创建 Blog 的组件参数类型，
@@ -32,3 +35,6 @@ export type BlogFormProps = NewBlogFormProps | UpdateBlogFormProps;
 export interface BlogFormRef {
   create?: (e?: BaseSyntheticEvent) => Promise<void>;
 }
+
+// 表单验证过后的数据类型
+export type FormValidatedData = z.infer<ReturnType<typeof formValidator>>;

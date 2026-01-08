@@ -4,6 +4,7 @@ import type { FC, MouseEventHandler } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,7 +52,10 @@ export const DeleteDialog: FC<{ id: string | number }> = ({ id }) => {
         setOpen(false);
         router.refresh();
       } catch (error) {
-        console.error(error);
+        toast.warning('删除失败', {
+          id: 'post-delete-error',
+          description: (error as Error).message,
+        });
       } finally {
         setPending(false);
       }

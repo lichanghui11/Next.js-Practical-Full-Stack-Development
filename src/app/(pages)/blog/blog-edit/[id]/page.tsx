@@ -3,8 +3,10 @@ import type { FC } from 'react';
 
 import { isNil } from 'lodash';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 
 import { BlogUpdate } from '@/app/_components/blog-components/blog-update-form/blog-update';
+import { PageSkeleton } from '@/app/_components/skeleton';
 
 // 添加动态标记，强制使用 SSR
 export const dynamic = 'force-dynamic';
@@ -21,7 +23,11 @@ export const generateMetadata = async (_: any, parent: ResolvingMetadata): Promi
 const BlogEditPage: FC<{ params: Promise<{ id: string }> }> = async ({ params }) => {
   const { id } = await params;
   if (isNil(id)) return notFound();
-  return <BlogUpdate id={id} />;
+  return (
+    <Suspense fallback={<PageSkeleton />}>
+      <BlogUpdate id={id} />
+    </Suspense>
+  );
 };
 
 export default BlogEditPage;
