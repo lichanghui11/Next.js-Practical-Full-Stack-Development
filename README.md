@@ -58,6 +58,10 @@
   - 路由级 loading 与 Suspense fallback 的适用场景
   - 骨架显示条件与常见坑点
 
+- **🧭 [后端架构说明](./src/docs/backend-architecture.md)**
+  - Server Actions 的适用边界与替代方案
+  - 框架选型建议与 hono.js 选择理由
+
 ---
 
 ## 🗂️ 项目结构
@@ -90,7 +94,9 @@
 
 ## 📅 当前进度
 
-> 💡 **当前提交说明**：完成 MDX 渲染系统、TOC 目录组件、Header 滚动效果、移动端响应式抽屉。
+> 💡
+> **当前提交说明**：完成 MDX 渲染系统、TOC 目录组件、Header 滚动效果、移动端响应式抽屉；当前项目仍使用 Next.js 自带的 Server
+> Actions。
 
 - [x] **项目初始化**: 使用 `create-next-app` 搭建基础环境。
 - [x] **CSS 架构重构**: 模块化 Tailwind v4 配置，解决 CSS Module 引用问题。
