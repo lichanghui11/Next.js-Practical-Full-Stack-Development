@@ -15,9 +15,6 @@
 
 @layer base {
   html {
-    /* 禁止横向滚动，防止移动端左右滑动 */
-    overflow: hidden visible; /* 确保 sticky 元素正常工作 */
-
     /* 禁止overscroll弹性效果 */
     overscroll-behavior: none;
     font-size: 100%;
@@ -36,7 +33,7 @@
     @apply text-sm;
 
     /* 禁止横向滚动，防止移动端左右滑动 */
-    overflow: hidden visible; /* 确保 sticky 元素正常工作 */
+    overflow: hidden auto; /* 确保 sticky 元素正常工作 */
 
     /* 禁止overscroll弹性效果 */
     overscroll-behavior-y: contain;
