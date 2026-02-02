@@ -9,7 +9,95 @@
 - [Docker Compose](#docker-compose)
 - [Docker 网络](#docker-网络)
 - [Docker 数据持久化](#docker-数据持久化)
-- [最佳实践](#最佳实践)
+
+---
+
+## 📖 关于本文档
+
+> **💡 学习说明**
+>
+> - 本文档列举了 Docker 的核心概念和常用命令，作为快速参考手册使用
+> - 具体使用时建议结合官方文档或实际场景进行查询
+> - 文档内容基于实际学习和项目实践整理而成
+
+---
+
+## 🖥️ 虚拟机环境实践笔记
+
+在学习 Docker 之前，我通过在 Mac 宿主机上配置虚拟环境，模拟云服务器场景，积累了一些虚拟化相关的经验。
+
+### 实践背景
+
+**项目场景**：为量化交易项目 Freqtrade 搭建开发环境
+
+**目标**：在本地 Mac M5 (ARM64) 上模拟 x86_64 云服务器环境
+
+### 环境搭建步骤
+
+#### 1. 创建虚拟机
+
+使用 **OrbStack** 创建 Ubuntu 虚拟机
+
+```bash
+# OrbStack 是适用于 Mac 的轻量级 Docker 和 Linux 虚拟机工具
+# 比 Docker Desktop 更快，资源占用更少
+```
+
+#### 2. 安装 Conda 环境管理器
+
+在虚拟机中安装 **Miniconda** 来管理 Python 版本和项目环境
+
+```bash
+# 在虚拟机中下载并安装 Miniconda
+# Miniconda 是 Anaconda 的轻量级版本
+```
+
+#### 3. 项目沙盒化管理
+
+通过 Conda 为不同项目创建独立的虚拟环境，避免依赖冲突
+
+```bash
+# 创建新环境
+conda create -n freqtrade python=3.11
+
+# 激活项目环境
+conda activate freqtrade
+
+# 注意：deactivate 用于退出当前环境，exit 会退出整个 shell
+conda deactivate
+```
+
+### 关键知识点
+
+#### Linux 包管理器差异
+
+不同 Linux 发行版使用不同的包管理器：
+
+| 发行版 | 包管理器 | 更新软件源命令 |
+| -------- | ---------- | ---------------- |
+| Ubuntu/Debian | `apt` | `sudo apt update` |
+| CentOS/RHEL/Fedora | `dnf` / `yum` | `sudo dnf check-update` |
+| Arch Linux | `pacman` | `sudo pacman -Sy` |
+
+#### 架构兼容性问题
+
+> **⚠️ 重要提示**
+>
+> 大多数云服务器使用 **x86_64 (Intel/AMD)** 架构，而 Mac M 系列芯片使用 **ARM64** 架构。
+>
+> 在本地模拟时需要注意：
+>
+> - Conda 安装包要选择对应架构版本（Linux-aarch64 vs Linux-x86_64）
+> - Docker 镜像也需要选择对应平台（`--platform linux/amd64` 或 `linux/arm64`）
+> - 跨架构运行可能导致性能下降或兼容性问题
+
+```bash
+# 在 ARM 架构 Mac 上运行 x86 镜像（需要模拟层，性能较差）
+docker run --platform linux/amd64 ubuntu
+
+# 使用原生 ARM 镜像（性能最佳）
+docker run --platform linux/arm64 ubuntu
+```
 
 ---
 
@@ -342,57 +430,6 @@ docker build --build-arg VERSION=1.0 -t my-app .
 
 **Docker Compose 是用于定义和运行多容器 Docker 应用程序的工具**。使用 YAML 文件配置应用的服务、网络和卷，然后使用单个命令创建并启动所有服务。
 
-### docker-compose.yml 示例
-
-```yaml
-version: '3.8'
-
-services:
-  # Web 应用服务
-  web:
-    build: .
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./src:/app/src
-    environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:password@db:5432/mydb
-    depends_on:
-      - db
-      - redis
-    networks:
-      - app-network
-
-  # 数据库服务
-  db:
-    image: postgres:15-alpine
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=mydb
-    networks:
-      - app-network
-
-  # Redis 缓存服务
-  redis:
-    image: redis:7-alpine
-    networks:
-      - app-network
-
-# 定义数据卷
-volumes:
-  db-data:
-
-# 定义网络
-networks:
-  app-network:
-    driver: bridge
-```
-
-### Docker Compose 常用命令
-
 ```bash
 # 启动所有服务（在后台运行）
 docker-compose up -d
@@ -594,7 +631,7 @@ docker run --mount type=bind,source=/home/user/data,target=/app/data nginx
 ### 数据卷 vs 绑定挂载
 
 | 特性 | 数据卷 (Volume) | 绑定挂载 (Bind Mount) |
-|------|----------------|----------------------|
+| ------ | ---------------- | ---------------------- |
 | 管理方式 | Docker 管理 | 用户管理 |
 | 路径 | Docker 默认路径 | 用户指定路径 |
 | 性能 | 更好 | 稍差（Linux 下相同） |
@@ -602,105 +639,6 @@ docker run --mount type=bind,source=/home/user/data,target=/app/data nginx
 | 适用场景 | 生产环境数据持久化 | 开发环境代码同步 |
 
 ---
-
-## 最佳实践
-
-### 1. 镜像构建最佳实践
-
-```dockerfile
-# ✅ 使用多阶段构建减小镜像体积
-FROM node:18 AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
-FROM node:18-alpine
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY package*.json ./
-RUN npm ci --only=production
-CMD ["node", "dist/index.js"]
-
-# ✅ 合并 RUN 指令减少层数
-RUN apt-get update && \
-    apt-get install -y nginx && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# ❌ 不要这样做（增加层数）
-RUN apt-get update
-RUN apt-get install -y nginx
-RUN apt-get clean
-```
-
-### 2. 使用 .dockerignore
-
-```.dockerignore
-node_modules
-npm-debug.log
-.git
-.env
-*.md
-.DS_Store
-```
-
-### 3. 安全最佳实践
-
-```dockerfile
-# 使用非 root 用户运行
-FROM node:18-alpine
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
-USER nodejs
-
-# 不要在镜像中硬编码敏感信息
-# ❌ ENV API_KEY=secret123
-# ✅ 使用运行时环境变量
-docker run -e API_KEY=secret123 my-app
-```
-
-### 4. 资源限制
-
-```bash
-# 限制 CPU 和内存
-docker run -m 512m --cpus 1 nginx
-
-# Docker Compose 中限制资源
-services:
-  web:
-    image: nginx
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 512M
-        reservations:
-          cpus: '0.5'
-          memory: 256M
-```
-
-### 5. 健康检查
-
-```dockerfile
-# Dockerfile 中定义
-HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
-  CMD curl -f http://localhost:3000/health || exit 1
-```
-
-```yaml
-# Docker Compose 中定义
-services:
-  web:
-    image: my-app
-    healthcheck:
-      test: [CMD, curl, -f, "http://localhost:3000/health"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
-      start_period: 40s
-```
 
 ### 6. 日志管理
 
@@ -717,71 +655,6 @@ docker system prune -a
 
 # 查看 Docker 磁盘使用情况
 docker system df
-```
-
----
-
-## 常见应用场景
-
-### 快速启动常用服务
-
-```bash
-# MySQL
-docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password mysql:8
-
-# PostgreSQL
-docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=password postgres:15
-
-# Redis
-docker run -d -p 6379:6379 redis:7
-
-# MongoDB
-docker run -d -p 27017:27017 mongo:6
-
-# Nginx
-docker run -d -p 80:80 -v $(pwd)/html:/usr/share/nginx/html nginx
-```
-
-### 开发环境示例
-
-完整的 Next.js + PostgreSQL + Redis 开发环境：
-
-```yaml
-version: '3.8'
-
-services:
-  nextjs:
-    build: .
-    ports:
-      - "3000:3000"
-    volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/.next
-    environment:
-      - DATABASE_URL=postgresql://postgres:password@postgres:5432/mydb
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      - postgres
-      - redis
-
-  postgres:
-    image: postgres:15-alpine
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=mydb
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-
-volumes:
-  postgres-data:
 ```
 
 ---
