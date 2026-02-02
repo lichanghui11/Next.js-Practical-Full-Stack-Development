@@ -77,24 +77,25 @@
 ```bash
 .
 ├── src
-│   ├── app                # Next.js App Router（页面、布局、组件、actions）
-│   │   ├── (pages)
-│   │   ├── _actions
-│   │   ├── _components
+│   ├── app                    # Next.js App Router
+│   │   ├── api/[[...route]]   # Hono 入口（统一后端路由挂载点）
+│   │   ├── (pages)            # 页面分组
+│   │   ├── _components        # UI/业务组件
 │   │   ├── styles
 │   │   └── utils
-│   ├── database           # 数据库层：client/repo/adapter/seed/prisma
-│   │   ├── adapters
-│   │   ├── client
-│   │   ├── extentions
-│   │   ├── prisma
-│   │   ├── repositories
-│   │   ├── seed
-│   │   └── types
-│   ├── docs               # 项目文档
+│   ├── server                 # 后端（Hono + 业务分层）
+│   │   ├── main.ts            # 汇总所有模块并设置 /api 前缀
+│   │   ├── common             # createHonoApp、错误处理等中间件
+│   │   └── modules
+│   │       ├── blog           # blog.api / blog.service / blog.schema / blog.type
+│   │       └── user           # 预留用户模块
+│   ├── config                 # api.client.ts（前端 Hono 客户端配置）
+│   ├── lib                    # rpc.client.ts（fetchApi 封装）、types
+│   ├── database               # Prisma + Repositories + Seed
+│   ├── docs                   # 项目文档
 │   └── mdx-env.d.ts
-├── public                 # 静态资源
-├── patches                # pnpm patch 生成的补丁
+├── public                     # 静态资源
+├── patches                    # pnpm patch 生成的补丁
 ├── next.config.ts
 ├── package.json
 └── ...
@@ -102,37 +103,17 @@
 
 ## 📅 当前进度
 
-> 💡
-> **当前提交说明**：完成 MDX 渲染系统、TOC 目录组件、Header 滚动效果、移动端响应式抽屉；当前项目仍使用 Next.js 自带的 Server
-> Actions。
+> 💡 本轮重构：后端逻辑整合到 Hono（App Router 的 `app/api/[[...route]]` 入口），前端通过
+> `hono/client` + `fetchApi` 统一调用，表单校验用 `zValidator + Zod`。
 
-- [x] **项目初始化**: 使用 `create-next-app` 搭建基础环境。
-- [x] **CSS 架构重构**: 模块化 Tailwind v4 配置，解决 CSS Module 引用问题。
-- [x] **工程化配置**: 完善的代码规范检查与提交约束。
-- [x] **静态资源**: 完成 Favicon/Logo 配置。
-- [x] **UI 组件开发**: 弹窗组件、表单组件、折叠面板组件。
-- [x] **博客编辑功能**: 拦截路由弹窗编辑，玻璃拟态样式。
-- [x] **数据库集成**: Prisma ORM + PostgreSQL，配置 Adapter 架构。
-- [x] **MDX 渲染系统**:
-  - 序列化/水合分离架构
-  - 代码窗口组件（rehype-code-window）
-  - 阅读时间统计
-- [x] **TOC 目录组件**:
-  - 桌面端侧边栏（IntersectionObserver 活跃追踪）
-  - 移动端抽屉（侧滑 + 遮罩）
-  - 响应式布局切换
-- [x] **Header 滚动效果**:
-  - 滚动时高度变化 (50px → 60px)
-  - 背景透明度渐变 (color-mix)
-- [ ] **待优化**:
-  - [ ] 完善 Header 滚动动画
-  - [ ] 移动端目录按钮图标旋转动画
-  - [ ] PC 端目录 sticky 定位完整实现
-- [ ] **后端 API 对接**: 待开始...
-- [x] **博客详情页**:
-  - MDX 内容渲染（支持所有自定义插件）
-  - 文章元信息展示（发布时间、摘要、封面图）
-  - 响应式布局适配
+- [x] **项目初始化** / 工程规范 / 静态资源
+- [x] **CSS & 主题架构** / UI 组件 / 博客编辑弹窗
+- [x] **数据库层**：Prisma + PostgreSQL
+- [x] **MDX & TOC**：序列化/水合拆分，阅读时间统计
+- [x] **后端 API 层（Hono）**：路由集中在 `src/server`，`hono/client`
+      生成类型安全客户端，`zValidator` 负责入参校验
+- [x] **博客详情页**：MDX 渲染与元信息展示
+- [ ] **待优化**：Header 动画细节、目录 sticky、移动端交互微调
 
 ## 🛠️ 快速开始
 

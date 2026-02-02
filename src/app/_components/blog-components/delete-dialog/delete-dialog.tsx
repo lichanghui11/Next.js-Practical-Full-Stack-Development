@@ -18,10 +18,10 @@ import {
 } from 'ui/alert-dialog';
 import { Button } from 'ui/button';
 
-import { deletePost } from '@/app/_actions/post';
 import { Spinner } from '@/app/_components/spinner';
 import { useIsMobile } from '@/app/utils/browser';
 import { cn } from '@/app/utils/utils';
+import { fetchApi } from '@/lib/rpc.client';
 
 import styles from '../shared/button-styles.module.css';
 
@@ -45,20 +45,20 @@ export const DeleteDialog: FC<{ id: string | number }> = ({ id }) => {
 
   const handleDelete: MouseEventHandler<HTMLButtonElement> = useCallback(
     async (e) => {
-      try {
-        e.preventDefault();
-        setPending(true);
-        await deletePost(String(id));
-        setOpen(false);
-        router.refresh();
-      } catch (error) {
+      e.preventDefault();
+      setPending(true);
+      const result = await fetchApi((honoClient) => {
+        return honoClient.api.blogs[':id'].$delete({ param: { id: String(id) } });
+      });
+      if (!result.ok) {
         toast.warning('删除失败', {
           id: 'post-delete-error',
-          description: (error as Error).message,
+          description: (await result.json()).message,
         });
-      } finally {
-        setPending(false);
       }
+      setOpen(false);
+      router.refresh(); // 删除文章后刷新页面
+      setPending(false);
     },
     [id, router],
   );

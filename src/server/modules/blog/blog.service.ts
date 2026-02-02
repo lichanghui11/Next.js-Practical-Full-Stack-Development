@@ -1,8 +1,9 @@
 'use server';
+import type { Post } from '@prisma/client';
+
 // 这里是数据的 action ，操作层，没有增删查改的内部逻辑，但是提供增删查改的接口
 // 如果需要	权限判断 revalidateTag 日志，都统一加在这里
-
-import type { Post } from '@prisma/client';
+import { isNil } from 'lodash';
 
 import type { PageParams, PageResult } from '@/database/types/pagination';
 
@@ -41,4 +42,16 @@ export const updatePost = async (post: Partial<Post> & { id: string }): Promise<
 // 删除文章
 export const deletePost = async (id: string): Promise<Post | null> => {
   return PostRepo.deletePost(id);
+};
+
+/**
+ * server 端专用检测 slug 唯一性的工具函数
+ * 通过ID验证slug的唯一性
+ * @param id
+ */
+export const isSlugUnique = async (id?: string) => async (slug?: string | null) => {
+  if (isNil(slug) || !slug.length) return true;
+  const post = await queryPostBySlug(slug);
+  if (isNil(post) || post.id === id) return true;
+  return false;
 };

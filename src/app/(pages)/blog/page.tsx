@@ -4,14 +4,15 @@ import { isNil } from 'lodash';
 import { Calendar } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
 
-import { queryPosts } from '@/app/_actions/post';
 import { DeleteButton } from '@/app/_components/blog-components/delete-dialog/delete-button';
 import { EditButton } from '@/app/_components/blog-components/edit-button/edit-button';
 import { Pagination } from '@/app/_components/blog-components/pagination/pagination';
 import { PageSkeleton } from '@/app/_components/skeleton';
 import { formatDate } from '@/app/utils/format-time';
+import { fetchApi } from '@/lib/rpc.client';
 
 import styles from './blog-list.module.css';
 
@@ -29,10 +30,16 @@ const BlogListContent: FC<{
   const { page, limit } = await searchParams;
   const currentPage = isNil(page) ? 1 : Number(page);
   const pageSize = isNil(limit) ? 10 : Number(limit) > 50 ? 50 : Number(limit);
-  const posts = await queryPosts({
-    currentPage,
-    limit: pageSize,
+  const result = await fetchApi(async (honoClient) => {
+    return honoClient.api.blogs.$get({ query: { currentPage, limit: pageSize } });
   });
+  // 这里 result 的 ClientResponse 是增强了的 ResponseType，里面有ok/status/headers/json() 这些 Response 的能力
+  if (!result.ok) throw new Error((await result.json()).message);
+  const posts = await result.json();
+
+  if (posts.meta.totalPages && posts.meta.totalPages > 0 && Number(page) > posts.meta.totalPages) {
+    return redirect('/');
+  }
   return (
     <div className={styles.container}>
       {posts.data.length === 0 ? (

@@ -5,11 +5,11 @@ import { Calendar, Tag } from 'lucide-react';
 import Image from 'next/image';
 import { Suspense } from 'react';
 
-import { queryPostByIdOrSlug } from '@/app/_actions/post';
 import { BackButton } from '@/app/_components/blog-components/back-button/back-button';
 import { MdxRenderer } from '@/app/_components/mdx/mdx-client/render';
 import { PostContentSkeleton } from '@/app/_components/skeleton';
 import { formatDate } from '@/app/utils/format-time';
+import { fetchApi } from '@/lib/rpc.client';
 
 import styles from './blog-detail.module.css';
 export const generateMetadata = async (
@@ -17,12 +17,18 @@ export const generateMetadata = async (
   parent: ResolvingMetadata,
 ): Promise<Metadata> => {
   const id = (await params).id;
-
-  const post = await queryPostByIdOrSlug(id);
+  const result = await fetchApi((honoClient) => {
+    return honoClient.api.blogs[':item'].$get({ param: { item: id } });
+  });
+  if (!result.ok) {
+    /** 如果这里请求不成功，不需要做任何事，这里只是元数据相关的东西，不涉及页面 */
+    return {};
+  }
+  const post = await result.json();
   return {
     title: `${post?.title || '博客详情'} - ${(await parent).title?.absolute}`,
     description: post ? post.description || post.title : '您访问的文章不存在或已被删除',
-    keywords: post?.keywords ? post.keywords.split(',').map((kw) => kw.trim()) : [],
+    keywords: post?.keywords ? post.keywords.split(',').map((kw: string) => kw.trim()) : [],
   };
 };
 
@@ -30,7 +36,13 @@ const BlogDetail: FC<{
   params: Promise<{ id: string }>;
 }> = async ({ params }) => {
   const { id } = await params;
-  const post = await queryPostByIdOrSlug(id);
+
+  const result = await fetchApi((honoClient) => {
+    return honoClient.api.blogs.byId[':id'].$get({ param: { id } });
+  });
+  // 这里不用写 try catch，这个错误被内部处理的，直接通过 ok 字段判断即可
+  if (!result.ok) throw new Error((await result.json()).message);
+  const post = await result.json();
 
   if (!post) {
     return (

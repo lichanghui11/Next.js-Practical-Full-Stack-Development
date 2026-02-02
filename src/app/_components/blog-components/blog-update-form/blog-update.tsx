@@ -1,15 +1,27 @@
 import type { FC, PropsWithChildren } from 'react';
 
-import { queryPostByIdOrSlug } from '@/app/_actions/post';
-// 这个组件是封装好的用于 新建和更新 的表单组件，通过参数不同，可以实现 新建和更新
 import { BlogForm } from '@/app/_components/blog-components/submit-form/blog-form';
+import { fetchApi } from '@/lib/rpc.client';
 // 这里封装的是 编辑博客 使用的type:update的表单组件
 export const BlogUpdate: FC<PropsWithChildren<{ id: string }>> = async ({ id }) => {
-  const post = await queryPostByIdOrSlug(id);
-  console.log('post', post);
+  const result = await fetchApi((honoClient) => {
+    return honoClient.api.blogs.byId[':id'].$get({ param: { id } });
+  });
+  if (!result.ok) throw new Error((await result.json()).message);
+  const post = await result.json();
   if (!post) {
     return <div>文章未找到</div>;
   }
 
-  return <BlogForm type="update" blog={post}></BlogForm>;
+  return (
+    <BlogForm
+      type="update"
+      // 后端序列化为 string 的时间字段转换回 Date 以满足组件类型要求
+      blog={{
+        ...post,
+        createdAt: new Date(post.createdAt),
+        updatedAt: new Date(post.updatedAt),
+      }}
+    ></BlogForm>
+  );
 };
