@@ -1,18 +1,23 @@
-import { zValidator } from '@hono/zod-validator';
+import { describeRoute, validator } from 'hono-openapi';
 import { isNil } from 'lodash';
 
 import type { PageParams } from '@/database/types/pagination';
 
 import { createHonoApp } from '@/server/common/app';
 import { createErrorResult, defaultValidatorErrorHandler } from '@/server/common/error';
+import { createResponse } from '@/server/common/response';
+import { errorSchema } from '@/server/common/schema';
 
 import {
   buildPostRequestSchema,
   postDetailByIdRequestSchema,
   postDetailBySlugRequestSchema,
   postDetailRequestSchema,
+  postItemSchema,
+  postPaginateSchema,
   postPaginationQueryRequestSchema,
   totalPagesRequestSchema,
+  totalPagesSchema,
 } from './blog.schema';
 import {
   addPost,
@@ -23,19 +28,36 @@ import {
   queryPostTotalPage,
   updatePost,
 } from './blog.service';
+
 /**
  * 这里存在两个“层面”的状态：
 	1.	HTTP 状态码（网络层/协议层）：通过 c.json(..., 404/500/200) 传出去的那个
 	2.	业务错误信息（响应体/应用层）：用 createErrorResult(...) 生成的 JSON 里的 message / code / ok 等字段
  * 它们是两套概念，可以一致，也可以不一致（但一般建议保持一致）。
  */
+
+// tags 的意义就是：给接口分组/分类，方便在文档里组织展示，也方便后续做筛选、权限/负责人标注等。
+// 	一个接口可以同时属于 Posts 和 Admin（看实际情况是怎么设计的）
+const tags: string[] = ['文章操作'];
 const app = createHonoApp();
 export const postApi = app
   // 请求博客首页的文章列表
   .get(
     '/',
-    zValidator('query', postPaginationQueryRequestSchema, defaultValidatorErrorHandler),
-    // 仅在 schema 校验失败时触发的自定义处理函数。校验通过不会调用；不传则用默认失败响应。
+    // OpenApi 中间件
+    describeRoute({
+      tags,
+      summary: '博客首页的文章列表',
+      description: '博客首页的文章列表，带有分页数据',
+      responses: {
+        // 这里的状态码是 HTTP 层面的
+        ...createResponse(postPaginateSchema, 200, '请求成功'),
+        ...createResponse(errorSchema, 400, '请求数据验证失败'),
+        ...createResponse(errorSchema, 500, '查询文章分页数据失败'),
+      },
+    }),
+    validator('query', postPaginationQueryRequestSchema, defaultValidatorErrorHandler),
+    // defaultValidatorErrorHandler 是仅在 schema 校验失败时触发的自定义处理函数。校验通过不会调用；不传则用默认失败响应。
     async (c) => {
       try {
         // /api/blogs?page=1&pageSize=10
@@ -54,7 +76,19 @@ export const postApi = app
   // 请求页面总数，参数中是每页的数量 limit
   .get(
     '/limit',
-    zValidator('query', totalPagesRequestSchema, defaultValidatorErrorHandler),
+    // OpenApi 中间件
+    describeRoute({
+      tags,
+      summary: '页面总数',
+      description: '根据每页显示的文章条目的数量和文章总数计算出总页数',
+      responses: {
+        // 这里的状态码是 HTTP 层面的
+        ...createResponse(totalPagesSchema, 200, '请求成功'),
+        ...createResponse(errorSchema, 400, '请求数据验证失败'),
+        ...createResponse(errorSchema, 500, '查询页面总数失败'),
+      },
+    }),
+    validator('query', totalPagesRequestSchema, defaultValidatorErrorHandler),
     async (c) => {
       try {
         const query = c.req.query();
@@ -66,10 +100,23 @@ export const postApi = app
       }
     },
   )
-  // 根据 slug || id 来查询文章
+  // 根据 slug || id 来查询单条文章
   .get(
     '/:item',
-    zValidator('param', postDetailRequestSchema, defaultValidatorErrorHandler),
+    // OpenApi 中间件
+    describeRoute({
+      tags,
+      summary: '查询单条文章',
+      description: '根据 slug 或 id 查询单条文章详情',
+      responses: {
+        // 这里的状态码是 HTTP 层面的
+        ...createResponse(postItemSchema, 200, '请求成功'),
+        ...createResponse(errorSchema, 404, '文章不存在'),
+        ...createResponse(errorSchema, 400, '请求数据验证失败'),
+        ...createResponse(errorSchema, 500, '查询文章详情失败'),
+      },
+    }),
+    validator('param', postDetailRequestSchema, defaultValidatorErrorHandler),
     async (c) => {
       try {
         const { item } = c.req.param();
@@ -84,7 +131,20 @@ export const postApi = app
   // 根据 id 来查询文章，没有单独使用 ID 查询的方法，复用 queryPostByIdOrSlug
   .get(
     '/byId/:id',
-    zValidator('param', postDetailByIdRequestSchema, defaultValidatorErrorHandler),
+    // OpenApi 中间件
+    describeRoute({
+      tags,
+      summary: '根据 ID 查询文章',
+      description: '只通过文章 ID 来查询文章详情',
+      responses: {
+        // 这里的状态码是 HTTP 层面的
+        ...createResponse(postItemSchema, 200, '请求成功'),
+        ...createResponse(errorSchema, 404, '文章不存在'),
+        ...createResponse(errorSchema, 400, '请求数据验证失败'),
+        ...createResponse(errorSchema, 500, '查询文章详情失败'),
+      },
+    }),
+    validator('param', postDetailByIdRequestSchema, defaultValidatorErrorHandler),
     async (c) => {
       try {
         const { id } = c.req.param(); // 拿到的是路径参数 { id: id }
@@ -99,7 +159,20 @@ export const postApi = app
   // 根据 slug 来查询文章
   .get(
     '/bySlug/:slug',
-    zValidator('param', postDetailBySlugRequestSchema, defaultValidatorErrorHandler),
+    // OpenApi 中间件
+    describeRoute({
+      tags,
+      summary: '根据 Slug 查询文章',
+      description: '根据文章 Slug 查询文章详情',
+      responses: {
+        // 这里的状态码是 HTTP 层面的
+        ...createResponse(postItemSchema, 200, '请求成功'),
+        ...createResponse(errorSchema, 404, '文章不存在'),
+        ...createResponse(errorSchema, 400, '请求数据验证失败'),
+        ...createResponse(errorSchema, 500, '查询文章详情失败'),
+      },
+    }),
+    validator('param', postDetailBySlugRequestSchema, defaultValidatorErrorHandler),
     async (c) => {
       try {
         const { slug } = c.req.param();
@@ -113,22 +186,46 @@ export const postApi = app
   // 新增一篇文章
   .post(
     '/',
-    zValidator('json', buildPostRequestSchema(), defaultValidatorErrorHandler),
+    // OpenApi 中间件
+    describeRoute({
+      tags,
+      summary: '新增文章',
+      description: '新增一篇博客文章',
+      responses: {
+        // 这里的状态码是 HTTP 层面的
+        ...createResponse(postItemSchema.nullable(), 201, '请求成功'), // 新增成功返回当前的文章数据，可能为 null
+        ...createResponse(errorSchema, 400, '请求数据验证失败'),
+        ...createResponse(errorSchema, 500, '新增文章失败'),
+      },
+    }),
+    validator('json', buildPostRequestSchema(), defaultValidatorErrorHandler),
     async (c) => {
       try {
         const body = await c.req.json();
         const result = await addPost(body);
         return c.json(result, 201);
       } catch (error) {
-        return c.json(createErrorResult('创建文章失败', error), 500);
+        return c.json(createErrorResult('新增文章失败', error), 500);
       }
     },
   )
   // 更新对应 id 的文章
   .patch(
     '/:id',
-    zValidator('param', postDetailByIdRequestSchema, defaultValidatorErrorHandler),
-    zValidator('json', buildPostRequestSchema(), defaultValidatorErrorHandler),
+    // OpenApi 中间件
+    describeRoute({
+      tags,
+      summary: '更新文章',
+      description: '更新一篇已有的博客文章',
+      responses: {
+        // 这里的状态码是 HTTP 层面的
+        ...createResponse(postItemSchema.nullable(), 200, '请求成功'),
+        ...createResponse(errorSchema, 400, '请求数据验证失败'),
+        ...createResponse(errorSchema, 500, '更新文章失败'),
+      },
+    }),
+    validator('param', postDetailByIdRequestSchema, defaultValidatorErrorHandler),
+    validator('json', buildPostRequestSchema(), defaultValidatorErrorHandler),
     async (c) => {
       try {
         const { id } = c.req.param();
@@ -143,7 +240,19 @@ export const postApi = app
   // 删除对应 id 的文章
   .delete(
     '/:id',
-    zValidator('param', postDetailByIdRequestSchema, defaultValidatorErrorHandler),
+    // OpenApi 中间件
+    describeRoute({
+      tags,
+      summary: '删除一篇文章',
+      description: '删除一篇已经存在的文章',
+      responses: {
+        // 这里的状态码是 HTTP 层面的
+        ...createResponse(postItemSchema.nullable(), 200, '请求成功'),
+        ...createResponse(errorSchema, 400, '请求数据验证失败'),
+        ...createResponse(errorSchema, 500, '删除文章失败'),
+      },
+    }),
+    validator('param', postDetailByIdRequestSchema, defaultValidatorErrorHandler),
     async (c) => {
       try {
         const { id } = c.req.param();

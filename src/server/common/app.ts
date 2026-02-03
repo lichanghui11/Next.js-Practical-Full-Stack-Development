@@ -15,5 +15,5 @@ const createHonoApp = <E extends Env>() => {
 export { createHonoApp };
 
 /**
- * 为了让层次更加的清晰，我使用这个 /server/common/app.ts 文件来专门创建实例和使用中间件，不要在其他地方再重复使用中间件
+ * 为了让层次更加的清晰，我使用这个 /server/common/app.ts 文件来专门创建 Hono 实例和使用中间件，不要在其他地方再重复使用中间件
  */

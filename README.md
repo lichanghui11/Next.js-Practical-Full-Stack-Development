@@ -115,6 +115,12 @@
 - [x] **博客详情页**：MDX 渲染与元信息展示
 - [ ] **待优化**：Header 动画细节、目录 sticky、移动端交互微调
 
+## 📑 API 文档入口
+
+- OpenAPI JSON：`/api/openapi`
+- Swagger UI（Hono 内置）：`/api/swagger`
+- Scalar API Referenc（Hono 内置）e：`/api/docs`
+
 ## 🛠️ 快速开始
 
 ```bash
