@@ -1,10 +1,14 @@
-'use server';
 import type { Post } from '@prisma/client';
 
 // 这里是数据的 action ，操作层，没有增删查改的内部逻辑，但是提供增删查改的接口
 // 如果需要	权限判断 revalidateTag 日志，都统一加在这里
 import { isNil } from 'lodash';
 
+import type {
+  PostCreateInput,
+  PostPaginationOptions,
+  PostUpdateInput,
+} from '@/database/repositories/post.repo';
 import type { PageParams, PageResult } from '@/database/types/pagination';
 
 import PostRepo from '@/database/repositories/post.repo';
@@ -15,7 +19,9 @@ export const queryPosts = async (options: PageParams): Promise<PageResult<Post>>
 };
 
 // 查询总页数
-export const queryPostTotalPage = async (options: { pageSize?: number }): Promise<number> => {
+export const queryPostTotalPage = async (
+  options: Omit<PostPaginationOptions, 'currentPage'>,
+): Promise<number> => {
   return PostRepo.queryPostTotalPage(options);
 };
 
@@ -25,17 +31,17 @@ export const queryPostByIdOrSlug = async (item: string): Promise<Post | null> =>
 };
 
 // 根据 Slug 查询文章信息
-export const queryPostBySlug = async (slug: string): Promise<Post | null> => {
+export const queryPostBySlug = async (slug: string): Promise<Post | null | undefined> => {
   return PostRepo.queryPostBySlug(slug);
 };
 
 // 新增文章
-export const addPost = async (post: Omit<Post, 'id'>): Promise<Post> => {
+export const addPost = async (post: PostCreateInput): Promise<Post | null> => {
   return PostRepo.addPost(post);
 };
 
 // 更新文章
-export const updatePost = async (post: Partial<Post> & { id: string }): Promise<Post | null> => {
+export const updatePost = async (post: PostUpdateInput & { id: string }): Promise<Post | null> => {
   return PostRepo.updatePost(post);
 };
 

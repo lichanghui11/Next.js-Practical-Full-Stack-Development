@@ -32,6 +32,7 @@ export const createErrorResult = (title: string, error?: any, code?: number) => 
  * 当 !result.success 时，result.error 就是一个 ZodError，而 format() 就是 ZodError.prototype.format()，用来把错误信息整理成“按字段分组”的结构，方便前端展示。
  */
 export const defaultValidatorErrorHandler = (result: any, c: Context) => {
+  console.log('defaultValidatorErrorHandler: ', result);
   if (!result.success) {
     return c.json(
       {

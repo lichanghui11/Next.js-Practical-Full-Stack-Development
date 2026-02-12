@@ -1,7 +1,9 @@
 'use client';
-import { trim } from 'lodash';
+import { isNil, trim } from 'lodash';
 import Link from 'next/link';
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from 'react';
+import { useDeepCompareEffect } from 'react-use';
+import { toast } from 'sonner';
 import { Button } from 'ui/button';
 import {
   Form,
@@ -15,6 +17,11 @@ import {
 import { Input } from 'ui/input';
 import { Textarea } from 'ui/textarea';
 
+import type { CategoryItem } from '@/server/modules/category/category.type';
+import type { TagType as TagItem } from '@/server/modules/tag/tag.type';
+
+import { categoryApi } from '@/api/category';
+import { tagApi } from '@/api/tag';
 import { useBlogForm, useBlogSubmit } from '@/app/_components/blog-components/submit-form/hooks';
 import { MdxEditor } from '@/app/_components/mdx/mdx-client/components/mdx-editor';
 import { cn } from '@/app/utils/utils';
@@ -23,6 +30,8 @@ import type { BlogFormRef, NewBlogFormProps, UpdateBlogFormProps } from '../subm
 
 import { DetailSummary } from '../detail-summary/detail-summary';
 import styles from './blog-form.module.css';
+import { CategorySelect } from './category-select';
+import { TagInput } from './tag';
 import { generateSlug } from './utils';
 
 // 这里是编辑博客的表单组件
@@ -70,6 +79,60 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
       },
       [isSubmitting, getValues, setValue],
     );
+
+    /**
+     * 文章分类
+     */
+    const [allCategories, setAllCategories] = useState<CategoryItem[]>([]);
+    const [categoryId, setCategoryId] = useState<string>(
+      props.type === 'create' || isNil(props.blog.category) ? '' : props.blog.category.id,
+    );
+    useEffect(() => {
+      blogForm.setValue('categoryId', categoryId);
+    }, [categoryId]);
+    useEffect(() => {
+      (async () => {
+        const result = await categoryApi.list();
+        if (!result.ok) {
+          toast.warning('读取分类列表失败,请刷新', {
+            id: 'category-list-error',
+            description: (await result.json()).message,
+          });
+        } else {
+          const data = await result.json();
+          setAllCategories(data);
+        }
+      })();
+    }, []);
+
+    /**
+     * 文章标签
+     */
+    const [allTags, setAllTags] = useState<TagItem[]>([]);
+    const [activeTagIndex, setActiveTagIndex] = useState<number | null>(null);
+    const [tags, setTags] = useState<TagItem[]>(
+      props.type === 'create' ? [] : (props.blog.tags ?? []),
+    );
+
+    useEffect(() => {
+      (async () => {
+        const result = await tagApi.list();
+        if (!result.ok) {
+          toast.warning('读取标签列表失败,请刷新', {
+            id: 'tag-list-error',
+            description: (await result.json()).message,
+          });
+        } else {
+          const data = await result.json();
+          setAllTags(data);
+        }
+      })();
+    }, []);
+
+    useDeepCompareEffect(() => {
+      blogForm.setValue('tags', tags);
+    }, [tags]);
+
     return (
       <Form {...blogForm}>
         <form action="" onSubmit={blogForm.handleSubmit(onBlogSubmit)} className={styles.blogForm}>
@@ -143,6 +206,55 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
                 )}
               />
             </div>
+            <FormField
+              control={blogForm.control}
+              name="categoryId"
+              render={({ field }) => (
+                <FormItem className="mt-2 border-b border-dashed pb-1">
+                  <div className="w-full flex-col space-y-2">
+                    <FormLabel className="block">分类选择</FormLabel>
+                    <FormControl className="block pt-1">
+                      <CategorySelect
+                        {...field}
+                        value={categoryId}
+                        setValue={setCategoryId}
+                        categories={allCategories}
+                      />
+                    </FormControl>
+                  </div>
+                  <FormDescription>
+                    选择一个分类后,在读取该分类的父分类(如果有)时,列表中也会包含此文章
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={blogForm.control}
+              name="tags"
+              render={({ field }) => (
+                <FormItem className="mt-2 border-b border-dashed pb-1">
+                  <FormLabel>标签</FormLabel>
+                  <FormControl>
+                    <TagInput
+                      {...field}
+                      placeholder="输入标签"
+                      tags={tags}
+                      setTags={setTags}
+                      className="w-full"
+                      activeTagIndex={activeTagIndex}
+                      setActiveTagIndex={setActiveTagIndex}
+                      autocompleteOptions={allTags}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    每个标签之间请用英文逗号(,)分割,
+                    如果单独不设置SEO关键字则会根据标签生成关键字用于SEO
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={blogForm.control}
               name="keywords"

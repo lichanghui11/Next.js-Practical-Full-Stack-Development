@@ -3,13 +3,19 @@ import type { FC } from 'react';
 
 import { Calendar, Tag } from 'lucide-react';
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
+import type { IBlogBreadcrumbItem } from '@/app/utils/get-breadcrumb';
+
+import { blogApi } from '@/api/post';
 import { BackButton } from '@/app/_components/blog-components/back-button/back-button';
+import { BlogBreadCrumb } from '@/app/_components/blog-components/breadcrumb';
 import { MdxRenderer } from '@/app/_components/mdx/mdx-client/render';
 import { PostContentSkeleton } from '@/app/_components/skeleton';
 import { formatDate } from '@/app/utils/format-time';
-import { fetchApi } from '@/lib/rpc.client';
+import { getBreadcrumbsLinks } from '@/app/utils/get-breadcrumb';
+import { cn } from '@/app/utils/utils';
 
 import styles from './blog-detail.module.css';
 export const generateMetadata = async (
@@ -17,9 +23,8 @@ export const generateMetadata = async (
   parent: ResolvingMetadata,
 ): Promise<Metadata> => {
   const id = (await params).id;
-  const result = await fetchApi((honoClient) => {
-    return honoClient.api.blogs[':item'].$get({ param: { item: id } });
-  });
+
+  const result = await blogApi.detailById(id);
   if (!result.ok) {
     /** 如果这里请求不成功，不需要做任何事，这里只是元数据相关的东西，不涉及页面 */
     return {};
@@ -37,13 +42,18 @@ const BlogDetail: FC<{
 }> = async ({ params }) => {
   const { id } = await params;
 
-  const result = await fetchApi((honoClient) => {
-    return honoClient.api.blogs.byId[':id'].$get({ param: { id } });
-  });
+  const result = await blogApi.detailById(id);
   // 这里不用写 try catch，这个错误被内部处理的，直接通过 ok 字段判断即可
-  if (!result.ok) throw new Error((await result.json()).message);
+  if (!result.ok) {
+    if (result.status !== 404) throw new Error((await result.json()).message);
+    return notFound();
+  }
   const post = await result.json();
-
+  const breadcrumbs: IBlogBreadcrumbItem[] = [...getBreadcrumbsLinks(post.categories, 'post')];
+  breadcrumbs.push({
+    id: post.id,
+    text: post.title,
+  });
   if (!post) {
     return (
       <div className={styles.container}>
@@ -56,6 +66,9 @@ const BlogDetail: FC<{
     <div className={styles.container}>
       <BackButton />
       {/* 文章头部 */}
+      <div className={cn('page-container')}>
+        <BlogBreadCrumb items={breadcrumbs} basePath="" />
+      </div>
       <header className={styles.header}>
         <h1 className={styles.title}>{post.title}</h1>
 

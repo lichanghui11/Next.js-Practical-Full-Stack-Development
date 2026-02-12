@@ -1,10 +1,16 @@
 import 'dotenv/config';
 
 import prisma from '../client/admin-client';
-import { createSeedPosts, createSeedUsers } from './seed-helpers';
+import { createSeedCategories, createSeedPosts, createSeedUsers } from './seed-helpers';
 
 async function main() {
   try {
+    // 先删除有外键依赖的表
+    await prisma.post.$truncate();
+    await prisma.category.$truncate();
+    await prisma.user.$truncate();
+
+    await createSeedCategories();
     await createSeedPosts();
     await createSeedUsers();
     console.log('✅ Seed data created successfully');

@@ -1,6 +1,7 @@
 import { describeRoute, validator } from 'hono-openapi';
 import { isNil } from 'lodash';
 
+import type { PostPaginationOptions } from '@/database/repositories/post.repo';
 import type { PageParams } from '@/database/types/pagination';
 
 import { createHonoApp } from '@/server/common/app';
@@ -15,7 +16,7 @@ import {
   postDetailRequestSchema,
   postItemSchema,
   postPaginateSchema,
-  postPaginationQueryRequestSchema,
+  postPaginationRequestSchema,
   totalPagesRequestSchema,
   totalPagesSchema,
 } from './blog.schema';
@@ -39,6 +40,11 @@ import {
 // tags 的意义就是：给接口分组/分类，方便在文档里组织展示，也方便后续做筛选、权限/负责人标注等。
 // 	一个接口可以同时属于 Posts 和 Admin（看实际情况是怎么设计的）
 const tags: string[] = ['文章操作'];
+export const postPath = '/blog';
+// 这里的 typeof 是类型操作符，只在编译阶段生效，编译器会扫描整个文件来解析类型，不受代码书写顺序的限制。
+// 所以可以提前使用 postApi 的类型
+export type PostApiType = typeof postApi;
+
 const app = createHonoApp();
 export const postApi = app
   // 请求博客首页的文章列表
@@ -56,17 +62,27 @@ export const postApi = app
         ...createResponse(errorSchema, 500, '查询文章分页数据失败'),
       },
     }),
-    validator('query', postPaginationQueryRequestSchema, defaultValidatorErrorHandler),
+    validator('query', postPaginationRequestSchema, defaultValidatorErrorHandler),
     // defaultValidatorErrorHandler 是仅在 schema 校验失败时触发的自定义处理函数。校验通过不会调用；不传则用默认失败响应。
     async (c) => {
       try {
         // /api/blogs?page=1&pageSize=10
-        const query = c.req.query();
+        // const query = c.req.query(); // 这个是原始取数据的方式，取到的是字符串
+        const query = c.req.valid('query'); // 这个取的是经过 validator 校验后的数据
         const options = Object.fromEntries(
-          Object.entries(query).map(([k, v]) => [k, Number(v)]),
+          Object.entries(query).map(([k, v]) => {
+            if (k === 'page') {
+              return ['currentPage', Number(v)];
+            }
+            if (['limit', 'currentPage'].includes(k)) {
+              return [k, Number(v)];
+            }
+            return [k, v];
+          }),
         ) as unknown as PageParams;
         // 上方 options 的类型为什么这么添加：这个对象的值可能不是 PageParams 类型，但是我在写代码的时候保证只用这两个字段来传参，不用其他字段，这是我的目的，具体我后续在看我请求时候的实际传参。
         const result = await queryPosts(options);
+
         return c.json(result, 200);
       } catch (error) {
         return c.json(createErrorResult('查询文章分页数据失败', error), 500);
@@ -80,7 +96,8 @@ export const postApi = app
     describeRoute({
       tags,
       summary: '页面总数',
-      description: '根据每页显示的文章条目的数量和文章总数计算出总页数',
+      description:
+        '根据每页显示的文章条目的数量和文章总数计算出总页数，如果没有合法的limit参数，默认为10',
       responses: {
         // 这里的状态码是 HTTP 层面的
         ...createResponse(totalPagesSchema, 200, '请求成功'),
@@ -91,9 +108,14 @@ export const postApi = app
     validator('query', totalPagesRequestSchema, defaultValidatorErrorHandler),
     async (c) => {
       try {
-        const query = c.req.query();
-        const limit = query.limit ? Number(query.limit) : undefined;
-        const result = await queryPostTotalPage({ pageSize: limit });
+        const query = c.req.valid('query');
+        const options = Object.fromEntries(
+          Object.entries(query).map(([key, value]) =>
+            ['limit'].includes(key) ? [key, Number(value)] : [key, value],
+          ),
+        ) as unknown as Omit<PostPaginationOptions, 'currentPage'>;
+        // const limit = query.limit ? Number(query.limit) : 10; // 这一行是添加 tag category 这两个表之前的查询方式
+        const result = await queryPostTotalPage(options);
         return c.json({ result }, 200);
       } catch (error) {
         return c.json(createErrorResult('查询页面总数失败', error), 500);
@@ -119,7 +141,7 @@ export const postApi = app
     validator('param', postDetailRequestSchema, defaultValidatorErrorHandler),
     async (c) => {
       try {
-        const { item } = c.req.param();
+        const { item } = c.req.valid('param');
         const result = await queryPostByIdOrSlug(item);
         if (!isNil(result)) return c.json(result, 200);
         return c.json(createErrorResult('文章不存在'), 404);
@@ -147,7 +169,7 @@ export const postApi = app
     validator('param', postDetailByIdRequestSchema, defaultValidatorErrorHandler),
     async (c) => {
       try {
-        const { id } = c.req.param(); // 拿到的是路径参数 { id: id }
+        const { id } = c.req.valid('param'); // 拿到的是路径参数 { id: id }
         const result = await queryPostByIdOrSlug(id);
         if (!isNil(result)) return c.json(result, 200);
         return c.json(createErrorResult('文章不存在'), 404);
@@ -175,7 +197,7 @@ export const postApi = app
     validator('param', postDetailBySlugRequestSchema, defaultValidatorErrorHandler),
     async (c) => {
       try {
-        const { slug } = c.req.param();
+        const { slug } = c.req.valid('param');
         const result = await queryPostBySlug(slug);
         return c.json(result, 200);
       } catch (error) {
@@ -228,7 +250,7 @@ export const postApi = app
     validator('json', buildPostRequestSchema(), defaultValidatorErrorHandler),
     async (c) => {
       try {
-        const { id } = c.req.param();
+        const { id } = c.req.valid('param');
         const body = await c.req.json();
         const result = await updatePost({ id, ...body });
         return c.json(result, 200);
@@ -255,7 +277,7 @@ export const postApi = app
     validator('param', postDetailByIdRequestSchema, defaultValidatorErrorHandler),
     async (c) => {
       try {
-        const { id } = c.req.param();
+        const { id } = c.req.valid('param');
         const result = await deletePost(id);
         return c.json(result, 200);
       } catch (error) {

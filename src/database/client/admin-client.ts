@@ -3,6 +3,7 @@ import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { Pool } from 'pg';
+import { withBark } from 'prisma-extension-bark';
 
 // 这个插件是复制的其他项目的源码，源码已经没有维护了，支持 sqlite postgresql mysql
 import { truncateExt } from '../extentions/truncate';
@@ -11,6 +12,8 @@ const connectionString = process.env.DATABASE_URL;
 
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter }).$extends(truncateExt('postgres'));
+const prisma = new PrismaClient({ adapter })
+  .$extends(truncateExt('postgres'))
+  .$extends(withBark({ modelNames: ['category'] }));
 
 export default prisma;

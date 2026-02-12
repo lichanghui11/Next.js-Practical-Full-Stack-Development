@@ -1,6 +1,6 @@
 import { isNil } from 'lodash';
 
-import { fetchApi } from '@/lib/rpc.client';
+import { blogApi } from '@/api/post';
 // zod 相关工具函数
 
 /**
@@ -17,9 +17,7 @@ export const slugUniqueValidator = (id?: string) => async (slug?: string | undef
     return true;
   }
   // 有 slug , 查出来
-  const result = await fetchApi((honoClient) => {
-    return honoClient.api.blogs.bySlug[':slug'].$get({ param: { slug } });
-  });
+  const result = await blogApi.detailById(slug);
   if (!result.ok) throw new Error((await result.json()).message);
 
   const post = await result.json();

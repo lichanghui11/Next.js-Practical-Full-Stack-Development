@@ -1,6 +1,9 @@
 import { isNil } from 'lodash';
 import z from 'zod';
 
+import { categoryListSchema, categorySchema } from '../category/category.schema';
+import { tagListSchema } from '../tag/tag.schema';
+
 /**
  * 新建 || 更新 文章时对即将提交的文章的数据进行校验的函数
  * 参数为验证 slug 唯一性的校验器（这里不是那个工厂函数，是已经传入ID（或无 ID传入）的校验器）
@@ -66,6 +69,8 @@ export const buildPostRequestSchema = (
         .optional()
         .meta({ description: '文章描述' }),
       slug, // 将提前定义好的对 slug 的校验规则放进来
+      tags: tagListSchema.optional().meta({ description: '关联标签列表' }),
+      categoryId: z.string().optional().meta({ description: '关联分类ID' }),
     })
     .strict();
 };
@@ -86,8 +91,16 @@ export const postItemSchema = z
     content: z.string().meta({ description: '文章内容' }),
     createdAt: z.string().meta({ description: '文章创建时间' }),
     updatedAt: z.string().meta({ description: '文章更新时间' }),
+    tags: tagListSchema.optional().meta({ description: '关联标签列表，这是一个数组' }),
+    categories: categoryListSchema.meta({
+      description: '关联分类及其祖先分类列表，这是一个扁平数组，没有 children 字段',
+    }),
+    category: categorySchema
+      .nullable()
+      .meta({ description: '关联分类，这是一个分类对象，带有 children 字段' }),
   })
-  .strict();
+  .strict()
+  .meta({ id: 'PostItem', description: '单篇文章数据' });
 
 /**
  * 文章分页查询响应数据结构
@@ -119,20 +132,37 @@ export const totalPagesSchema = z.object({
 });
 
 /**
- * 文章分页查询请求数据结构
+ * 文章分页数据查询 请求参数 的数据结构
+ *
+ * 之前对于 分页数据 这个词总是不知道这个到底是指文章数据还是分页数据，
+ * 现在明白这个指的是这份数据里包含了数据库里的文章有多少页每页有几篇这些 **元数据** 以及 **请求的当前页有哪些文章**
  */
-export const postPaginationQueryRequestSchema = z.object({
-  page: z.coerce.number().optional().meta({ description: '页码' }),
-  limit: z.coerce.number().optional().meta({ description: '每页数量' }),
-  orderBy: z.enum(['asc', 'desc']).optional().meta({ description: '排序方式' }),
-});
+export const postPaginationRequestSchema = z.preprocess(
+  (val) => {
+    console.log('正在校验 postPaginationRequestSchema:', val);
+    return val;
+  },
+  z
+    .object({
+      page: z.coerce.number().optional().meta({ description: '页码' }),
+      limit: z.coerce.number().optional().meta({ description: '每页数量' }),
+      orderBy: z.enum(['asc', 'desc']).optional().meta({ description: '排序方式' }),
+      tag: z.string().optional().meta({ description: '标签过滤' }),
+      category: z.string().optional().meta({ description: '分类过滤' }),
+    })
+    .meta({ id: 'PostPaginationRequest', description: '请求查询文章分页数据的请求参数schema' }),
+);
 
 /**
- * 文章页面总数查询请求数据结构
+ * 文章页面总数查询 请求参数 的数据结构
  */
-export const totalPagesRequestSchema = z.object({
-  limit: z.coerce.number().optional().meta({ description: '每页数量' }),
-});
+export const totalPagesRequestSchema = z
+  .object({
+    limit: z.coerce.number().optional().meta({ description: '每页数量' }),
+    tag: z.string().optional().meta({ description: '标签过滤' }),
+    category: z.string().optional().meta({ description: '分类过滤' }),
+  })
+  .meta({ id: 'TotalPagesRequest', description: '请求查询文章总页数的请求参数schema' });
 
 /**
  * 文章详情查询请求数据结构

@@ -32,6 +32,12 @@
   - `psql`/DBeaver 使用认知、Prisma 迁移与种子
   - 常用命令速查（终端、psql 元命令、SQL 管理语句）
 
+- **🌳 [Prisma Bark 树形结构学习笔记](./src/docs/prisma-bark.md)**
+  - Materialized Path（物化路径）模型
+  - Category 树形扩展与面包屑/后代查询封装
+  - 递归创建树形结构与常见坑点（path 冲突、undefined 处理）
+  - **→ [物化路径示例：三叉树详解](./src/docs/materialized-path-example.md)**
+
 - **📝 [博客编辑弹窗实现](./src/docs/blog-edit-modal-implementation.md)**
   - 拦截路由与弹窗组件
   - CSS 玻璃拟态效果与暗色模式
@@ -117,9 +123,16 @@
 
 ## 📑 API 文档入口
 
-- OpenAPI JSON：`/api/openapi`
-- Swagger UI（Hono 内置）：`/api/swagger`
-- Scalar API Referenc（Hono 内置）e：`/api/docs`
+项目启动后，可以通过以下地址访问 API 文档：
+
+| 地址           | 说明                                         |
+| -------------- | -------------------------------------------- |
+| `/api`         | API 服务欢迎页                               |
+| `/api/openapi` | OpenAPI JSON 规范                            |
+| `/api/swagger` | Swagger UI（交互式文档）                     |
+| `/api/docs`    | Scalar API Reference（现代化文档界面，推荐） |
+
+> 💡 推荐使用 **Scalar**（`/api/docs`），界面更现代，支持深色模式和代码示例自动生成。
 
 ## 🛠️ 快速开始
 

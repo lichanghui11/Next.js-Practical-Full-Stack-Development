@@ -9,6 +9,10 @@ const createHonoApp = <E extends Env>() => {
   app.use(prettyJSON({ space: 2, force: true }));
   app.use(logger());
   app.notFound((c) => c.json({ message: 'API route not found', ok: false }, 404));
+  app.onError((err, c) => {
+    console.error('Unhandled API Error （未处理的 API 错误）:', err);
+    return c.json({ message: err.message, ok: false }, 500);
+  });
 
   return app;
 };

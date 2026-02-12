@@ -4,7 +4,7 @@
 
 ## 背景：为什么不只用 Server Actions
 >
-> <div style="color: orange; font-weight=900">但是，实际上使用hono.js在next.js中操作数据，本质上还是在利用server action，只是使用hono实例去代替next.js自己去操作数据而已</div>
+> 但是，实际上使用hono.js在next.js中操作数据，本质上还是在利用server action，只是使用hono实例去代替next.js自己去操作数据而已
 
 Next.js 的 Server Actions 对小型应用或轻量 demo 很方便，但它并不总是适合“完整后端”的需求，常见限制包括：
 

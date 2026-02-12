@@ -1,0 +1,13 @@
+model Category {
+  id       String @id @default(uuid())
+  name     String @unique
+  slug     String @unique
+  // 模型中的 path depth numchild 这三个字段必须使用这个名字，这个是为了方便 withBark 插件识别
+  path     String @unique
+  depth    Int
+  numchild Int    @default(0)
+  posts    Post[]
+
+  @@index([path])
+  @@map("categories")
+}

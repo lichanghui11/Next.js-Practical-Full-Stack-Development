@@ -4,6 +4,8 @@ import type {
   buildPostRequestSchema,
   postItemSchema,
   postPaginateSchema,
+  postPaginationRequestSchema,
+  totalPagesRequestSchema,
   totalPagesSchema,
 } from './blog.schema';
 
@@ -28,3 +30,9 @@ export type PostTotalPages = z.infer<typeof totalPagesSchema>;
  * Request
  */
 export type PostCreateOrUpdateData = z.infer<ReturnType<typeof buildPostRequestSchema>>;
+
+// 文章分页数据查询的请求参数的 数据结构 的类型
+export type PostPaginateRequestQuery = z.infer<typeof postPaginationRequestSchema>;
+
+// 文章页面总数查询请求 数据结构 的类型
+export type PostPaginateNumberRequestQuery = z.infer<typeof totalPagesRequestSchema>;
