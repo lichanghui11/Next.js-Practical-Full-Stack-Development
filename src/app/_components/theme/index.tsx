@@ -39,19 +39,12 @@ const ThemeSubscriber: FC<PropsWithChildren> = ({ children }) => {
     };
   }, [systemTheme]);
 
-  return (
-    <ConfigProvider theme={{ algorithm: antdTheme }}>{children}</ConfigProvider>
-  );
+  return <ConfigProvider theme={{ algorithm: antdTheme }}>{children}</ConfigProvider>;
 };
 
 // 构建提供 dark/light 的上下文组件
-const ThemeProvider: FC<PropsWithChildren<Partial<ThemeOption>>> = ({
-  children,
-  ...props
-}) => {
-  const [themeStore] = useState<ThemeStoreType | null>(() =>
-    createThemeStore(props),
-  );
+const ThemeProvider: FC<PropsWithChildren<Partial<ThemeOption>>> = ({ children, ...props }) => {
+  const [themeStore] = useState<ThemeStoreType | null>(() => createThemeStore(props));
   return (
     <ThemeContext value={themeStore}>
       <ThemeSubscriber>{children}</ThemeSubscriber>

@@ -1,6 +1,6 @@
 import type { FC, PropsWithChildren } from 'react';
 
-import { BlogForm } from '@/app/_components/blog-components/submit-form/blog-form';
+import { BlogForm } from '@/app/_components/blog/form/form';
 import { fetchApi } from '@/lib/rpc.client';
 // 这里封装的是 编辑博客 使用的type:update的表单组件
 export const BlogUpdate: FC<PropsWithChildren<{ id: string }>> = async ({ id }) => {

@@ -9,8 +9,7 @@ export function formatDate(
 ) {
   const fallback = options?.fallback ?? '';
 
-  const date =
-    input instanceof Date ? input : new Date(input);
+  const date = input instanceof Date ? input : new Date(input);
   if (Number.isNaN(date.getTime())) return fallback;
 
   const pad = (n: number) => String(n).padStart(2, '0');

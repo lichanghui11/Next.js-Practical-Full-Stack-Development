@@ -2,7 +2,7 @@
 import type { FC } from 'react';
 
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Suspense, useCallback } from 'react';
+import { useCallback } from 'react';
 import {
   PaginationContent,
   PaginationItem,
@@ -41,39 +41,37 @@ export const Pagination: FC<{
   const isNextDisabled = isLastPage;
 
   return (
-    <Suspense fallback={<div>加载中...</div>}>
-      <div className={styles.paginationWrapper}>
-        <ShadcnPagination>
-          <PaginationContent className={styles.paginationContent}>
-            <PaginationItem>
-              <PaginationPrevious
-                disabled={isPrevDisabled}
-                text="上一页"
-                aria-label="上一页"
-                href={getNextPage(Number(currentPage) - 1)}
-                className={cn(styles.navButton, styles.prevButton)}
-                data-disabled={isPrevDisabled}
-              />
-            </PaginationItem>
-            {/* 页码显示 */}
-            <PaginationItem>
-              <span className={styles.pageIndicator}>
-                {currentPage} / {totalPage}
-              </span>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                disabled={isNextDisabled}
-                aria-label="下一页"
-                text="下一页"
-                href={getNextPage(Number(currentPage) + 1)}
-                className={cn(styles.navButton, styles.nextButton)}
-                data-disabled={isNextDisabled}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </ShadcnPagination>
-      </div>
-    </Suspense>
+    <div className={styles.paginationWrapper}>
+      <ShadcnPagination>
+        <PaginationContent className={styles.paginationContent}>
+          <PaginationItem>
+            <PaginationPrevious
+              disabled={isPrevDisabled}
+              text="上一页"
+              aria-label="上一页"
+              href={getNextPage(Number(currentPage) - 1)}
+              className={cn(styles.navButton, styles.prevButton)}
+              data-disabled={isPrevDisabled}
+            />
+          </PaginationItem>
+          {/* 页码显示 */}
+          <PaginationItem>
+            <span className={styles.pageIndicator}>
+              {currentPage} / {totalPage}
+            </span>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext
+              disabled={isNextDisabled}
+              aria-label="下一页"
+              text="下一页"
+              href={getNextPage(Number(currentPage) + 1)}
+              className={cn(styles.navButton, styles.nextButton)}
+              data-disabled={isNextDisabled}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </ShadcnPagination>
+    </div>
   );
 };

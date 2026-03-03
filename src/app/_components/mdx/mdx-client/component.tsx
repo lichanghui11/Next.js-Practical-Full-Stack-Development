@@ -4,6 +4,7 @@ import type { AnchorHTMLAttributes, ImgHTMLAttributes } from 'react';
 import Image from 'next/image';
 // 这里可以替换 mdx 的标签，换上拥有自定义样式的标签
 import Link from 'next/link';
+import React from 'react';
 
 import styles from './component.module.css';
 import { Admonition } from './components/admonition';
@@ -33,7 +34,50 @@ export const mdxComponents: MDXComponents = {
   ),
 
   // Paragraph
-  p: (props) => <p className="leading-7 my-4" {...props} />,
+  p: ({ children, ...props }) => {
+    // 检查子元素是否包含块级元素（如 div、h1-h6、ul、ol、table 等）
+    const hasBlockElements = React.Children.toArray(children).some((child) => {
+      if (React.isValidElement(child)) {
+        const tagName = (child.type as any).displayName || (child.type as any).name || '';
+        const blockTags = [
+          'div',
+          'h1',
+          'h2',
+          'h3',
+          'h4',
+          'h5',
+          'h6',
+          'ul',
+          'ol',
+          'table',
+          'figure',
+          'blockquote',
+          'pre',
+          'Admonition',
+          'Bilibili',
+          'YouTube',
+        ];
+        return blockTags.includes(tagName.toLowerCase());
+      }
+      return false;
+    });
+
+    // 如果包含块级元素，使用 div 代替 p
+    if (hasBlockElements) {
+      return (
+        <div className="leading-7 my-4" {...props}>
+          {children}
+        </div>
+      );
+    }
+
+    // 普通段落使用 p 标签
+    return (
+      <p className="leading-7 my-4" {...props}>
+        {children}
+      </p>
+    );
+  },
 
   // Links
   a: ({ href = '', children, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) => {

@@ -23,12 +23,7 @@ export const ThemeSwitch: FC = () => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleClick}
-          aria-label={mode}
-        >
+        <Button variant="ghost" size="icon" onClick={handleClick} aria-label={mode}>
           <Icon />
         </Button>
       </TooltipTrigger>

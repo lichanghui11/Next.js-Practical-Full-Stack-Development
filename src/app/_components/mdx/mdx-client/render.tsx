@@ -18,6 +18,7 @@ export const MdxRenderer: FC<ExtendedMdxRendererProps> = async ({
   source,
   options,
   hydrate,
+  header,
   showReadingTime = false,
 }: ExtendedMdxRendererProps) => {
   const result = await serializeMdx(source, options);
@@ -28,7 +29,7 @@ export const MdxRenderer: FC<ExtendedMdxRendererProps> = async ({
   return (
     <div className="flex flex-col gap-1">
       {showReadingTime && readingTime && <ReadingTime readingTime={readingTime} />}
-      <MdxHydration {...(hydrate || {})} compiledSource={result} toc={toc} />
+      <MdxHydration {...(hydrate || {})} compiledSource={result} toc={toc} header={header} />
     </div>
   );
 };

@@ -148,7 +148,7 @@ export const postPaginationRequestSchema = z.preprocess(
       limit: z.coerce.number().optional().meta({ description: '每页数量' }),
       orderBy: z.enum(['asc', 'desc']).optional().meta({ description: '排序方式' }),
       tag: z.string().optional().meta({ description: '标签过滤' }),
-      category: z.string().optional().meta({ description: '分类过滤' }),
+      category: z.string().optional().meta({ description: '分类过滤 这里是分类ID' }),
     })
     .meta({ id: 'PostPaginationRequest', description: '请求查询文章分页数据的请求参数schema' }),
 );

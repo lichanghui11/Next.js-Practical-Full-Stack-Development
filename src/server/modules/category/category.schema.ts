@@ -60,7 +60,6 @@ export const categorySchema: z.ZodType<Category> = baseCategorySchema
  * 扁平数组，没有嵌套的 children 字段，用于下拉选择器、表格等
  */
 export const categoryListSchema = z.array(baseCategorySchema).meta({
-  id: 'CategoryList',
   description: '分类列表数据，这是一个扁平数组，可以适用于下拉选择器，表格之类的用于显示这些分类',
 });
 
@@ -69,7 +68,6 @@ export const categoryListSchema = z.array(baseCategorySchema).meta({
  * 嵌套的数组，有嵌套的 children 字段，用于显示分类树，可以用于侧边栏菜单、树形管理等场景
  */
 export const categoryTreeSchema = z.array(categorySchema).meta({
-  id: 'CategoryTree',
   description:
     '分类树数据，这是一个嵌套的数组，有嵌套的 children 字段，用于显示分类树，可以用于侧边栏菜单、树形管理等场景',
 });

@@ -36,7 +36,7 @@ export const MdxHydration: FC<MdxHydrateProps> = (props) => {
       }
     }
   });
-  const { compiledSource, toc, ...rest } = props;
+  const { compiledSource, header, toc, ...rest } = props;
   const contentRef = useRef<HTMLDivElement>(null);
   const [content, setContent] = useState<JSX.Element | null>(null);
   useCodeWindow(contentRef, content);
@@ -76,6 +76,7 @@ export const MdxHydration: FC<MdxHydrateProps> = (props) => {
           [$styles.fullWidth]: !hasToc,
         })}
       >
+        {header}
         {content}
       </div>
       {hasToc && (

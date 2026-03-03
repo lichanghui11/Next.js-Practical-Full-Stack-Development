@@ -18,10 +18,10 @@ import {
 } from 'ui/alert-dialog';
 import { Button } from 'ui/button';
 
+import { blogApi } from '@/api/post';
 import { Spinner } from '@/app/_components/spinner';
 import { useIsMobile } from '@/app/utils/browser';
 import { cn } from '@/app/utils/utils';
-import { fetchApi } from '@/lib/rpc.client';
 
 import styles from '../shared/button-styles.module.css';
 
@@ -47,9 +47,7 @@ export const DeleteDialog: FC<{ id: string | number }> = ({ id }) => {
     async (e) => {
       e.preventDefault();
       setPending(true);
-      const result = await fetchApi((honoClient) => {
-        return honoClient.api.blogs[':id'].$delete({ param: { id: String(id) } });
-      });
+      const result = await blogApi.delete(String(id));
       if (!result.ok) {
         toast.warning('删除失败', {
           id: 'post-delete-error',

@@ -33,6 +33,7 @@ export type MdxHydrateConfig = Omit<HydrateProps, 'compiledSource'> & {
 // MDX 水合组件props
 export type MdxHydrateProps = MdxHydrateConfig & {
   compiledSource: SerializeResult<Record<string, unknown>, Scope>;
+  header?: React.ReactNode;
 };
 
 // MDX 渲染器组件props
@@ -40,6 +41,7 @@ export interface MdxRendererProps {
   source: Compatible;
   options?: MdxSerializeConfig;
   hydrate?: MdxHydrateProps;
+  header?: React.ReactNode;
 }
 
 // MDX 编辑器组件props

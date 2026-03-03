@@ -4,13 +4,13 @@
 // 分页的相关类型
 
 // 分页元数据
-export interface PageMeta {
-  itemsPerPage: number; // 每一页数据量
-  pageSize: number; // 当前页面的数据量
-  currentPage: number; // 当前页
-  totalItems: number; // 总数量
-  totalPages: number; // 总页数
-}
+// interface PageMeta {
+//   itemsPerPage: number; // 每一页数据量
+//   pageSize: number; // 当前页面的数据量
+//   currentPage: number; // 当前页
+//   totalItems: number; // 总数量
+//   totalPages: number; // 总页数
+// }
 
 // 分页参数
 export interface PageParams {
@@ -24,7 +24,7 @@ export interface PageResult<T extends Record<string, any>> {
   data: T[];
 }
 
-// 这个是翻页查询那个请求返回的原数据类型，在翻页组件和翻页数据请求的逻辑里面会用到
+// 这个是翻页查询那个请求返回的元数据类型，在翻页组件和翻页数据请求的逻辑里面会用到
 export interface PageMeta {
   itemsPerPage: number; // 每页数量
   pageSize: number; // 当前页数量

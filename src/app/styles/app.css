@@ -65,3 +65,15 @@ xhtml.dark xbody {
     background-image: url('/images/bg-mobile-dark.png');
   }
 }
+
+.xicon {
+  @apply w-[1em] h-[1em] inline-flex;
+
+  & svg {
+    @apply !w-full !h-full;
+
+    &:not([fill]) {
+      fill: currentcolor;
+    }
+  }
+}

@@ -1,4 +1,7 @@
 model Category {
+  // 这里生成的是标准的 UUID v4 格式，只有小写字母
+  // Radix UI 的 Command 组件在内部处理 value 时会自动 toLowerCase()，所以 onSelect 收到的 currentValue 是全小写的
+  // 这里的全小写 ID 方便了这个组件的使用
   id       String @id @default(uuid())
   name     String @unique
   slug     String @unique

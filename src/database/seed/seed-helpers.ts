@@ -2,225 +2,146 @@ import type { Category, Prisma } from '@prisma/client';
 
 import { fakerZH_CN } from '@faker-js/faker';
 import { isNil } from 'lodash';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 
 import { generateSlug } from '@/app/_components/blog-components/submit-form/utils';
-import { randomIntFrom } from '@/lib/random';
 
 // 编写种子数据的填充逻辑
 import prisma from '../client/admin-client';
-const tags = [
-  // 前端框架
-  'React',
-  'Vue',
-  'Next.js',
-  'Nuxt',
-  'Svelte',
-  'Angular',
-  'Solid.js',
 
-  // 后端/运行时
-  'Node.js',
-  'Deno',
-  'Bun',
-  'Express',
-  'Hono.js',
-  'NestJS',
-  'Fastify',
-
-  // 语言
-  'TypeScript',
-  'JavaScript',
-  'Python',
-  'Go',
-  'Rust',
-  'Java',
-
-  // 数据库
-  'PostgreSQL',
-  'MySQL',
-  'MongoDB',
-  'Redis',
-  'SQLite',
-  'Prisma',
-  'Drizzle',
-
-  // 云服务/部署
-  'Docker',
-  'Kubernetes',
-  'Vercel',
-  'AWS',
-  'Cloudflare',
-  'Supabase',
-
-  // 工具链
-  'Vite',
-  'Webpack',
-  'ESLint',
-  'Prettier',
-  'pnpm',
-  'Turborepo',
-
-  // 概念/实践
-  'GraphQL',
-  'REST API',
-  'WebSocket',
-  'SSR',
-  'SSG',
-  'PWA',
-  'Monorepo',
-  'CI/CD',
-  '微服务',
-  '性能优化',
-  '单元测试',
-  'E2E测试',
-
-  // AI相关
-  'OpenAI',
-  'LangChain',
-  'LLM',
-  'RAG',
-  'Prompt工程',
-
-  // 其他热门
-  'TailwindCSS',
-  'Shadcn/ui',
-  'Zustand',
-  'React Query',
-  'tRPC',
-  'Zod',
-];
-const categories = [
-  // 根分类
-  '技术文集',
-  '创业笔记',
-  '生活随笔',
-  '探索世界',
-  '设计与体验',
-  '写作工坊',
-  '效率系统',
-  '产品日志',
-  'AI实验室',
-  '架构思考',
-  '数据之道',
-  '开源纪行',
-  '个人成长',
-  '行业观察',
-
-  // 技术文集 子分类
-  '课程',
-  'TS全栈开发',
-  'React进阶',
-  '数据库实战',
-  '工程化',
-  'Monorepo实践',
-  'CI/CD流程',
-
-  // 创业笔记 子分类
-  '码农创业记',
-  '产品冷启动',
-  '融资备忘',
-
-  // 生活随笔 子分类
-  '日常碎片',
-  '读书札记',
-
-  // 探索世界 子分类
-  '城市漫游',
-  '山野徒步',
-  '海边旅行',
-
-  // 设计与体验 子分类
-  '交互设计',
-  '信息架构',
-  '可用性测试',
-  '视觉语言',
-  '配色实践',
-  '排版系统',
-
-  // 写作工坊 子分类
-  '标题方法论',
-  '长文结构',
-  '叙事技巧',
-
-  // 效率系统 子分类
-  '时间管理',
-  '任务拆解',
-  '复盘方法',
-
-  // 产品日志 子分类
-  '需求洞察',
-  '版本迭代',
-  '用户反馈',
-
-  // AI实验室 子分类
-  '提示词工程',
-  '模型评测',
-  '应用案例',
-
-  // 架构思考 子分类
-  '服务拆分',
-  '缓存策略',
-  '一致性方案',
-
-  // 数据之道 子分类
-  '数据建模',
-  '指标体系',
-  '数据可视化',
-
-  // 开源纪行 子分类
-  '贡献指南',
-  '社区治理',
-  '许可证选型',
-
-  // 个人成长 子分类
-  '技能地图',
-  '职业规划',
-  '学习方法',
-
-  // 行业观察 子分类
-  'SaaS趋势',
-  'B端产品',
-  '出海记录',
-];
 export const createSeedPosts = async () => {
   await prisma.post.$truncate();
   const blogImages = Array.from({ length: 11 }, (_, i) => `/blog-demo-images/blog-${i + 1}.png`);
-  for (let i = 0; i < 30; i++) {
-    const categoryIdx = randomIntFrom(0, categories.length - 1);
-    const titleTemp = fakerZH_CN.lorem.sentence().replace(/\.$/, '');
-    const categoryName = categories[categoryIdx];
-    /**
-     * 这里模拟的是根据已经存进去的分类数据进行查询的
-     */
-    const category = await prisma.category.findFirst({
-      where: { name: categoryName },
-    });
-    if (isNil(category)) {
-      throw new Error(`Category ${categoryName} not found`);
-    }
-    const tagsInput = {
-      // connectOrCreate 是一个关键字
-      connectOrCreate: tags.map((tag) => ({
-        where: { text: tag },
-        create: { text: tag },
-      })),
-    };
 
-    const summary = Math.random() < 0.5 ? fakerZH_CN.lorem.sentences({ min: 1, max: 3 }) : null;
+  type Item = Pick<Prisma.PostCreateInput, 'title' | 'summary'> & {
+    bodyPath: string;
+    categoryName: string;
+    tagNames?: string[];
+  };
+
+  const data: Item[] = [
+    {
+      title: 'Node.js环境搭建及应用初始化',
+      summary:
+        '本节课我们开始正式学习TS（Typescript）全栈开发。广义的TS全栈开发包含了许多领域，比如可以使用React Native开发移动APP，小程序也是使用TS开发的，甚至使用成熟的Electron框架还能开发跨平台的桌面软件（新版QQ就是Electron写的）。但我们的课程因为篇幅和精力有限，所以，目前只涉及狭义上的TS全栈开发，即TS web开发（包括react中后台管理系统开发、 Next.js全栈开发和网站前台开发、 Nestjs后端开发等）。不过整个TS的生态都是相通的，学会TS的web开发后，再去学习其他如React Native这些生态，也可以非常快速地掌握。',
+      bodyPath: path.join(__dirname, '../fixture/ts-fullstack/1.md'),
+      categoryName: 'TS全栈开发',
+      tagNames: ['nodejs', 'typescript', 'nextjs', 'hono.js'],
+    },
+    {
+      title: 'Next.js应用初始化',
+      summary:
+        'react本身只是一个渲染层，并不是一个框架。所以一般我们开发react web应用（移动、桌面等除外）有这些比较流行的方案',
+      bodyPath: path.join(__dirname, '../fixture/ts-fullstack/2.md'),
+      categoryName: 'TS全栈开发',
+      tagNames: ['nodejs', 'typescript', 'react', 'next.js'],
+    },
+    {
+      title: 'React内置Hooks的使用与自定义详解',
+      summary:
+        '学习一些react自带的hooks以基本掌握react应用的简单开发。在这节课中，我们通过几个小案例（如黑暗主题切换，语言包选择等）详细深入地了解一下react编码的一个基本规则，为后面课程的前端部分的学习打下坚实的基础',
+      bodyPath: path.join(__dirname, '../fixture/ts-fullstack/3.md'),
+      categoryName: 'TS全栈开发',
+      tagNames: ['nodejs', 'typescript', 'react'],
+    },
+    {
+      title: 'Next.js中使用Zustand进行状态管理详解',
+      summary:
+        '前面我们已经学习了使用`contenxt`、`useReducer`等进行状态管理。但是这种方法略显麻烦，而且对代码感官和应用性能并不友好。所以，这节课，我们尝试使用更简洁好用的zustand进行状态管理。',
+      bodyPath: path.join(__dirname, '../fixture/ts-fullstack/4.md'),
+      categoryName: 'TS全栈开发',
+      tagNames: ['nodejs', 'typescript', 'react', 'zustand'],
+    },
+    {
+      title: 'Next.js核心概念及应用构建',
+      summary:
+        '无论本篇后续的next.js相关章节还是更高级篇章的next.js课程都是基于这节课的应用进行扩展的，所以请务必确保掌握！',
+      bodyPath: path.join(__dirname, '../fixture/ts-fullstack/5.md'),
+      categoryName: 'TS全栈开发',
+      tagNames: ['nodejs', 'typescript', 'react', 'next.js', 'tailwindcss', 'shadcn'],
+    },
+    {
+      title: 'Server Action+Prsima全栈开发入门',
+      summary: '学习如何使用 next.js 的 server action 结合 prsima orm 进行全栈开发',
+      bodyPath: path.join(__dirname, '../fixture/ts-fullstack/6.md'),
+      categoryName: 'TS全栈开发',
+      tagNames: ['nodejs', 'typescript', 'react', 'next.js', 'prisma', 'orm'],
+    },
+    {
+      title: 'Markdown编辑器与自研MDX渲染实现',
+      summary: '实现使用mdx/markdown渲染文章内容以及markdown编辑器来编辑文章内容',
+      bodyPath: path.join(__dirname, '../fixture/ts-fullstack/7.md'),
+      categoryName: 'TS全栈开发',
+      tagNames: ['nodejs', 'typescript', 'react', 'next.js', 'mdx', 'markdown'],
+    },
+    {
+      title: '用户体验改进与SEO优化',
+      summary: '本节课程我们不追究太多新功能，而是对应用进行优化以提升用户体验和SEO等',
+      bodyPath: path.join(__dirname, '../fixture/ts-fullstack/8.md'),
+      categoryName: 'TS全栈开发',
+      tagNames: ['nodejs', 'typescript', 'react', 'next.js', 'seo', 'ssr'],
+    },
+    {
+      title: 'Next.js+Hono.js实现全栈开发',
+      summary:
+        'next.js的server action由于其本身的一些特质，一般只适用于一些迷你型应用或简单demo的后端（比如一个带有少量动态数据的企业官网等）。而绝大多数情况下，我们需要一个比较好的功能完备且健全的后端框架来整合next.js，并公开API，以方面外部应用（如桌面app、移动app等）调用。',
+      bodyPath: path.join(__dirname, '../fixture/ts-fullstack/9.md'),
+      categoryName: 'TS全栈开发',
+      tagNames: ['nodejs', 'typescript', 'react', 'next.js', 'hono.js'],
+    },
+    {
+      title: 'Hono.js整合OpenAPI(Swagger)+Zod实现接口类型安全与可调试',
+      summary:
+        '本节课内容比较简单。为了能清晰的调试和查阅API，我们整合一下swagger（openapi）与Hono.js。这样，我们不仅能快速地在apifox、postman、insomnia等工具中调试api，也可以通过swagger web ui来查看和单点运行api',
+      bodyPath: path.join(__dirname, '../fixture/ts-fullstack/10.md'),
+      categoryName: 'TS全栈开发',
+      tagNames: ['nodejs', 'typescript', 'react', 'next.js', 'hono.js', 'swagger', 'zod'],
+    },
+    {
+      title: '我的计算机编码起始之路',
+      summary: '记录07-13年之间，我学习计算机编程和创业的经历',
+      bodyPath: path.join(__dirname, '../fixture/creative/1.md'),
+      categoryName: '码农创业记',
+      tagNames: ['创业', 'delphi', 'php'],
+    },
+    {
+      title: '兜兜转转的创业史',
+      summary: '记录13-22年之间，我创业和打工的经历',
+      bodyPath: path.join(__dirname, '../fixture/creative/2.md'),
+      categoryName: '码农创业记',
+      tagNames: ['创业', '外包', '融资'],
+    },
+  ];
+  for (const item of data) {
+    const { title: titleTemp, summary, bodyPath, categoryName, tagNames } = item;
+    const category = await prisma.category.findFirst({ where: { name: categoryName } });
+    if (!category) {
+      throw new Error(`Category ${categoryName} not found for post ${titleTemp}`);
+    }
+    let tags;
+    if (!isNil(tagNames)) {
+      tags = {
+        connectOrCreate: tagNames.map((tagName) => ({
+          where: { text: tagName },
+          create: { text: tagName },
+        })),
+      };
+    }
     await prisma.post.create({
       select: { id: true },
       data: {
         title: titleTemp,
-        content: fakerZH_CN.lorem.paragraphs({ min: 3, max: 6 }, '\n\n'),
+        content: readFileSync(bodyPath, 'utf-8'),
         summary,
         thumbnail: fakerZH_CN.helpers.arrayElement(blogImages),
         slug: generateSlug(titleTemp),
-        keywords: fakerZH_CN.lorem.words({ min: 3, max: 6 }).split(' ').join(','),
-        description: fakerZH_CN.lorem.sentences({ min: 1, max: 3 }),
+        keywords: tagNames?.join(',') ?? '',
+        description: summary,
         category: {
           connect: { id: category.id },
         },
-        tags: tagsInput,
+        tags,
       },
     });
   }
@@ -239,65 +160,10 @@ export const createSeedUsers = async () => {
 };
 type Item = Pick<Prisma.CategoryCreateInput, 'name'> & { children?: Item[] };
 const data: Item[] = [
-  {
-    name: '技术文集',
-    children: [
-      {
-        name: '课程',
-        children: [{ name: 'TS全栈开发' }, { name: 'React进阶' }, { name: '数据库实战' }],
-      },
-      { name: '工程化', children: [{ name: 'Monorepo实践' }, { name: 'CI/CD流程' }] },
-    ],
-  },
-  {
-    name: '创业笔记',
-    children: [{ name: '码农创业记' }, { name: '产品冷启动' }, { name: '融资备忘' }],
-  },
-  { name: '生活随笔', children: [{ name: '日常碎片' }, { name: '读书札记' }] },
-  {
-    name: '探索世界',
-    children: [{ name: '城市漫游' }, { name: '山野徒步' }, { name: '海边旅行' }],
-  },
-  {
-    name: '设计与体验',
-    children: [
-      { name: '交互设计', children: [{ name: '信息架构' }, { name: '可用性测试' }] },
-      { name: '视觉语言', children: [{ name: '配色实践' }, { name: '排版系统' }] },
-    ],
-  },
-  {
-    name: '写作工坊',
-    children: [{ name: '标题方法论' }, { name: '长文结构' }, { name: '叙事技巧' }],
-  },
-  {
-    name: '效率系统',
-    children: [{ name: '时间管理' }, { name: '任务拆解' }, { name: '复盘方法' }],
-  },
-  {
-    name: '产品日志',
-    children: [{ name: '需求洞察' }, { name: '版本迭代' }, { name: '用户反馈' }],
-  },
-  {
-    name: 'AI实验室',
-    children: [{ name: '提示词工程' }, { name: '模型评测' }, { name: '应用案例' }],
-  },
-  {
-    name: '架构思考',
-    children: [{ name: '服务拆分' }, { name: '缓存策略' }, { name: '一致性方案' }],
-  },
-  {
-    name: '数据之道',
-    children: [{ name: '数据建模' }, { name: '指标体系' }, { name: '数据可视化' }],
-  },
-  {
-    name: '开源纪行',
-    children: [{ name: '贡献指南' }, { name: '社区治理' }, { name: '许可证选型' }],
-  },
-  {
-    name: '个人成长',
-    children: [{ name: '技能地图' }, { name: '职业规划' }, { name: '学习方法' }],
-  },
-  { name: '行业观察', children: [{ name: 'SaaS趋势' }, { name: 'B端产品' }, { name: '出海记录' }] },
+  { name: '技术文集', children: [{ name: '课程', children: [{ name: 'TS全栈开发' }] }] },
+  { name: '创业笔记', children: [{ name: '码农创业记' }] },
+  { name: '生活随笔' },
+  { name: '探索世界' },
 ];
 
 /**

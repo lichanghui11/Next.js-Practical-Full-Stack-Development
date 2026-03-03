@@ -3,11 +3,11 @@ import Link from 'next/link';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import $styles from '@/app/_components/header/ui/pc-menu.module.css';
+import $styles from '@/app/_components/layout/header/ui/pc-menu.module.css';
 import { MdxRenderer } from '@/app/_components/mdx/mdx-client/render';
 import { cn } from '@/app/utils/utils';
 
-import styles from './mdx-page.module.css';
+import styles from './style.module.css';
 
 export default async function Page() {
   // 读取 MDX 文件内容
