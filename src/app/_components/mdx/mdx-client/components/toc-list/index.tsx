@@ -78,7 +78,20 @@ export const TocList: FC<Props> = ({
       if (heading) {
         setActiveId(id);
         window.history.replaceState(null, '', `#${id}`);
-        heading.scrollIntoView({ behavior: 'smooth' });
+
+        // 计算头部高度（考虑滚动后的高度变化）
+        const header = document.querySelector('header');
+        const headerHeight = header ? header.offsetHeight : 60; // 默认60px
+        const offset = headerHeight + 20; // 额外添加20px间距
+
+        // 使用更精确的滚动方式，考虑头部遮挡
+        const elementPosition = heading.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth',
+        });
 
         // 滚动后调用回调（例如关闭移动端抽屉）
         if (onItemClick) {

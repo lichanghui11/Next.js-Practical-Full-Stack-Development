@@ -33,51 +33,51 @@ export const mdxComponents: MDXComponents = {
     </h3>
   ),
 
-  // Paragraph
-  p: ({ children, ...props }) => {
-    // 检查子元素是否包含块级元素（如 div、h1-h6、ul、ol、table 等）
-    const hasBlockElements = React.Children.toArray(children).some((child) => {
-      if (React.isValidElement(child)) {
-        const tagName = (child.type as any).displayName || (child.type as any).name || '';
-        const blockTags = [
-          'div',
-          'h1',
-          'h2',
-          'h3',
-          'h4',
-          'h5',
-          'h6',
-          'ul',
-          'ol',
-          'table',
-          'figure',
-          'blockquote',
-          'pre',
-          'Admonition',
-          'Bilibili',
-          'YouTube',
-        ];
-        return blockTags.includes(tagName.toLowerCase());
-      }
-      return false;
-    });
+  // Paragraph 这个标签的自定义会导致 p 标签 包裹 div 标签，这不符合 html 规范，会导致报错，所以这里直接注释掉这部分内容
+  // p: ({ children, ...props }) => {
+  //   // 检查子元素是否包含块级元素（如 div、h1-h6、ul、ol、table 等）
+  //   const hasBlockElements = React.Children.toArray(children).some((child) => {
+  //     if (React.isValidElement(child)) {
+  //       const tagName = (child.type as any).displayName || (child.type as any).name || '';
+  //       const blockTags = [
+  //         'div',
+  //         'h1',
+  //         'h2',
+  //         'h3',
+  //         'h4',
+  //         'h5',
+  //         'h6',
+  //         'ul',
+  //         'ol',
+  //         'table',
+  //         'figure',
+  //         'blockquote',
+  //         'pre',
+  //         'Admonition',
+  //         'Bilibili',
+  //         'YouTube',
+  //       ];
+  //       return blockTags.includes(tagName.toLowerCase());
+  //     }
+  //     return false;
+  //   });
 
-    // 如果包含块级元素，使用 div 代替 p
-    if (hasBlockElements) {
-      return (
-        <div className="leading-7 my-4" {...props}>
-          {children}
-        </div>
-      );
-    }
+  //   // 如果包含块级元素，使用 div 代替 p
+  //   if (hasBlockElements) {
+  //     return (
+  //       <div className="leading-7 my-4" {...props}>
+  //         {children}
+  //       </div>
+  //     );
+  //   }
 
-    // 普通段落使用 p 标签
-    return (
-      <p className="leading-7 my-4" {...props}>
-        {children}
-      </p>
-    );
-  },
+  //   // 普通段落使用 p 标签
+  //   return (
+  //     <p className="leading-7 my-4" {...props}>
+  //       {children}
+  //     </p>
+  //   );
+  // },
 
   // Links
   a: ({ href = '', children, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>) => {
@@ -97,7 +97,19 @@ export const mdxComponents: MDXComponents = {
         const targetId = href.slice(1); // 去掉 #
         const element = document.getElementById(targetId);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          // 计算头部高度（考虑滚动后的高度变化）
+          const header = document.querySelector('header');
+          const headerHeight = header ? header.offsetHeight : 60; // 默认60px
+          const offset = headerHeight + 20; // 额外添加20px间距
+
+          // 使用更精确的滚动方式，考虑头部遮挡
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth',
+          });
           // 更新 URL hash（不触发跳转）
           window.history.pushState(null, '', href);
         }
