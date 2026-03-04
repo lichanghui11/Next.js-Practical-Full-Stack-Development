@@ -23,6 +23,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages: externals,
   // 允许局域网内的设备访问开发服务器
   // allowedDevOrigins: ['192.168.0.105'],
+  // productionBrowserSourceMaps: true,
   images: {
     remotePatterns: [
       {

@@ -22,30 +22,6 @@ export type CategoryApiType = typeof categoryApi;
 
 export const categoryApi = app
   .get(
-    '/:parentId?',
-    describeRoute({
-      tags,
-      summary: '分类列表查询',
-      description: '查询出数据库中的扁平数据，内部进行了树状化处理,并进行扁平化处理后的一维列表',
-      responses: {
-        ...createResponse(categoryListSchema, 200, '查询分类列表数据成功'),
-        ...createResponse(errorSchema, 401, '分类列表数据不存在'),
-        ...createResponse(errorSchema, 500, '查询分类列表数据失败'),
-      },
-    }),
-    validator('param', categoryListRequestParamsSchema, defaultValidatorErrorHandler),
-    async (c) => {
-      try {
-        const { parentId } = c.req.valid('param');
-        const result = await queryCategoryList(parentId);
-
-        return c.json(result, 200);
-      } catch (error) {
-        return c.json(createErrorResult('查询分类树数据失败', error), 500);
-      }
-    },
-  )
-  .get(
     '/tree/:parentId?',
     describeRoute({
       tags,
@@ -61,7 +37,36 @@ export const categoryApi = app
     async (c) => {
       try {
         const { parentId } = c.req.valid('param');
-        const result = await queryCategoryTree(parentId);
+        const validParentId =
+          parentId && parentId !== 'undefined' && !parentId.includes('{') ? parentId : undefined;
+        const result = await queryCategoryTree(validParentId);
+        return c.json(result, 200);
+      } catch (error) {
+        return c.json(createErrorResult('查询分类树数据失败', error), 500);
+      }
+    },
+  )
+  .get(
+    '/:parentId?',
+    describeRoute({
+      tags,
+      summary: '分类列表查询',
+      description: '查询出数据库中的扁平数据，内部进行了树状化处理,并进行扁平化处理后的一维列表',
+      responses: {
+        ...createResponse(categoryListSchema, 200, '查询分类列表数据成功'),
+        ...createResponse(errorSchema, 401, '分类列表数据不存在'),
+        ...createResponse(errorSchema, 500, '查询分类列表数据失败'),
+      },
+    }),
+    validator('param', categoryListRequestParamsSchema, defaultValidatorErrorHandler),
+    async (c) => {
+      try {
+        const { parentId } = c.req.valid('param');
+        // 这里由于从 API 文档入口发起请求的时候，parentId 会被默认填充为 {parentId}，被当成了一个值，所以总是导致请求失败
+        const validParentId =
+          parentId && parentId !== 'undefined' && !parentId.includes('{') ? parentId : undefined;
+        const result = await queryCategoryList(validParentId);
+
         return c.json(result, 200);
       } catch (error) {
         return c.json(createErrorResult('查询分类树数据失败', error), 500);

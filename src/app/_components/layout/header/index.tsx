@@ -1,7 +1,8 @@
 'use client';
 import type { FC } from 'react';
 
-import { useState } from 'react';
+import { isNil } from 'lodash';
+import { useEffect, useState } from 'react';
 
 import { useIsMobile, useScroll } from '@/app/utils/browser';
 import { cn } from '@/app/utils/utils';
@@ -19,6 +20,16 @@ const Header: FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isScrolled = useScroll(50);
   const isMobile = useIsMobile();
+  useEffect(() => {
+    const element = document.getElementById('mobile-menu-btn');
+    if (!isNil(element) && isMobile) {
+      if (isSidebarOpen) {
+        element?.classList.add('hidden');
+      } else {
+        element?.classList.remove('hidden');
+      }
+    }
+  });
 
   return (
     <>
@@ -29,7 +40,7 @@ const Header: FC = () => {
         suppressHydrationWarning
       >
         <div className="flex items-center gap-1">
-          <div className="md:hidden">
+          <div className="" id="mobile-menu-btn">
             <List size={18} onClick={() => setIsSidebarOpen(true)} />
           </div>
           <Logo />

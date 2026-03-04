@@ -42,7 +42,7 @@ function createPrisma() {
     .$extends(pagination())
     .$extends(withBark({ modelNames: ['category'] }));
   return client.$extends({
-    modal: {
+    model: {
       category: {
         async getAncestorChainWithSelf(params: CategoryTreeParams): Promise<Category[]> {
           // 祖先链 + 自己

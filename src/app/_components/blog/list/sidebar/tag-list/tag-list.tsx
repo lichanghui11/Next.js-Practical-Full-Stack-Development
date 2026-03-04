@@ -13,7 +13,7 @@ export const TagListComponent: FC<{ items: TagType[]; actived?: string }> = ({
   actived,
 }) => {
   return (
-    <div>
+    <div className={$styles.container}>
       {items.map((tagItem) => {
         return (
           <TagLink

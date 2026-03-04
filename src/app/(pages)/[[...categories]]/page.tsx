@@ -16,7 +16,6 @@ const BlogIndexPage: FC<{
   params: Promise<{ categories?: string[] }>;
 }> = async ({ searchParams, params }) => {
   const { categories } = await params;
-  console.log('categories: ', categories);
   const rest = { ...(await searchParams), categories };
   return <BlogIndex {...rest} />;
 };

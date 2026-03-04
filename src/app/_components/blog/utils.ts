@@ -18,7 +18,7 @@ export const getBreadcrumbLinks = (
   console.log('getBreadcrumbLinks: categories', categories);
   let link = '';
   if (isNil(categories) || categories.length === 0) return [];
-  return categories.map((category, idx) => {
+  const res = categories.map((category, idx) => {
     const item: IBlogBreadcrumbItem = {
       id: category.id,
       text: category.name,
@@ -29,24 +29,29 @@ export const getBreadcrumbLinks = (
     }
     return item;
   });
+  console.log('getBreadcrumbLinks: res', res);
+  return res;
 };
 
 /**
  *
+ *这里面调用的 api 使用的参数是分类的 id 或 slug 获取到面包屑数据
  * @param categories
- * 入参应该是一个 ID 组成的数组
+ *
+ * 入参应该是一个 ID 或者 slug 组成的数组
  * 使用最后一个分类 ID 查询出这个分类链条上的的每个分类组成的一位数组
  * 如果能够和服务端的数据的顺序一一对应上，则返回查询到的分类扁平数组
  * 否则返回 false
  */
 export const getBreadcrumbCategories = async (categories: string[]) => {
-  if (!isNil(categories) && categories.length - 1) {
-    const lastId = categories[categories.length - 1];
-    const result = await categoryApi.breadcrumb(lastId);
+  if (!isNil(categories) && categories.length > 0) {
+    const idOrSlug = categories[categories.length - 1];
+    const result = await categoryApi.breadcrumb(idOrSlug);
     if (!result.ok) {
       throw new Error((await result.json()).message);
     }
     const categoryArr = await result.json();
+
     if (
       // 从数据库查出来的分类数据一位数组和这里拿到的分类ID组成的一位数组如果不能一一对应上，则这个分类数据不正确
       !categoryArr.every(

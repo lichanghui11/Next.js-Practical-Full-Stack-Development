@@ -26,14 +26,12 @@ export const CopyButton: FC<{ wrapperEl: Element | null }> = ({ wrapperEl }) => 
   const [copied, setCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const isMobile = useIsMobile();
-  console.log('copied: ', copied);
   /**
    * 点击复制按钮时的处理函数
    */
   const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
     (e) => {
       e.preventDefault();
-      console.log('clicked the copy button: .........');
       // 如果没有传入 code-window 容器，直接退出
       if (isNil(wrapperEl)) return;
 

@@ -13,6 +13,10 @@ export const Sidebar: FC<{
   activedCategories: false | CategoryItem[];
   activedTag?: string;
 }> = ({ activedCategories, activedTag }) => {
+  console.log('====================Sidebar组件====================');
+  console.log('activedCategories', activedCategories);
+  console.log('activedTag', activedTag);
+  console.log('====================Sidebar组件====================');
   return (
     <div className={$styles.sidebar}>
       <div className="space-y-4">
