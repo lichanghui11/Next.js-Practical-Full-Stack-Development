@@ -15,7 +15,6 @@ export const getBreadcrumbLinks = (
   categories: CategoryItem[],
   type: 'breadcrumb' | 'post' = 'breadcrumb',
 ): IBlogBreadcrumbItem[] => {
-  console.log('getBreadcrumbLinks: categories', categories);
   let link = '';
   if (isNil(categories) || categories.length === 0) return [];
   const res = categories.map((category, idx) => {
@@ -29,7 +28,6 @@ export const getBreadcrumbLinks = (
     }
     return item;
   });
-  console.log('getBreadcrumbLinks: res', res);
   return res;
 };
 

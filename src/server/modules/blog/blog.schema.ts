@@ -139,7 +139,6 @@ export const totalPagesSchema = z.object({
  */
 export const postPaginationRequestSchema = z.preprocess(
   (val) => {
-    console.log('正在校验 postPaginationRequestSchema:', val);
     return val;
   },
   z

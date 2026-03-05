@@ -34,7 +34,6 @@ const buildTree = (categories: BaseCategory[]): CategoryItem[] => {
       }
     }
   }
-  console.log('构建树的结果', roots);
   return roots;
 };
 
