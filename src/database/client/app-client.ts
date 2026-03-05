@@ -38,9 +38,25 @@ interface CategoryTreeParams {
 }
 function createPrisma() {
   const adapter = new PrismaPg(pool);
-  const client = new PrismaClient({ adapter })
-    .$extends(pagination())
-    .$extends(withBark({ modelNames: ['category'] }));
+  const baseClient = new PrismaClient({
+    adapter,
+    log: [
+      { emit: 'event', level: 'query' },
+      { emit: 'stdout', level: 'error' },
+      { emit: 'stdout', level: 'info' },
+      { emit: 'stdout', level: 'warn' },
+    ],
+  });
+
+  // 在扩展之前监听查询事件
+  baseClient.$on('query', (e: any) => {
+    console.log(`Query: ${e.query}`);
+    console.log(`Params: ${e.params}`);
+    console.log(`Duration: ${e.duration}ms`);
+  });
+
+  const client = baseClient.$extends(pagination()).$extends(withBark({ modelNames: ['category'] }));
+
   return client.$extends({
     model: {
       category: {

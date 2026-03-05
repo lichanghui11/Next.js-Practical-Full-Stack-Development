@@ -8,8 +8,6 @@ import { isNil, omit } from 'lodash';
 import type { CategoryItem } from '@/server/modules/category/category.type';
 import type { TagType } from '@/server/modules/tag/tag.type';
 
-import { customMerge } from '@/app/utils/custom-merge';
-
 import type { PageParams, PageResult } from '../types/pagination';
 
 import { paginationAdapter } from '../adapters/pagination.adapter';
@@ -48,11 +46,6 @@ const defaultPostItemQueryOptions = {
  * 这个默认配置导致了select 和 include 不能同时使用的报错，因为它们在 Prisma 的查询里是互斥的。
  * omit 也算一种 select
  */
-
-// 查询分页数据的默认请求参数，分页数据不需要 body
-const defaultPostPaginationOptions = customMerge(defaultPostItemQueryOptions, {
-  omit: { body: true },
-});
 
 const PostRepo = {
   /**
@@ -96,24 +89,26 @@ const PostRepo = {
     }
     const posts = await prismaClient.post
       .paginate({
-        ...defaultPostPaginationOptions,
         // Prisma 原生参数
         orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
         where,
-        ...rest,
       })
       .withPages({
         includePageCount: true, // 必须开启，否则 paginationAdapter 拿不到 totalCount/pageCount
         // 分页专用参数
         limit: rest.limit || 10,
         page: rest.currentPage || 1,
+        include: {
+          tags: true,
+          category: true,
+        },
       });
 
     for (let i = 0; i < posts[0].length; i++) {
       (posts[0][i] as ((typeof posts)[0] extends (infer ItemType)[] ? ItemType : never) & {
         categories: CategoryItem[];
       }) = {
-        ...posts[0][i],
+        ...omit(posts[0][i], ['body', 'categoryId']),
         categories: !isNil(posts[0][i].category?.id)
           ? await prismaClient.category.getAncestorChainWithSelf({
               where: { id: posts[0][i].category?.id },
