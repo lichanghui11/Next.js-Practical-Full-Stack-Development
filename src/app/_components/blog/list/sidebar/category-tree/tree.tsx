@@ -50,7 +50,7 @@ const TreeItem: FC<CategoryItemProps> = ({ category, actives, parentPath }) => {
       <AccordionItem value={category.id} className="border-none" data-active={isActive}>
         <div ref={itemRef} className={cn($styles.FolderItem, isActive && $styles.active)}>
           <div
-            className={$styles.folderLink}
+            className={cn($styles.folderLink, 'flex')}
             style={{
               paddingLeft: `${0.5 * (category.depth - 1)}rem`,
             }}
@@ -116,8 +116,8 @@ export const CategoryTreeComponent: FC<{ categories: CategoryTree; actives: stri
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <div ref={containerRef}>
-      <Accordion type="multiple" className={cn($styles.container)}>
+    <div ref={containerRef} className={$styles.container}>
+      <Accordion type="multiple" className={cn($styles.accordion)} defaultValue={actives}>
         {categories.map((category) => (
           <TreeItem key={category.id} category={category} actives={actives} parentPath="" />
         ))}

@@ -7,7 +7,7 @@
 
 /* 页面包装容器 */
 @utility page-container {
-  @apply max-w-[90%] md:max-w-[80%] lg:max-w-[70%] xl:max-w-[60%] flex-auto mb-5;
+  @apply max-w-[100%] md:max-w-[80%] lg:max-w-[70%] xl:max-w-[60%] flex-auto mb-5;
 }
 
 /* 页面包装容器 */

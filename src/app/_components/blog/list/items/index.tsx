@@ -35,7 +35,6 @@ export const PostListItems: FC<
     page: currentPage,
     limit: pageSize,
   });
-  console.log('postApi.list: ', result);
   // 这里 result 的 ClientResponse 是增强了的 ResponseType，里面有ok/status/headers/json() 这些 Response 的能力
   if (!result.ok) throw new Error((await result.json()).message);
   const posts = await result.json();
@@ -43,6 +42,7 @@ export const PostListItems: FC<
   if (posts.meta.totalPages && posts.meta.totalPages > 0 && Number(page) > posts.meta.totalPages) {
     return redirect('/');
   }
+  console.log('posts', posts.data[0]);
   return (
     <div className={styles.container}>
       {posts.data.length === 0 ? (
@@ -86,6 +86,7 @@ export const PostListItems: FC<
                 <div className={styles.cardContent}>
                   <p className={styles.summary}>{item.summary || '暂无摘要'}</p>
 
+                  <p>下面是标签：items: {}</p>
                   <div>
                     {!isNil(item.tags) && item.tags.length > 0 && (
                       <div>
@@ -105,7 +106,7 @@ export const PostListItems: FC<
                       </div>
                     )}
                   </div>
-
+                  <p>上面是标签</p>
                   <div className={styles.metadata}>
                     <Calendar className={styles.metadataIcon} />
                     <time>

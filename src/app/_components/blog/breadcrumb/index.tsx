@@ -50,7 +50,7 @@ export const BlogBreadcrumb: FC<IBlogBreadcrumbProps> = ({
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
             <Link href="/">
-              <span className="w-2 h-2">
+              <span className="xicon mr-1">
                 <Home />
               </span>
               首页

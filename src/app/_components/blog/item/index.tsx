@@ -26,12 +26,12 @@ export const BlogDetail: FC<{
 }> = async ({ id }) => {
   const result = await blogApi.detailById(id);
   // 这里不用写 try catch，这个错误被内部处理的，直接通过 ok 字段判断即可
-  console.log('博客详情： ', result);
   if (!result.ok) {
     if (result.status !== 404) throw new Error((await result.json()).message);
     return notFound();
   }
   const post = await result.json();
+  console.log('博客详情： ', post);
   const breadcrumbs: IBlogBreadcrumbItem[] = [...getBreadcrumbLinks(post.categories, 'post')];
   // 这里使用的 post 模式的面包屑，最后一个元素是可以点击的
   // 手动 push 一个当前文章的标题显示在最后，没有 link ，不可点击

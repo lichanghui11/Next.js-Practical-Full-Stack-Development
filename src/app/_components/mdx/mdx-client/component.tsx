@@ -137,11 +137,11 @@ export const mdxComponents: MDXComponents = {
 
   // 表格组件 - 带响应式包装器和完整样式
   table: ({ children, ...props }) => (
-    <div className={styles.tableWrapper}>
-      <table className={styles.table} {...props}>
-        {children}
-      </table>
-    </div>
+    // <span className={styles.tableWrapper}>
+    <table className={styles.table} {...props}>
+      {children}
+    </table>
+    // </span>
   ),
   thead: (props) => <thead {...props} />,
   tbody: (props) => <tbody {...props} />,

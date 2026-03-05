@@ -81,6 +81,9 @@ export const postApi = app
           }),
         ) as unknown as PageParams;
         // 上方 options 的类型为什么这么添加：这个对象的值可能不是 PageParams 类型，但是我在写代码的时候保证只用这两个字段来传参，不用其他字段，这是我的目的，具体我后续在看我请求时候的实际传参。
+        console.log('-----------------------------------------');
+        console.log('options: ', options);
+        console.log('-----------------------------------------');
         const result = await queryPosts(options);
 
         return c.json(result, 200);
