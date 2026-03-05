@@ -40,6 +40,7 @@ export const BlogIndex: FC<BlogIndexProps> = async ({ page, limit = 8, tag, cate
   });
   if (!result.ok) throw new Error((await result.json()).message);
   const res = await result.json();
+  console.log('博客列表数据： ', res.data);
   const meta = res.meta;
   if (meta.totalPages && meta.totalPages > 0 && meta.currentPage > meta.totalPages)
     return redirect('/');
@@ -50,7 +51,8 @@ export const BlogIndex: FC<BlogIndexProps> = async ({ page, limit = 8, tag, cate
           <div className="w-full flex-none">
             <BlogBreadcrumb items={breadcrumbs} tag={tag} basePath="" />
           </div>
-          <PostListItems page={page} limit={String(limit)} activeTag={tag} />
+          {/** 需要把 分类ID 传给这个子组件 */}
+          <PostListItems page={page} limit={String(limit)} activeTag={tag} items={res.data} />
           {meta.totalPages > 1 && <BlogListPagination meta={meta}></BlogListPagination>}
         </div>
         <Sidebar activedCategories={categoryItems} activedTag={tag} />

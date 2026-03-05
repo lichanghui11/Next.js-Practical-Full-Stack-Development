@@ -17,13 +17,15 @@ export const blogApi = {
   list: async (options: PostPaginateRequestQuery): Promise<Response> => {
     const page = isNil(options.page) || Number(options.page) < 1 ? 1 : Number(options.page);
     const limit = isNil(options.limit) || Number(options.limit) < 1 ? 10 : Number(options.limit);
-    const { tag, category, orderBy } = options;
+    // const { tag, category, orderBy } = options;
+    console.log('list 方法里面的参数： ', options);
     return fetchApi(blogClient, (client) => {
       return client.index.$get({
         query: {
-          tag,
-          category,
-          orderBy,
+          // tag,
+          // category,
+          // orderBy,
+          ...options,
           page: page.toString(),
           limit: limit.toString(),
         },

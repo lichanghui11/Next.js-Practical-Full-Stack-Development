@@ -3,11 +3,9 @@ import type { FC } from 'react';
 import { isNil } from 'lodash';
 import { Book, Calendar, Tag } from 'lucide-react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 import type { PostItem } from '@/server/modules/blog/blog.type';
 
-import { blogApi } from '@/api/post';
 import { TagLink } from '@/app/_components/blog/form/tag';
 import { formatDate } from '@/app/utils/format-time';
 import { cn } from '@/app/utils/utils';
@@ -22,34 +20,34 @@ import styles from './style.module.css';
 type BlogListItemsProps<T extends Record<string, any> = Record<never, never>> = {
   page?: string | number;
   limit?: string;
-  tag?: string;
-  category?: string;
+  items: PostItem[];
 } & T;
 
 export const PostListItems: FC<
   BlogListItemsProps & { activeTag?: string; activeCategories?: string[] }
-> = async ({ page, limit, tag, category, activeTag }) => {
-  const currentPage = isNil(page) ? 1 : Number(page);
-  const pageSize = isNil(limit) ? 10 : Number(limit) > 50 ? 50 : Number(limit);
-  const result = await blogApi.list({
-    page: currentPage,
-    limit: pageSize,
-  });
+> = async ({ page, limit, items: posts, activeTag }) => {
+  // const currentPage = isNil(page) ? 1 : Number(page);
+  // const pageSize = isNil(limit) ? 10 : Number(limit) > 50 ? 50 : Number(limit);
+  // const result = await blogApi.list({
+  //   page: currentPage,
+  //   limit: pageSize,
+  //   tag,
+  //   category: category?.id,
+  // });
   // 这里 result 的 ClientResponse 是增强了的 ResponseType，里面有ok/status/headers/json() 这些 Response 的能力
-  if (!result.ok) throw new Error((await result.json()).message);
-  const posts = await result.json();
+  // if (!result.ok) throw new Error((await result.json()).message);
+  // const posts = await result.json();
 
-  if (posts.meta.totalPages && posts.meta.totalPages > 0 && Number(page) > posts.meta.totalPages) {
-    return redirect('/');
-  }
-  console.log('posts', posts.data[0]);
+  // if (posts.meta.totalPages && posts.meta.totalPages > 0 && Number(page) > posts.meta.totalPages) {
+  //   return redirect('/');
+  // }
   return (
     <div className={styles.container}>
-      {posts.data.length === 0 ? (
+      {posts.length === 0 ? (
         <div className={styles.empty}>暂无博客文章</div>
       ) : (
         <div className={styles.blogGrid}>
-          {posts.data.map((item: PostItem) => (
+          {posts.map((item: PostItem) => (
             <article
               key={item.id}
               className={styles.blogCard}
@@ -86,7 +84,6 @@ export const PostListItems: FC<
                 <div className={styles.cardContent}>
                   <p className={styles.summary}>{item.summary || '暂无摘要'}</p>
 
-                  <p>下面是标签：items: {}</p>
                   <div>
                     {!isNil(item.tags) && item.tags.length > 0 && (
                       <div>
@@ -106,7 +103,6 @@ export const PostListItems: FC<
                       </div>
                     )}
                   </div>
-                  <p>上面是标签</p>
                   <div className={styles.metadata}>
                     <Calendar className={styles.metadataIcon} />
                     <time>
