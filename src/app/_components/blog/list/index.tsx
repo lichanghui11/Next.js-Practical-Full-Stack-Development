@@ -40,7 +40,6 @@ export const BlogIndex: FC<BlogIndexProps> = async ({ page, limit = 8, tag, cate
   });
   if (!result.ok) throw new Error((await result.json()).message);
   const res = await result.json();
-  ('博客列表数据： ', res.data);
   const meta = res.meta;
   if (meta.totalPages && meta.totalPages > 0 && meta.currentPage > meta.totalPages)
     return redirect('/');
