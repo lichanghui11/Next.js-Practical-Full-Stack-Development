@@ -45,7 +45,7 @@ export const BlogDetail: FC<{
         <Suspense fallback={<PostContentSkeleton />}>
           {/* 文章头部 */}
           <div className={cn('page-container')}>
-            <BlogBreadcrumb items={breadcrumbs} basePath="" />
+            <BlogBreadcrumb items={breadcrumbs} basePath="/blog" />
           </div>
 
           {/* 文章缩略图 */}

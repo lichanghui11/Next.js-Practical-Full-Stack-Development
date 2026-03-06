@@ -8,6 +8,7 @@
 @import './tailwind/utilities.css';
 @import './tailwind/theme.css';
 @import './tailwind/shadcn.css';
+@import './tailwind/magicui.css';
 
 @custom-variant dark (&:is(.dark, .dark *,[data-theme=dark], [data-theme=dark] *));
 

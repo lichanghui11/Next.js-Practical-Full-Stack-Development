@@ -48,7 +48,7 @@ export const BlogIndex: FC<BlogIndexProps> = async ({ page, limit = 8, tag, cate
       <div className={cn('page-container', $styles.blogIndex)}>
         <div className={$styles.container}>
           <div className="w-full flex-none">
-            <BlogBreadcrumb items={breadcrumbs} tag={tag} basePath="" />
+            <BlogBreadcrumb items={breadcrumbs} tag={tag} basePath="/blog" />
           </div>
           {/** 需要把 分类ID 传给这个子组件 */}
           <PostListItems page={page} limit={String(limit)} activeTag={tag} items={res.data} />

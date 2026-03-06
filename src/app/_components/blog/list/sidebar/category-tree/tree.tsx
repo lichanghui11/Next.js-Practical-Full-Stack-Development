@@ -119,7 +119,7 @@ export const CategoryTreeComponent: FC<{ categories: CategoryTree; actives: stri
     <div ref={containerRef} className={$styles.container}>
       <Accordion type="multiple" className={cn($styles.accordion)} defaultValue={actives}>
         {categories.map((category) => (
-          <TreeItem key={category.id} category={category} actives={actives} parentPath="" />
+          <TreeItem key={category.id} category={category} actives={actives} parentPath="/blog" />
         ))}
       </Accordion>
     </div>

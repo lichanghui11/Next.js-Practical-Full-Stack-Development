@@ -12,6 +12,7 @@ import { cn } from '@/app/utils/utils';
 
 import { getBreadcrumbLinks } from '../../utils';
 import { PostActions } from '../actions';
+import { PostListItemMotion } from '../item-motion';
 import styles from './style.module.css';
 
 // 通过地址栏的 query 拿到 page limit 渲染出博客列表页面
@@ -25,22 +26,7 @@ type BlogListItemsProps<T extends Record<string, any> = Record<never, never>> = 
 
 export const PostListItems: FC<
   BlogListItemsProps & { activeTag?: string; activeCategories?: string[] }
-> = async ({ page, limit, items: posts, activeTag }) => {
-  // const currentPage = isNil(page) ? 1 : Number(page);
-  // const pageSize = isNil(limit) ? 10 : Number(limit) > 50 ? 50 : Number(limit);
-  // const result = await blogApi.list({
-  //   page: currentPage,
-  //   limit: pageSize,
-  //   tag,
-  //   category: category?.id,
-  // });
-  // 这里 result 的 ClientResponse 是增强了的 ResponseType，里面有ok/status/headers/json() 这些 Response 的能力
-  // if (!result.ok) throw new Error((await result.json()).message);
-  // const posts = await result.json();
-
-  // if (posts.meta.totalPages && posts.meta.totalPages > 0 && Number(page) > posts.meta.totalPages) {
-  //   return redirect('/');
-  // }
+> = async ({ items: posts, activeTag }) => {
   return (
     <div className={styles.container}>
       {posts.length === 0 ? (
@@ -48,75 +34,77 @@ export const PostListItems: FC<
       ) : (
         <div className={styles.blogGrid}>
           {posts.map((item: PostItem) => (
-            <article
-              key={item.id}
-              className={styles.blogCard}
-              style={{ '--bg-img': `url(${item.thumbnail})` } as any}
-            >
-              {/* 白色背景内层 */}
-              <div className={styles.cardInner}>
-                {/* 头部行：头像 + 标题 */}
-                <div className={styles.cardHeader}>
-                  <div className={styles.titleWrapper}>
-                    <Link href={`/blog/posts/${item.slug || item.id}`}>
-                      <h2 className={styles.title}>{item.title}</h2>
-                    </Link>
-                    {item.categories.length > 0 && (
-                      <div>
-                        <span>
-                          <Book />
-                        </span>
-                        {getBreadcrumbLinks(item.categories, 'post').map((category) => (
-                          <Link
-                            key={category.id}
-                            href={category.link!}
-                            className="ellips animate-decoration animate-decoration-sm"
-                          >
-                            #{category.text}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
+            <PostListItemMotion key={item.id}>
+              <article
+                key={item.id}
+                className={styles.blogCard}
+                style={{ '--bg-img': `url(${item.thumbnail})` } as any}
+              >
+                {/* 白色背景内层 */}
+                <div className={styles.cardInner}>
+                  {/* 头部行：头像 + 标题 */}
+                  <div className={styles.cardHeader}>
+                    <div className={styles.titleWrapper}>
+                      <Link href={`/blog/posts/${item.slug || item.id}`}>
+                        <h2 className={styles.title}>{item.title}</h2>
+                      </Link>
+                      {item.categories.length > 0 && (
+                        <div>
+                          <span>
+                            <Book />
+                          </span>
+                          {getBreadcrumbLinks(item.categories, 'post').map((category) => (
+                            <Link
+                              key={category.id}
+                              href={category.link!}
+                              className="ellips animate-decoration animate-decoration-sm"
+                            >
+                              #{category.text}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 内容区：摘要 + 元数据 */}
+                  <div className={styles.cardContent}>
+                    <p className={styles.summary}>{item.summary || '暂无摘要'}</p>
+
+                    <div>
+                      {!isNil(item.tags) && item.tags.length > 0 && (
+                        <div>
+                          <span>
+                            <Tag />
+                          </span>
+                          {item.tags?.map((tag) => (
+                            <TagLink
+                              key={tag.id}
+                              tag={tag}
+                              className={cn({
+                                // 此处的样式需要后续重新写
+                                'border-amber-400': activeTag === tag.text,
+                              })}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <div className={styles.metadata}>
+                      <Calendar className={styles.metadataIcon} />
+                      <time>
+                        最后更新
+                        {formatDate(item.updatedAt || item.createdAt, {
+                          withTime: true,
+                          withSeconds: true,
+                        })}
+                      </time>
+                      <PostActions item={item} />
+                    </div>
                   </div>
                 </div>
-
-                {/* 内容区：摘要 + 元数据 */}
-                <div className={styles.cardContent}>
-                  <p className={styles.summary}>{item.summary || '暂无摘要'}</p>
-
-                  <div>
-                    {!isNil(item.tags) && item.tags.length > 0 && (
-                      <div>
-                        <span>
-                          <Tag />
-                        </span>
-                        {item.tags?.map((tag) => (
-                          <TagLink
-                            key={tag.id}
-                            tag={tag}
-                            className={cn({
-                              // 此处的样式需要后续重新写
-                              'border-amber-400': activeTag === tag.text,
-                            })}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <div className={styles.metadata}>
-                    <Calendar className={styles.metadataIcon} />
-                    <time>
-                      最后更新
-                      {formatDate(item.updatedAt || item.createdAt, {
-                        withTime: true,
-                        withSeconds: true,
-                      })}
-                    </time>
-                    <PostActions item={item} />
-                  </div>
-                </div>
-              </div>
-            </article>
+              </article>
+            </PostListItemMotion>
           ))}
         </div>
       )}

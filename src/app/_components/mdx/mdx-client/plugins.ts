@@ -4,12 +4,14 @@
 import type { Pluggable } from 'unified';
 
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeExternalLinks from 'rehype-external-links';
 import rehypePrism from 'rehype-prism-plus';
 import rehypeSlug from 'rehype-slug';
 import remarkDirective from 'remark-directive';
 import remarkFlexibleToc from 'remark-flexible-toc';
 import remarkGfm from 'remark-gfm';
 
+import { rehypeCleanLinks } from './custom-plugins/rehype-clean-links';
 import { rehypeCodeWindow } from './custom-plugins/rehype-code-window';
 import remarkAdmonition from './custom-plugins/remark-admonition';
 import remarkBilibili from './custom-plugins/remark-bilibili';
@@ -19,6 +21,15 @@ import remarkYouTube from './custom-plugins/remark-youtube';
 
 export const mdxPlugins = {
   rehypePlugins: [
+    [
+      rehypeExternalLinks,
+      {
+        // 给外部链接配置的属性
+        target: '_blank',
+        rel: ['nofollow'],
+        content: null, // 不添加任何内容到链接里
+      },
+    ],
     rehypeCodeWindow, // 先包装代码窗口结构
     rehypeSlug,
     [
@@ -39,6 +50,7 @@ export const mdxPlugins = {
       },
     ],
     [rehypePrism, { showLineNumbers: true, ignoreMissing: true }], // 再进行语法高亮
+    rehypeCleanLinks, // 清理链接里面不正确的 标签嵌套
   ] as Pluggable[],
   remarkPlugins: [
     remarkReadingTime, // 计算阅读时间（需放在前面）

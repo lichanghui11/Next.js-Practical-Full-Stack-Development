@@ -1,0 +1,13 @@
+@reference "#tailwind.css";
+
+.container {
+  @apply flex w-full items-center justify-center;
+
+  & > .main {
+    @apply items-center justify-between flex h-auto w-full flex-col lg:flex-row px-0 md:px-3;
+
+    & > .block {
+      @apply my-2 flex min-h-80 w-full lg:my-8 lg:w-1/2;
+    }
+  }
+}

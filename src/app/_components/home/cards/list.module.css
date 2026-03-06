@@ -1,0 +1,60 @@
+@reference "#tailwind.css";
+
+.container {
+  @apply flex flex-col w-full h-full;
+}
+
+.title {
+  @apply flex items-center justify-center sm:mb-7 md:mb-0 flex-none py-5 mb-4 text-[2rem];
+}
+
+.content {
+  @apply flex 
+        flex-col 
+        items-center 
+        flex-1
+        text-base 
+        text-center 
+        leading-8;
+
+  & > ul {
+    @apply list-none max-w-full block;
+
+    & > li {
+      @apply py-1
+                w-full
+                flex
+                justify-start
+                items-center
+                transition-transform
+                hover:translate-x-5
+                hover:before:bg-foreground;
+
+      &::before {
+        @apply size-4 text-muted-foreground mr-[0.35rem] content-[''] bg-muted-foreground;
+        mask-image: url('./left.svg');
+        mask-repeat: no-repeat;
+        mask-position: 50% 50%;
+        mask-size: cover;
+      }
+
+      & > a {
+        @apply max-w-[99%]
+                    overflow-hidden 
+                    whitespace-nowrap 
+                    text-ellipsis 
+                    break-all
+                    text-muted-foreground
+                    hover:text-foreground;
+      }
+    }
+  }
+
+  & > .cardBtn {
+    @apply my-5;
+
+    & > a {
+      @apply h-[2.7rem] min-h-[2.7rem] rounded-[0.3rem];
+    }
+  }
+}

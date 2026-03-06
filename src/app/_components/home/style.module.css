@@ -1,0 +1,5 @@
+@reference "#tailwind.css";
+
+.home {
+  @apply w-full flex-auto pt-20 h-auto flex flex-col items-center space-y-3;
+}

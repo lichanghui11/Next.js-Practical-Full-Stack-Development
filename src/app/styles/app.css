@@ -66,13 +66,18 @@ xhtml.dark xbody {
   }
 }
 
+/** 这个样式类型专门用于一些包裹了 svg 图标的元素，保证样式统一 */
 .xicon {
   @apply w-[1em] h-[1em] inline-flex;
 
   & svg {
     @apply !w-full !h-full;
 
+    /* 嵌套：无 fill 属性的 SVG */
     &:not([fill]) {
+      /* currentcolor 会自动指向当前元素的 color 属性值（如果当前元素没设置 color，则继承父元素的 color）。👉 简单说：currentcolor = 元素的文字颜色。 */
+
+      /* 这是一个原生关键字 */
       fill: currentcolor;
     }
   }

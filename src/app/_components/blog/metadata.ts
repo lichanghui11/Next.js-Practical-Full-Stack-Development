@@ -1,6 +1,7 @@
 import type { Metadata, ResolvedMetadata } from 'next';
 
 import { isNil } from 'lodash';
+import { cache } from 'react';
 
 import type { CategoryItem } from '@/server/modules/category/category.type';
 import type { TagType } from '@/server/modules/tag/tag.type';
@@ -21,6 +22,11 @@ export interface IPostMetadata {
   params: Promise<{ item: string }>;
   parent: ResolvedMetadata;
 }
+
+// 缓存
+const getBreadcrumbs = cache(async (lastId: string) => await categoryApi.breadcrumb(lastId));
+const getTagDetail = cache(async (tag: string) => await tagApi.detail(tag));
+const getPostDetail = cache(async (id: string) => await blogApi.detailById(id));
 
 /**
  *

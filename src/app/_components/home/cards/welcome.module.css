@@ -1,0 +1,17 @@
+@reference "#tailwind.css";
+
+.colorTitle {
+  @apply bg-clip-text 
+        text-transparent 
+         font-bold 
+         bg-linear-to-r
+       from-emerald-400/80
+        via-lime-600/60
+        to-amber-700/80;
+}
+
+html[class='dark'] {
+  .colorTitleain {
+    @apply from-emerald-500/80 via-lime-400/60 to-lime-600/80;
+  }
+}

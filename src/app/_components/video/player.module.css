@@ -1,0 +1,20 @@
+@reference "#tailwind.css";
+
+.container {
+  @apply w-full lg:shadow-nylg md:shadow-nymd shadow-nysm rounded-md  bg-transparent!;
+
+  & * {
+    @apply rounded-md!;
+  }
+
+  & > :global(.art-video-player),
+  & video {
+    @apply bg-transparent!;
+  }
+}
+
+html[class='dark'] {
+  .container {
+    @apply shadow-white/20;
+  }
+}
