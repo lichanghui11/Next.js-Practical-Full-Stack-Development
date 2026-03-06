@@ -40,7 +40,7 @@ const Header: FC = () => {
         suppressHydrationWarning
       >
         <div className="flex items-center gap-1">
-          <div className="" id="mobile-menu-btn">
+          <div className="md:hidden" id="mobile-menu-btn">
             <List size={18} onClick={() => setIsSidebarOpen(true)} />
           </div>
           <Logo />

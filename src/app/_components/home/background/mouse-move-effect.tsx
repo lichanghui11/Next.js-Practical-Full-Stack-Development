@@ -29,6 +29,7 @@ export const MouseMoveEffect: FC = () => {
       style={{
         background: `radial-gradient(600px at ${mousePosition.x}px ${mousePosition.y}px, rgba(220, 231, 69, ${opacity}), transparent 80%)`,
       }}
+      suppressHydrationWarning
     />
   );
 };

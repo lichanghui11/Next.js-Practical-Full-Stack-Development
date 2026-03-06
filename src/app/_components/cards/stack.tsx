@@ -19,7 +19,13 @@ export const StackCard: FC<PropsWithChildren<StackCardProps>> = ({
   shine,
 }) => {
   return (
-    <div className={cn(`relative flex h-80 w-full items-center justify-center`, className)}>
+    <div
+      className={cn(
+        `relative flex h-80 w-full items-center justify-center`,
+        className,
+        'w-[400px] h-[400px] ml-[20px]', // 视频卡片样式丢失了，这里强制覆盖
+      )}
+    >
       <div
         className={cn(
           'absolute bottom-0 left-0 w-32 h-32 bg-blue-500 rounded-full blur-2xl opacity-50 animate-pulse',
