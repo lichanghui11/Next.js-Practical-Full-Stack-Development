@@ -76,6 +76,18 @@
   - 网络模式与数据持久化
   - 常用服务快速启动与开发环境配置
 
+- **🏠 [首页功能实现](./src/docs/homepage-implementation.md)**
+  - 视频播放器封装（Artplayer）
+  - 时间线组件与鎏金边框效果
+  - 堆叠卡片与背景效果系统
+  - 鼠标跟随效果与文字动画
+
+- **📰 [博客系统架构](./src/docs/blog-system-architecture.md)**
+  - 文件路由结构与组件封装
+  - 分类系统与标签系统实现
+  - 面包屑导航与分页功能
+  - 已知问题与待优化项
+
 ---
 
 ## 🗂️ 项目结构
@@ -112,14 +124,84 @@
 > 💡 本轮重构：后端逻辑整合到 Hono（App Router 的 `app/api/[[...route]]` 入口），前端通过
 > `hono/client` + `fetchApi` 统一调用，表单校验用 `zValidator + Zod`。
 
-- [x] **项目初始化** / 工程规范 / 静态资源
-- [x] **CSS & 主题架构** / UI 组件 / 博客编辑弹窗
-- [x] **数据库层**：Prisma + PostgreSQL
-- [x] **MDX & TOC**：序列化/水合拆分，阅读时间统计
-- [x] **后端 API 层（Hono）**：路由集中在 `src/server`，`hono/client`
-      生成类型安全客户端，`zValidator` 负责入参校验
-- [x] **博客详情页**：MDX 渲染与元信息展示
-- [ ] **待优化**：Header 动画细节、目录 sticky、移动端交互微调
+### 已完成模块
+
+- [x] **项目初始化**
+  - 工程规范配置（ESLint、Prettier、Stylelint）
+  - Git 提交规范（Conventional Commits）
+  - 静态资源管理
+
+- [x] **样式系统**
+  - Tailwind v4 模块化配置
+  - CSS Modules 与全局作用域
+  - 暗色模式与主题切换
+
+- [x] **数据库层**
+  - Prisma + PostgreSQL 配置
+  - 树形结构实现（Materialized Path）
+  - Migration 与 Seed 工作流
+
+- [x] **后端 API 层（Hono）**
+  - 路由模块化设计（`src/server`）
+  - 类型安全客户端（`hono/client`）
+  - 表单校验（`zValidator + Zod`）
+  - OpenAPI 文档生成
+
+- [x] **MDX 内容系统**
+  - 序列化/水合架构拆分
+  - Remark/Rehype 插件系统
+  - TOC 目录自动生成
+  - 阅读时间统计
+
+- [x] **首页功能**
+  - 视频播放器封装（Artplayer）
+  - 时间线组件与鎏金边框效果
+  - 堆叠卡片与背景渐变
+  - 鼠标跟随效果与文字动画
+
+- [x] **博客系统**
+  - 文件路由（列表/详情/创建/编辑）
+  - 分类树形结构与面包屑导航
+  - 标签过滤与分页功能
+  - MDX 渲染与元信息展示
+
+### 后续学习计划
+
+- [ ] **认证系统（Auth）**
+  - 用户注册与登录
+  - Session 管理
+  - JWT Token 认证
+  - 权限控制与路由守卫
+
+- [ ] **缓存层（Redis）**
+  - Redis 基础配置
+  - 会话存储
+  - 数据缓存策略
+  - 热点数据优化
+
+- [ ] **功能优化**
+  - Header 动画细节
+  - 目录 sticky 定位
+  - 移动端交互优化
+  - 博客列表数据完整性修复
+
+## ⚠️ 已知问题
+
+### 博客列表数据缺失
+
+**问题**: 博客列表页无法正确获取文章的标签（tags）和分类（categories）关联数据
+
+**影响**: 列表页文章卡片的标签和分类区域可能显示不完整
+
+**位置**: `src/app/_components/blog/list/index.tsx:34` - `blogApi.list()`
+
+**待解决**:
+
+- [ ] 检查后端 API 返回数据结构
+- [ ] 确认数据库查询是否包含关联查询（include）
+- [ ] 验证前端类型定义匹配
+
+详见 [博客系统架构文档](./src/docs/blog-system-architecture.md#已知问题与遗留任务)
 
 ## 📑 API 文档入口
 
