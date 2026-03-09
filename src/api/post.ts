@@ -1,6 +1,6 @@
 import { isNil } from 'lodash';
 
-import type { PostApiType } from '@/server/modules/blog/blog.route';
+import type { BlogRoutesType } from '@/server/modules/blog/blog.route';
 import type {
   PostCreateOrUpdateData,
   PostPaginateRequestQuery,
@@ -9,7 +9,7 @@ import type {
 import { buildClient, fetchApi } from '@/lib/rpc.client';
 
 // 直接定义路径，避免从 'use server' 文件中导入非 async 函数的值
-const blogClient = buildClient<PostApiType>('/blog');
+const blogClient = buildClient<BlogRoutesType>('/blog');
 
 // 返回的是一个 Response 对象
 export const blogApi = {

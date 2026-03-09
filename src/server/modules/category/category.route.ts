@@ -18,9 +18,9 @@ const app = createHonoApp();
 
 export const categoryPath = '/categories';
 
-export type CategoryApiType = typeof categoryApi;
+export type CategoryRoutesType = typeof categoryRoutes;
 
-export const categoryApi = app
+export const categoryRoutes = app
   .get(
     '/tree/:parentId?',
     describeRoute({

@@ -1,9 +1,9 @@
-import type { CategoryApiType } from '@/server/modules/category/category.route';
+import type { CategoryRoutesType } from '@/server/modules/category/category.route';
 
 import { buildClient, fetchApi } from '@/lib/rpc.client';
 
 // 直接定义路径，避免从 'use server' 文件中导入非 async 函数的值
-const categoryClient = buildClient<CategoryApiType>('/categories');
+const categoryClient = buildClient<CategoryRoutesType>('/categories');
 
 // 每一个接口都对应了一个 API 路由
 export const categoryApi = {

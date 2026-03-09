@@ -58,5 +58,13 @@ export const createErrorResponse = <S extends number>(description: string, statu
 };
 
 /**
+ * 创建用户未认证响应信息
+ * @param description
+ */
+export const createUnauthorizedErrorResponse = (description?: string) => {
+  return createErrorResponse(description ?? '用户未认证', 401);
+};
+
+/**
  * 此处教程封装了很多类似的函数，可以是出于教学需要，我全部也写了一遍，但是实际上我只使用了 createResponse ，这里对目前的项目而言有些过度封装了，一个已经够用了，多了看得眼花缭乱。
  */

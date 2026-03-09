@@ -2,7 +2,7 @@ import type { CSSProperties, FC } from 'react';
 
 import { cn } from '@/app/utils/utils';
 
-import styles from './style.module.css';
+import styles from './spinner.module.css';
 
 export const Spinner: FC<{ className?: string; style?: CSSProperties; icon?: boolean }> = (
   props,

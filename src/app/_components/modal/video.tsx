@@ -7,6 +7,7 @@ import type { FC } from 'react';
 // 直接获取 Radix UI 底层原始组件，绕开 shadcn 的二次封装，获取更多的自定义的灵活性
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import CloseIcon from '@ricons/material/CloseFilled';
+import dynamic from 'next/dynamic';
 import { useCallback } from 'react';
 import {
   Dialog,
@@ -20,9 +21,9 @@ import {
 import { customMerge } from '@/app/utils/custom-merge';
 import { cn } from '@/app/utils/utils';
 
-import { VideoPlayer } from '../video/player';
 import $styles from './video.module.css';
 
+const VideoPlayer = dynamic(() => import('../video/player'), { ssr: false });
 interface Props {
   className?: string;
   videoOptions: Omit<Option, 'container'>;

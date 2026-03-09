@@ -8,6 +8,7 @@ import { createHonoApp } from '@/server/common/app';
 import { createErrorResult, defaultValidatorErrorHandler } from '@/server/common/error';
 import { createResponse } from '@/server/common/response';
 import { errorSchema } from '@/server/common/schema';
+import { AuthProtectedMiddleware } from '@/server/modules/user/user.middleware';
 
 import {
   buildPostRequestSchema,
@@ -43,10 +44,10 @@ const tags: string[] = ['文章操作'];
 export const postPath = '/blog';
 // 这里的 typeof 是类型操作符，只在编译阶段生效，编译器会扫描整个文件来解析类型，不受代码书写顺序的限制。
 // 所以可以提前使用 postApi 的类型
-export type PostApiType = typeof postApi;
+export type BlogRoutesType = typeof blogRoutes;
 
 const app = createHonoApp();
-export const postApi = app
+export const blogRoutes = app
   // 请求博客首页的文章列表
   .get(
     '/',
@@ -221,6 +222,7 @@ export const postApi = app
       },
     }),
     validator('json', buildPostRequestSchema(), defaultValidatorErrorHandler),
+    AuthProtectedMiddleware,
     async (c) => {
       try {
         const body = await c.req.json();
@@ -248,6 +250,7 @@ export const postApi = app
     }),
     validator('param', postDetailByIdRequestSchema, defaultValidatorErrorHandler),
     validator('json', buildPostRequestSchema(), defaultValidatorErrorHandler),
+    AuthProtectedMiddleware,
     async (c) => {
       try {
         const { id } = c.req.valid('param');
@@ -275,6 +278,7 @@ export const postApi = app
       },
     }),
     validator('param', postDetailByIdRequestSchema, defaultValidatorErrorHandler),
+    AuthProtectedMiddleware,
     async (c) => {
       try {
         const { id } = c.req.valid('param');

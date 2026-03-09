@@ -11,8 +11,8 @@ const app = createHonoApp();
 const tags: string[] = ['标签操作'];
 
 export const tagPath = '/tags';
-export type TagApiType = typeof tagApi;
-export const tagApi = app
+export type TagRoutesType = typeof tagRoutes;
+export const tagRoutes = app
   .get(
     '/:id',
     describeRoute({

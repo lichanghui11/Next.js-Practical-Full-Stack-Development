@@ -18,7 +18,7 @@ export default function Layout({
   modal: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Header />
       {children}
       <Footer />

@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 
+import { Auth } from '@/app/_components/auth';
 import ThemeProvider from '@/app/_components/theme';
 
 import styles from './layout.module.css';
@@ -69,7 +70,9 @@ export default function RootLayout({
       </head>
       <body className={cn(styles.topBody)}>
         <AntdRegistry>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            <Auth>{children}</Auth>
+          </ThemeProvider>
         </AntdRegistry>
       </body>
     </html>
