@@ -293,3 +293,7 @@ export const userPath = '/auth'; // 必须与 authClient.basePath 的后半段�
 ### 种子数据的 bug
 
 `seed-helpers.ts` 中创建第二个用户后标记邮箱已验证时，`where` 条件要用 `res1.user.email` 而非 `res.user.email`，否则只会重复更新第一个用户，第二个用户的邮箱始终未验证。
+
+questions:
+- better-auth 为什么要在环境变量文件里面设置密钥呢？
+- better-auth 有两个端：服务端和客户端，一个认证请求的完整链路是否包括这两个端呢？为什么要使用两个端呢？如果只使用一个端可以吗？

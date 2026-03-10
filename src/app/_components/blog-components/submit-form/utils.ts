@@ -8,11 +8,11 @@ export const getDefaultBlogFormValues = <
   A extends Record<string, any>,
 >(
   fields: Array<keyof T>,
-  params: { type: 'create' } | { type: 'update'; blog: T },
+  params?: { type: 'create' } | { type: 'update'; blog: T },
 ) => {
   const items = {} as T;
   // 创建 update 分支的数据
-  if (params.type === 'update') {
+  if (params?.type === 'update') {
     fields.forEach((field) => {
       if (field in params.blog) items[field] = params.blog[field];
     });
@@ -21,7 +21,7 @@ export const getDefaultBlogFormValues = <
   // 根据实际的分支进行填充默认值
   const defaultValues = fields.reduce(
     (acc, field) => {
-      acc[field] = params.type === 'create' ? '' : items[field];
+      acc[field] = params?.type === 'create' ? '' : items[field];
       return acc;
     },
     items as Record<keyof T, any>,

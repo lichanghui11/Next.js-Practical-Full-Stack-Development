@@ -9,4 +9,6 @@ export const appConfig: AppConfig = {
   timezone: 'Asia/Shanghai',
   // 语言，默认zh-cn
   locale: 'zh-cn',
+  // 应用名称，发送邮件时放在邮件主题里面
+  appName: 'Esti-个人博客网站',
 };

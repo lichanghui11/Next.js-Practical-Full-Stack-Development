@@ -8,7 +8,6 @@ import Link from 'next/link';
 
 import type { PostItem } from '@/server/modules/blog/blog.type';
 
-import { useAuth } from '@/app/_components/auth/hooks';
 import { TagLink } from '@/app/_components/blog/form/tag';
 import { formatDate } from '@/app/utils/format-time';
 import { cn } from '@/app/utils/utils';
@@ -30,8 +29,6 @@ type BlogListItemsProps<T extends Record<string, any> = Record<never, never>> = 
 export const PostListItems: FC<
   BlogListItemsProps & { activeTag?: string; activeCategories?: string[] }
 > = ({ items: posts, activeTag }) => {
-  const auth = useAuth();
-  const user = auth === false ? null : auth;
   return (
     <div className={styles.container}>
       {posts.length === 0 ? (
@@ -104,7 +101,7 @@ export const PostListItems: FC<
                           withSeconds: true,
                         })}
                       </time>
-                      <PostActions item={item} auth={user} />
+                      <PostActions item={item} />
                     </div>
                   </div>
                 </div>

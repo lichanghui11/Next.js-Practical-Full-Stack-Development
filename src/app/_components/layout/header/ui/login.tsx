@@ -9,8 +9,8 @@ const Login: FC = () => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Link href="/auth/login">
-          <Button variant="ghost" size="icon" aria-label="login">
+        <Link href="/auth/signin">
+          <Button variant="ghost" size="icon" aria-label="signin">
             <User />
           </Button>
         </Link>

@@ -64,7 +64,7 @@ export const HandleButton: FC<{ auth: User | null }> = ({ auth }) => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button asChild className="ml-auto" size="icon" variant="outline">
-                <Link href="/auth/login">
+                <Link href="/auth/signin">
                   <UserIcon></UserIcon>
                 </Link>
               </Button>

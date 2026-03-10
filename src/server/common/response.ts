@@ -65,6 +65,11 @@ export const createUnauthorizedErrorResponse = (description?: string) => {
   return createErrorResponse(description ?? '用户未认证', 401);
 };
 
+// 创建服务器请求错误信息
+export const createBadRequestErrorResponse = (description?: string) => {
+  return createErrorResponse(description ?? '请求参数错误', 400);
+};
+
 /**
  * 此处教程封装了很多类似的函数，可以是出于教学需要，我全部也写了一遍，但是实际上我只使用了 createResponse ，这里对目前的项目而言有些过度封装了，一个已经够用了，多了看得眼花缭乱。
  */

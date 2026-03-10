@@ -6,11 +6,11 @@ import { Button } from 'ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from 'ui/form';
 import { Input } from 'ui/input';
 
-import { authFormHooks } from '../hooks';
+import { useSigninForm, useSigninSubmit } from '../hooks';
 
-const LoginForm: FC = () => {
-  const form = authFormHooks.useLoginForm();
-  const submitHandler = authFormHooks.useLoginSubmit();
+const SigninForm: FC = () => {
+  const form = useSigninForm();
+  const submitHandler = useSigninSubmit();
 
   return (
     <Form {...form}>
@@ -71,4 +71,4 @@ const LoginForm: FC = () => {
   );
 };
 
-export const AuthLoginForm: FC = () => <LoginForm />;
+export const AuthSigninForm: FC = () => <SigninForm />;

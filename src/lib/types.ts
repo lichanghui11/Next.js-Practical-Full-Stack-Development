@@ -30,6 +30,8 @@ export interface AppConfig {
   timezone?: string;
   // 语言，默认zh-cn
   locale?: string;
+  // 应用名称，发送邮件时放在邮件主题里面
+  appName?: string;
 }
 
 // getTime函数获取时间的选项参数

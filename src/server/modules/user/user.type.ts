@@ -2,8 +2,8 @@ import type { z } from 'zod';
 
 import type {
   authResponseSchema,
-  loginRequestSchema,
   sessionSchema,
+  signinRequestSchema,
   userDetailRequestParamsSchema,
   userSchema,
 } from './user.schema';
@@ -18,7 +18,7 @@ export type Session = z.infer<typeof sessionSchema>;
 export type AuthResponse = z.infer<typeof authResponseSchema>;
 
 // 登陆请求类型
-export type LoginRequest = z.infer<typeof loginRequestSchema>;
+export type SigninRequest = z.infer<typeof signinRequestSchema>;
 
 // 用户详情请求的 参数类型
 export type UserDetailRequestParams = z.infer<typeof userDetailRequestParamsSchema>;

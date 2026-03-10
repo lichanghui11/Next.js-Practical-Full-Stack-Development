@@ -7,7 +7,7 @@ import { createResponse } from '@/server/common/response';
 import { errorSchema } from '@/server/common/schema';
 import { AuthProtectedMiddleware } from '@/server/modules/user/user.middleware';
 
-import { authResponseSchema, authSignoutResponseSchema, loginRequestSchema } from './user.schema';
+import { authResponseSchema, authSignoutResponseSchema, signinRequestSchema } from './user.schema';
 import { getCurrentSession, getUser, signIn, signOut } from './user.service';
 
 /**
@@ -63,7 +63,7 @@ export const authRoutes = app
         ...createResponse(errorSchema, 500, '服务器错误'),
       },
     }),
-    validator('json', loginRequestSchema, defaultValidatorErrorHandler),
+    validator('json', signinRequestSchema, defaultValidatorErrorHandler),
     async (c) => {
       try {
         const { username, password } = c.req.valid('json');

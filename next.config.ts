@@ -22,7 +22,12 @@ const nextConfig: NextConfig = {
   // 如果使用 turbopack, 就不打包这两个插件，因为这些插件里面的 commonJS 有可能在打包阶段触发 ESM 解析错误。
   serverExternalPackages: externals,
   // 允许局域网内的设备访问开发服务器
-  // allowedDevOrigins: ['192.168.0.105'],
+  allowedDevOrigins: [
+    'http://172.20.10.5:3000',
+    // 可选：补充本地常用的开发源（避免其他跨域警告）
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+  ],
   // productionBrowserSourceMaps: true,
   images: {
     remotePatterns: [

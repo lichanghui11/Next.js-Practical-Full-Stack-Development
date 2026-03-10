@@ -1,7 +1,9 @@
 import 'dotenv/config';
 
 import prisma from '../client/admin-client';
-import { createSeedCategories, createSeedPosts, createSeedUsers } from './seed-helpers';
+import { createSeedCategories } from './category';
+import { createSeedPosts } from './post';
+import { createSeedUsers } from './user';
 
 async function main() {
   try {

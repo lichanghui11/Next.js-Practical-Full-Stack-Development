@@ -1,13 +1,13 @@
 import { isNil } from 'lodash';
 
-import type { LoginRequest, User } from '@/server/modules/user/user.type';
+import type { SigninRequest, User } from '@/server/modules/user/user.type';
 
 import { authClient } from '@/lib/auth/client';
 
 export const authApi = {
   // 用户名或邮箱 密码登录
   signIn: async (
-    data: LoginRequest,
+    data: SigninRequest,
     options?: {
       rememberMe?: boolean;
       callBackUrl?: string; // 登录成功回调地址

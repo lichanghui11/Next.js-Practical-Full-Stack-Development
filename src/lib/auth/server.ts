@@ -50,6 +50,7 @@ export const createServerAuth = () => {
     // 配置邮箱密码登录
     emailAndPassword: {
       enabled: true,
+      autoSignIn: false, // 禁止注册后自动登录
     },
 
     // 配置访问路径

@@ -2,7 +2,7 @@ import type { FC } from 'react';
 
 import { Suspense } from 'react';
 
-import { homeConfig } from '@/config/home';
+import { homeConfig } from '@/config/home.config';
 
 import { FadeInMotion } from '../motion/fadeIn';
 import { TypedText } from '../text/typed';

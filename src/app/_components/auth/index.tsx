@@ -13,7 +13,8 @@ import type { AuthType } from './types';
 
 import { Spinner } from '../spinner';
 import { AuthContext } from './constants';
-import { useAuth, useSetAuth } from './hooks';
+import { useSetAuth } from './hooks';
+import { useAuth } from './hooks/auth';
 
 const DefaultLoading: FC = () => {
   return (

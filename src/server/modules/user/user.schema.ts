@@ -1,15 +1,17 @@
 import { z } from 'zod';
 
+import { authConfig } from '@/config/auth.config';
+
 // 用户登陆请求的数据 schema
-export const loginRequestSchema = z.object({
-  username: z.string().min(1, '请输入用户名或邮箱'),
-  password: z.string().min(6, '密码至少为6个字符'),
+export const signinRequestSchema = z.object({
+  username: authConfig.validates.username,
+  password: authConfig.validates.password,
 });
 
 // 单个用户信息 schema
 export const userSchema = z.object({
   id: z.string(),
-  username: z.string(),
+  username: authConfig.validates.username,
   displayUsername: z.string().nullable(),
   email: z.string(),
   image: z.string().nullable(),
