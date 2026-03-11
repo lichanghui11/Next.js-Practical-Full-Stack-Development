@@ -3,10 +3,7 @@ import pinyin from 'pinyin';
 
 // 根据 create update 场景生成默认值的工具函数
 // T 是博客数据的类型，A 是返回的默认值类型
-export const getDefaultBlogFormValues = <
-  T extends Record<string, any>,
-  A extends Record<string, any>,
->(
+export const getDefaultValues = <T extends Record<string, any>, A extends Record<string, any>>(
   fields: Array<keyof T>,
   params?: { type: 'create' } | { type: 'update'; blog: T },
 ) => {

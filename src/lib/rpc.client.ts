@@ -2,7 +2,7 @@ import type { Hono } from 'hono';
 
 import { hc } from 'hono/client';
 
-import { appConfig } from '@/config/api.client';
+import { appConfig } from '@/config/app.config';
 
 // 在服务端组件里面创建 hono 客户端
 // 需要类型+路由字符串来创建对应的客户端

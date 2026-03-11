@@ -14,7 +14,7 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { isNil } from 'lodash';
 
-import { appConfig } from '@/config/api.client';
+import { appConfig } from '@/config/app.config';
 
 import type { TimeOptions } from './types';
 

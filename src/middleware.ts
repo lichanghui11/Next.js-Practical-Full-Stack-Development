@@ -13,6 +13,14 @@ export const config = {
   ],
 };
 
+/**
+ *  
+ * @param request 
+ * 在URL是用户注册页面或找回密码页面时，做如下处理
+      1. 判断用户是否已经登录
+      2. 如果已经登录，那么，有url回调地址则跳转到该url，没有则跳转到首页
+      3. 如果没有登录，则正常访问注册页或找回密码页
+ */
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -23,14 +31,25 @@ export async function middleware(request: NextRequest) {
     // 需要认证的页面里面包含这个路径，检查用户是否已登录
     return authPageProtectedHandler(request);
   }
+
   if (pathname.startsWith('/auth/signin')) {
     // 登录页面，检查用户是否已登录
     return authSignInhandler(request);
   }
 
+  if (pathname.startsWith('/auth/signup') || pathname.startsWith('/auth/forget-password')) {
+    // 注册页或找回密码页
+    return AuthenticatedProtectedHandler(request);
+  }
+
   return NextResponse.next();
 }
-// 对需要认证之后才能访问的页面的处理函数
+/**
+ *
+ * @param request
+ * 1. 对需要认证之后才能访问的页面的处理函数
+ * 2. 这个函数里面判断用户是否有权限，有权限则放行，没权限则重定向到登录页
+ */
 const authPageProtectedHandler = async (request: NextRequest) => {
   try {
     // 从请求头中获取用户会话
@@ -63,6 +82,13 @@ const authPageProtectedHandler = async (request: NextRequest) => {
   }
 };
 
+/**
+ *
+ * @param request
+ * 1. 请求登录的时候，如果已经有经过认证的会话存在了，就不用再登录，直接放行
+ * 2. 没有已经存在的凭证的话再跳转登录页
+ * 3. 如果报错也直接跳转到登录页
+ */
 const authSignInhandler = async (request: NextRequest) => {
   try {
     // 获取用户会话
@@ -85,6 +111,35 @@ const authSignInhandler = async (request: NextRequest) => {
   } catch (e) {
     console.error('认证中间件错误 | Auth middleware error: ', e);
     // 报错了也放行，让用户能看到登录页，而不是卡死
+    return NextResponse.next();
+  }
+};
+
+/**
+ *
+ * @param request
+ * 1. 目标地址是 注册 和 找回密码 页面时，判断是否有已经存在的经过认证的会话
+ * 2. 如果已经登录，有回调地址就跳转到回调地址，没有就跳转到首页
+ * 3. 如果没有登录，正常访问注册页或找回密码页
+ */
+const AuthenticatedProtectedHandler = async (request: NextRequest) => {
+  try {
+    const session = await auth.api.getSession({ headers: request.headers });
+    const isAuthenticated = !isNil(session?.user);
+
+    // 已登录：跳回到回调地址
+    if (isAuthenticated) {
+      const { callbackUrl } = request.nextUrl.searchParams as { callbackUrl?: string };
+
+      // new URL(path, base)
+      const redirectUrl = new URL(isNil(callbackUrl) ? '/' : callbackUrl, request.url);
+      return NextResponse.redirect(redirectUrl);
+    }
+    // 用户未认证，继续处理请求
+    return NextResponse.next();
+  } catch (error) {
+    console.error('认证中间件错误 | Auth middleware error: ', error);
+    // 报错了也放行，让用户能看到注册页或找回密码页，而不是卡死
     return NextResponse.next();
   }
 };

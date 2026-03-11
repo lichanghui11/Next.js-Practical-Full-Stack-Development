@@ -88,6 +88,18 @@
   - 面包屑导航与分页功能
   - 已知问题与待优化项
 
+- **🔐 [认证系统 (Better-Auth)](./src/docs/better-auth.md)**
+  - Better-Auth 服务端/客户端双端架构
+  - Session 会话机制与数据库存储
+  - 自定义 Hono 路由 + Better-Auth 内部 API 的完整登录链路
+  - React Context 前端登录状态管理
+
+- **📧 [邮件推送模块 (Mail Push)](./src/docs/mail-push.md)**
+  - 多平台统一抽象（SMTP / 阿里云 / 腾讯云 SES）
+  - 类型系统设计与客户端工厂函数
+  - Pug 模板渲染与云平台预设模板
+  - customMerge 深度合并工具
+
 ---
 
 ## 🗂️ 项目结构
@@ -165,13 +177,18 @@
   - 标签过滤与分页功能
   - MDX 渲染与元信息展示
 
-### 后续学习计划
+- [x] **认证系统（Better-Auth）**
+  - 邮箱密码 + 用户名双模式登录
+  - Session 数据库持久化存储
+  - 自定义 Hono 路由与 Better-Auth 内部 API 协同
+  - React Context 前端登录状态管理
 
-- [ ] **认证系统（Auth）**
-  - 用户注册与登录
-  - Session 管理
-  - JWT Token 认证
-  - 权限控制与路由守卫
+- [x] **邮件推送模块**
+  - 统一接口封装（SMTP / 阿里云 / 腾讯云 SES）
+  - Pug 模板渲染（验证码、忘记密码）
+  - 多平台参数适配与环境变量配置
+
+### 后续学习计划
 
 - [ ] **缓存层（Redis）**
   - Redis 基础配置

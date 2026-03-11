@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 import { Button } from 'ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'ui/tooltip';
 
-import { appConfig } from '@/config/api.client';
+import { appConfig } from '@/config/app.config';
 // TODO：后期需要完善文档相关，直接跳转链接
 export const ApiDoc: FC = () => {
   return (

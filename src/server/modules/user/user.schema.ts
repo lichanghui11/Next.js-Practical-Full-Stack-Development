@@ -46,3 +46,53 @@ export const authSignoutResponseSchema = z.object({
 export const userDetailRequestParamsSchema = z.object({
   id: z.string().min(1, 'ID 不能为空').meta({ description: '查询某个用户时传入的用户ID' }),
 });
+
+// 发送邮箱 OTP 请求的 schema
+export const sendEmailVerificationOTPRequestSchema = z.object({
+  email: z.email(),
+});
+
+// 发送忘记密码 OTP 请求的 schema
+export const sendForgetPasswordOTPRequestSchema = z.object({
+  credential: authConfig.validates.username.or(z.email()),
+});
+
+// 检查用户名是否存在的 请求 的 schema
+export const checkUserExistsSchema = sendForgetPasswordOTPRequestSchema;
+
+// 发送验证码 的响应的 schema
+export const sendOTPResponseSchema = z.object({
+  message: z.string(),
+});
+
+// 检查用户名是否唯一的 请求 的 schema
+export const CheckUsernameUniqueSchema = z.object({
+  username: authConfig.validates.username,
+});
+
+// 检查邮箱是否唯一的 请求 的 schema
+export const checkEmailUniqueSchema = z.object({
+  email: z.email(),
+});
+
+// 用户注册请求的 schema
+export const signupRequestSchema = z.object({
+  username: authConfig.validates.username,
+  password: authConfig.validates.password,
+  email: z.email('请输入有效的邮箱地址'),
+  otp: z.string().length(6, '验证码为6位数字'),
+  validateType: z.enum(['email', 'phone']),
+});
+
+// 找回密码 请求的 schema
+export const forgetPasswordRequestSchema = z.object({
+  credential: authConfig.validates.username.or(z.email()),
+  password: authConfig.validates.password,
+  otp: z.string().length(6, '验证码为6位数字'),
+});
+
+// 用户注册响应的 schema
+export const signupResponseSchema = z.object({
+  result: z.boolean(),
+  user: userSchema,
+});

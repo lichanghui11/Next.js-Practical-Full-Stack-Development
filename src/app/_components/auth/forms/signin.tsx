@@ -2,15 +2,33 @@
 import type { FC } from 'react';
 
 import { Lock, User } from 'lucide-react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useMemo } from 'react';
 import { Button } from 'ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from 'ui/form';
 import { Input } from 'ui/input';
 
 import { useSigninForm, useSigninSubmit } from '../hooks';
+import { AuthFormSkeleton } from '../skeleton';
 
-const SigninForm: FC = () => {
+const FormComponent: FC = () => {
   const form = useSigninForm();
   const submitHandler = useSigninSubmit();
+  const searchParams = useSearchParams();
+  const signupUrl = useMemo(() => {
+    let url = '/auth/signup';
+    const params = new URLSearchParams();
+
+    searchParams.forEach((value, key) => {
+      params.set(key, value);
+    });
+
+    if (params.toString()) {
+      url += `?${params.toString()}`;
+    }
+    return url;
+  }, [searchParams]);
 
   return (
     <Form {...form}>
@@ -63,6 +81,14 @@ const SigninForm: FC = () => {
             );
           }}
         />
+        <div className="flex justify-end">
+          <Link
+            href="/auth/forget-password"
+            className="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+          >
+            忘记密码？
+          </Link>
+        </div>
         <Button type="submit" disabled={form.formState.isSubmitting} className="!mt-5 w-full">
           {form.formState.isSubmitting ? '登录中...' : '登录'}
         </Button>
@@ -71,4 +97,8 @@ const SigninForm: FC = () => {
   );
 };
 
-export const AuthSigninForm: FC = () => <SigninForm />;
+export const SignInForm: FC = () => (
+  <Suspense fallback={<AuthFormSkeleton />}>
+    <FormComponent />
+  </Suspense>
+);

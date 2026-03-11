@@ -1,12 +1,15 @@
 /* eslint-disable vars-on-top */
-// 服务端 auth 配置
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
-import { openAPI, username } from 'better-auth/plugins';
+import { emailOTP, openAPI, username } from 'better-auth/plugins';
 import { Pool } from 'pg';
+
+// 服务端 auth 配置
+import { authConfig } from '@/config/auth.config';
+import { sendOTPHandler } from '@/server/modules/user/user.otp';
 
 const connectionString = `${process.env.DATABASE_URL}`;
 if (!connectionString) {
@@ -65,6 +68,14 @@ export const createServerAuth = () => {
       // 因为默认配置是不使用网页展示的
       // 如果不需要展示给他人查看，设置为 true，或不配置
       openAPI({ path: '/reference', disableDefaultReference: false }),
+
+      emailOTP({
+        allowedAttempts: authConfig.mails?.OTP?.allowedAttempts ?? 3,
+        expiresIn: authConfig.mails?.OTP?.expire ?? 60 * 5,
+        async sendVerificationOTP({ email, otp, type }) {
+          sendOTPHandler({ email, code: otp }, type);
+        },
+      }),
     ],
   });
 };

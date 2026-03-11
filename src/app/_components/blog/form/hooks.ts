@@ -15,13 +15,13 @@ import { buildPostRequestSchema } from '@/server/modules/blog/blog.schema';
 
 import type { BlogFormProps, PostFormData } from './types';
 
-import { getDefaultBlogFormValues } from '../../blog-components/submit-form/utils';
+import { getDefaultValues } from '../../blog-components/submit-form/utils';
 import { slugUniqueValidator } from '../../blog-components/submit-form/validation';
 
 // 根据传入的参数（创建/更新）创建表单数据
 export const useBlogForm = (params: { type: 'create' } | { type: 'update'; blog: PostItem }) => {
   const defaultValues = useMemo(() => {
-    const values = getDefaultBlogFormValues<PostItem, PostFormData>(
+    const values = getDefaultValues<PostItem, PostFormData>(
       ['title', 'content', 'summary', 'slug', 'description', 'keywords', 'id'],
       params,
     );

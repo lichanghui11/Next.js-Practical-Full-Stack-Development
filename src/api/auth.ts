@@ -1,8 +1,19 @@
 import { isNil } from 'lodash';
 
-import type { SigninRequest, User } from '@/server/modules/user/user.type';
+import type { AuthRoutes } from '@/server/modules/user/user.route';
+import type {
+  ResetPasswordRequest,
+  SigninRequest,
+  SignupRequest,
+  User,
+} from '@/server/modules/user/user.type';
 
 import { authClient } from '@/lib/auth/client';
+import { buildClient, fetchApi } from '@/lib/rpc.client';
+import { authPath } from '@/server/modules/user/user.route';
+
+// 这里需要传入泛型，在使用这个客户端时才会有路由的类型提示
+const authClientRpc = buildClient<AuthRoutes>(authPath);
 
 export const authApi = {
   // 用户名或邮箱 密码登录
@@ -59,5 +70,54 @@ export const authApi = {
       return null;
     }
     return session.data.user as any as User;
+  },
+
+  // 通过 邮箱验证码 注册用户
+  signUp: async (data: SignupRequest) => {
+    return fetchApi(authClientRpc, async (c) => {
+      return c['sign-up'].$post({ json: data });
+    });
+  },
+
+  // 重置密码
+  resetPassword: async (data: ResetPasswordRequest) => {
+    return fetchApi(authClientRpc, async (c) => {
+      return c['reset-password'].$post({ json: data });
+    });
+  },
+
+  // 往邮箱发送验证码-邮箱认证
+  sendEmailVerificationOTP: async (email: string) => {
+    return fetchApi(authClientRpc, async (c) => {
+      return c.otp['email-verification'].$post({ json: { email } });
+    });
+  },
+
+  // 往邮箱发送验证码-忘记密码
+  sendForgetPasswordOTP: async (credential: string) => {
+    return fetchApi(authClientRpc, async (c) => {
+      return c.otp['forget-password'].$post({ json: { credential } });
+    });
+  },
+
+  // 通过用户名或邮箱验证用户是否存在
+  checkUserExists: async (credential: string) => {
+    return fetchApi(authClientRpc, async (c) => {
+      return c.check['user-exists'].$post({ json: { credential } });
+    });
+  },
+
+  // 检测用户名是否唯一
+  checkUsernameUnique: async (username: string) => {
+    return fetchApi(authClientRpc, async (c) => {
+      return c.check['username-unique'].$post({ json: { username } });
+    });
+  },
+
+  // 检测邮箱是否唯一
+  checkEmailUnique: async (email: string) => {
+    return fetchApi(authClientRpc, async (c) => {
+      return c.check['email-unique'].$post({ json: { email } });
+    });
   },
 };
