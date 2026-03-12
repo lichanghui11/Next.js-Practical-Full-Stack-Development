@@ -4,10 +4,12 @@ import { hc } from 'hono/client';
 
 import { appConfig } from '@/config/app.config';
 
+import { getBaseUrl } from './get-base-url';
+
 // 在服务端组件里面创建 hono 客户端
 // 需要类型+路由字符串来创建对应的客户端
 export const buildClient = <T extends Hono<any, any, any>>(route?: string) =>
-  hc<T>(`${appConfig.baseUrl}${appConfig.apiPath}${route}`);
+  hc<T>(`${getBaseUrl()}${appConfig.apiPath}${route}`);
 
 export const fetchApi = async <
   T extends Hono<any, any, any>,

@@ -11,6 +11,8 @@ import { Pool } from 'pg';
 import { authConfig } from '@/config/auth.config';
 import { sendOTPHandler } from '@/server/modules/user/user.otp';
 
+import { addOTPQueue } from '../queue/utilis';
+
 const connectionString = `${process.env.DATABASE_URL}`;
 if (!connectionString) {
   throw new Error('未找到数据库连接字符串：DATABASE_URL is not defined');
@@ -73,7 +75,9 @@ export const createServerAuth = () => {
         allowedAttempts: authConfig.mails?.OTP?.allowedAttempts ?? 3,
         expiresIn: authConfig.mails?.OTP?.expire ?? 60 * 5,
         async sendVerificationOTP({ email, otp, type }) {
-          sendOTPHandler({ email, code: otp }, type);
+          // 这里修改前是直接发送邮件，现在改为添加到队列，由 Worker 处理
+          // sendOTPHandler({ email, code: otp }, type);
+          addOTPQueue(email, otp, type);
         },
       }),
     ],

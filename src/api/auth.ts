@@ -2,6 +2,7 @@ import { isNil } from 'lodash';
 
 import type { AuthRoutes } from '@/server/modules/user/user.route';
 import type {
+  OTPRateLimitRequest,
   ResetPasswordRequest,
   SigninRequest,
   SignupRequest,
@@ -51,7 +52,7 @@ export const authApi = {
 
   // 用户登出
   signOut: async (option?: { onSuccess?: (context?: any) => void }) => {
-    return await authClient.signOut({
+    return authClient.signOut({
       fetchOptions: {
         onSuccess: option?.onSuccess,
       },
@@ -60,7 +61,7 @@ export const authApi = {
 
   // 获取会话信息 - 异步方式
   getSession: async () => {
-    return await authClient.getSession();
+    return authClient.getSession();
   },
 
   // 获取当前登陆用户信息
@@ -118,6 +119,13 @@ export const authApi = {
   checkEmailUnique: async (email: string) => {
     return fetchApi(authClientRpc, async (c) => {
       return c.check['email-unique'].$post({ json: { email } });
+    });
+  },
+
+  // 获取是否可以发送验证码状态
+  getOTPStatus: async (data: OTPRateLimitRequest) => {
+    return fetchApi(authClientRpc, async (c) => {
+      return c['email-otp'].status.$post({ json: data });
     });
   },
 };

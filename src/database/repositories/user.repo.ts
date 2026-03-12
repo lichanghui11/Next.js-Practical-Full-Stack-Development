@@ -11,8 +11,10 @@ import type {
   User,
 } from '@/server/modules/user/user.type';
 
+import { authConfig } from '@/config/auth.config';
 import prismaClient from '@/database/client/app-client';
 import { auth } from '@/lib/auth/server';
+import { checkOTPRateLimit, recordOTPSendTime } from '@/server/modules/user/user.otp';
 
 const UserRepo = {
   // 获取当前用户会话信息
@@ -195,13 +197,39 @@ const UserRepo = {
     email: string,
     type: `${EmailOTPType}`,
   ): Promise<{ result: SendOTPResponse; code: ContentfulStatusCode }> => {
+    const limit = authConfig.mails?.OTP?.rateLimit ?? 60;
+
+    // 检查发送频率
+    const rateLimitCheck = await checkOTPRateLimit(email, type);
+
+    // 不能发送
+    if (!rateLimitCheck.canSend) {
+      return {
+        result: {
+          message: `请在 ${rateLimitCheck.remainingTime} 秒后重试`,
+          canSend: false,
+          remainingTime: rateLimitCheck.remainingTime,
+          nextSendTime: rateLimitCheck.nextSendTime,
+        },
+        // 429 Too Many Requests
+        code: 429,
+      };
+    }
+
     // 发送验证码
     await auth.api.sendVerificationOTP({
       body: { email, type },
     });
+
+    // 记录发送时间
+    await recordOTPSendTime(email, type);
+
     return {
       result: {
         message: '验证码发送成功',
+        canSend: true,
+        remainingTime: limit,
+        nextSendTime: Date.now() + limit * 1000,
       },
       code: 200,
     };

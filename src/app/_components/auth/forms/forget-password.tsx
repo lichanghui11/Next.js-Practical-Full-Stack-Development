@@ -17,11 +17,10 @@ const FormComponent: FC = () => {
   const form = useForgetPasswordForm();
   const submitHandler = useForgetPasswordSubmit();
 
-  // 忘记密码OTP发送函数和按钮文本
-  const { sendOTP, buttonText } = useSendForgetPasswordOTP();
-
   // 监听表单中指定字段的实时值变化，并返回该字段的当前值。
   const credential = form.watch('credential');
+  // 忘记密码OTP发送函数和按钮文本
+  const { sendOTP, buttonText, canSend } = useSendForgetPasswordOTP(credential);
 
   const disableSendBtn = useMemo(
     () =>
@@ -29,8 +28,12 @@ const FormComponent: FC = () => {
       // 1. 凭证字段为空
       // 2. 凭证字段有错误
       // 3. 表单正在提交中
-      credential.length === 0 || !!form.formState.errors.credential || form.formState.isSubmitting,
-    [credential, form.formState.errors.credential, form.formState.isSubmitting],
+      // 4. 不能发送 OTP 验证码 canSend
+      credential.length === 0 ||
+      !!form.formState.errors.credential ||
+      form.formState.isSubmitting ||
+      !canSend,
+    [credential, form.formState.errors.credential, form.formState.isSubmitting, canSend],
   );
 
   // 发送 OTP 验证码

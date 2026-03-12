@@ -1,2 +1,64 @@
+onlyBuiltDependencies:
+  - '@alicloud/openapi-core'
+  - '@prisma/engines'
+  - msgpackr-extract
+  - prisma
+  - sharp
+  - unrs-resolver
+  - '@alicloud/openapi-core' # 阿里云 OpenAPI 核心模块（含原生代码）
+  - '@prisma/engines' # Prisma 引擎（原生模块）
+  - '@tailwindcss/oxide' # TailwindCSS 底层引擎（原生模块）
+  - msgpackr-extract # 二进制序列化模块（原生模块）
+  - prisma # Prisma 核心（含原生引擎）
+  - sharp # 图片处理库（含原生模块）
+  - unrs-resolver # 自定义解析器（含原生模块）
+
+overrides:
+  ioredis: ^5.10.0
+  rehype-prism-plus: 2.0.0
+  eslint-config-next>eslint-import-resolver-typescript: 3.10.0
+
 patchedDependencies:
   prisma-extension-pagination@0.7.6: patches/prisma-extension-pagination@0.7.6.patch
+
+updateConfig:
+  ignoreDependencies:
+    - '@eslint-react/eslint-plugin'
+    - eslint-plugin-react-hooks
+
+# pnpm 工作区核心配置文件
+# 用于管理 monorepo 项目的依赖、构建、信任策略等全局规则
+
+# ===================== 脚本执行配置 =====================
+# 启用内置 shell 模拟器，保证跨平台（Windows/macOS/Linux）shell 命令执行行为一致
+# 解决不同系统 shell 语法差异导致的脚本执行失败问题
+shellEmulator: true
+
+# ===================== 依赖信任策略 =====================
+# 全局信任策略：禁止将依赖的信任级别从高降级到低（如官方源 → 非官方源）
+# 防止恶意包替换，提升依赖安全性
+trustPolicy: no-downgrade
+# 信任策略豁免列表：指定的包不受上述 no-downgrade 规则限制
+# 用于解决特定版本包的信任级别兼容问题
+trustPolicyExclude:
+  - semver@5.7.2 || 6.3.1 # semver 这两个版本豁免信任降级限制
+  - undici-types@6.21.0 # undici-types 6.21.0 版本豁免
+  - chokidar@4.0.3 # chokidar 4.0.3 版本豁免
+
+# ===================== 工作区范围配置 =====================
+# 定义 pnpm 工作区包含的包路径（monorepo 核心）
+# - . 表示仅包含根目录（单包项目）；多包项目常用配置：packages/*、apps/*、packages/**
+packages:
+  - .
+
+# ===================== 对等依赖规则 =====================
+# 配置对等依赖（peer dependencies）的宽松规则，解决版本冲突
+peerDependencyRules:
+  # allowAny：允许列表中的包使用任意版本的对等依赖，忽略版本匹配检查
+  allowAny:
+    - '@hono/zod-validator' # Hono 框架的 zod 校验器
+    - zod # Zod 数据校验库
+    - zod-openapi # Zod 适配 OpenAPI 的扩展
+    - prisma # Prisma ORM
+    - '@standard-schema/spec' # 标准 schema 规范包
+    - '@prisma/client' # Prisma 客户端

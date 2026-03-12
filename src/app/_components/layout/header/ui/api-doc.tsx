@@ -15,7 +15,7 @@ export const ApiDoc: FC = () => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link href={`${appConfig.baseUrl}${appConfig.apiPath}/docs`} target="_blank">
+              <Link href={`${appConfig.apiPath}/docs`} target="_blank">
                 <Button variant="ghost" size="icon">
                   <FileCode2 />
                 </Button>

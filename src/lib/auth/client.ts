@@ -1,10 +1,10 @@
 import { usernameClient } from 'better-auth/client/plugins';
 import { createAuthClient } from 'better-auth/react';
 
-import { appConfig } from '@/config/app.config';
+import { getBaseUrl } from '../get-base-url';
 
 export const authClient = createAuthClient({
-  baseURL: appConfig.baseUrl,
+  baseURL: getBaseUrl(),
   basePath: '/api/auth',
   // 告诉客户端，服务端启用了 username() 插件来支持用户名登录。
   // 所以客户端也需要加载对应的 usernameClient() 插件，

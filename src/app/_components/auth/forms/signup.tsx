@@ -17,9 +17,9 @@ const FormComponent: FC = () => {
   const form = useSignupForm();
   const submitHandler = useSignupSubmit();
 
-  const { sendOTP, buttonText } = useSendVerificationOTP();
   const username = form.watch('username');
   const email = form.watch('email');
+  const { sendOTP, buttonText, canSend } = useSendVerificationOTP(email);
 
   const disableSendBtn = useMemo(() => {
     // 禁用发送按钮的条件：用户名或邮箱为空，或表单提交中，或有错误
@@ -28,7 +28,8 @@ const FormComponent: FC = () => {
       email.length === 0 ||
       !!form.formState.errors.username ||
       !!form.formState.errors.email ||
-      form.formState.isSubmitting
+      form.formState.isSubmitting ||
+      !canSend
     );
   }, [
     username,

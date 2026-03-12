@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 import { authConfig } from '@/config/auth.config';
 
+import { EmailOTPType } from './user.constants';
+
 // 用户登陆请求的数据 schema
 export const signinRequestSchema = z.object({
   username: authConfig.validates.username,
@@ -62,7 +64,17 @@ export const checkUserExistsSchema = sendForgetPasswordOTPRequestSchema;
 
 // 发送验证码 的响应的 schema
 export const sendOTPResponseSchema = z.object({
+  // 响应消息
   message: z.string(),
+
+  // 是否可以继续发送验证码 - 在发送频率限制内为 false
+  canSend: z.boolean(),
+
+  // 发送频率限制时间
+  remainingTime: z.number().optional(),
+
+  // 下次可发送的时间戳
+  nextSendTime: z.number().optional(),
 });
 
 // 检查用户名是否唯一的 请求 的 schema
@@ -95,4 +107,10 @@ export const forgetPasswordRequestSchema = z.object({
 export const signupResponseSchema = z.object({
   result: z.boolean(),
   user: userSchema,
+});
+
+// 该结构体用于对查询当前类型的当前邮箱地址发送频率限制时间的查询。credential可以是用户名或邮箱地址
+export const otpRateLimitRequestSchema = z.object({
+  credential: authConfig.validates.username.or(z.email()),
+  type: z.enum(Object.values(EmailOTPType) as `${EmailOTPType}`[]),
 });

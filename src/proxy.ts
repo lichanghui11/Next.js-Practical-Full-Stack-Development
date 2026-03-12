@@ -6,8 +6,16 @@ import { NextResponse } from 'next/server';
 import { authConfig } from './config/auth.config';
 import { auth } from './lib/auth/server';
 
+/**
+ * 路由段（Route Segment）
+ * Next.js 的路由是基于文件系统的，每个路由文件 / 文件夹都叫一个 “路由段”：
+比如 app/page.tsx 对应根路由 / 的路由段；
+app/api/otp/route.ts 对应 /api/otp 的路由段；
+app/user/[id]/page.tsx 对应 /user/123 这类动态路由的路由段。
+ */
 export const config = {
-  runtime: 'nodejs',
+  // proxy.ts 是特殊的系统级文件，它强制固定运行在 Node.js 运行时，不允许你通过 Route segment config 自定义运行时、渲染方式等规则
+  // runtime: 'nodejs',
   matcher: [
     '/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico|bmp|tiff|woff|woff2|ttf|eot|otf|css|scss|sass|less|js|mjs|pdf|doc|docx|txt|md|zip|rar|7z|tar|gz|mp3|mp4|avi|mov|wav|flac)$|sitemap\\.xml|robots\\.txt|manifest\\.json|sw\\.js|workbox-.*\\.js).*)',
   ],
@@ -21,7 +29,7 @@ export const config = {
       2. 如果已经登录，那么，有url回调地址则跳转到该url，没有则跳转到首页
       3. 如果没有登录，则正常访问注册页或找回密码页
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 拿到配置里面的 需要认证的路由

@@ -18,7 +18,9 @@ export default antfu(
         'react/no-comment-textnodes': 'off',
       },
     },
-    typescript: true,
+    typescript: {
+      tsconfigPath: 'tsconfig.json',
+    },
     stylistic: false,
     markdown: false,
     toml: false,

@@ -7,6 +7,7 @@ import { createResponse } from '@/server/common/response';
 import { errorSchema, successMessageWithResultSchema } from '@/server/common/schema';
 import { EmailOTPType } from '@/server/modules/user/user.constants';
 import { AuthProtectedMiddleware } from '@/server/modules/user/user.middleware';
+import { getOTPSendStatus } from '@/server/modules/user/user.otp';
 
 import {
   authResponseSchema,
@@ -15,6 +16,7 @@ import {
   checkUserExistsSchema,
   CheckUsernameUniqueSchema,
   forgetPasswordRequestSchema,
+  otpRateLimitRequestSchema,
   sendEmailVerificationOTPRequestSchema,
   sendForgetPasswordOTPRequestSchema,
   sendOTPResponseSchema,
@@ -356,6 +358,32 @@ export const authRoutes = app
         return c.json({ result: false, message: '邮箱已被注册' }, 200);
       } catch (error) {
         return c.json(createErrorResult('检查邮箱是否唯一失败', error), 500);
+      }
+    },
+  )
+
+  // 获取是否可以发送验证码的状态
+  .post(
+    '/email-otp/status',
+    describeRoute({
+      tags: userTags,
+      summary: '获取 OTP 发送状态',
+      description: '获取邮箱验证码的发送状态，用于页面刷新后恢复倒计时',
+      responses: {
+        ...createResponse(sendOTPResponseSchema, 200, '请求成功'),
+        ...createResponse(errorSchema, 401, '无权限'),
+        ...createResponse(errorSchema, 500, '服务器错误'),
+      },
+    }),
+    validator('json', otpRateLimitRequestSchema, defaultValidatorErrorHandler),
+    async (c) => {
+      try {
+        const { credential, type } = c.req.valid('json');
+        const data = await getOTPSendStatus(credential, type);
+
+        return c.json(data, 200);
+      } catch (error) {
+        return c.json(createErrorResult('获取状态失败', error), 500);
       }
     },
   );

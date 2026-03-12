@@ -3,6 +3,7 @@ import type { z } from 'zod';
 import type {
   authResponseSchema,
   forgetPasswordRequestSchema,
+  otpRateLimitRequestSchema,
   sendOTPResponseSchema,
   sessionSchema,
   signinRequestSchema,
@@ -44,3 +45,6 @@ export type ResetPasswordRequest = z.infer<typeof forgetPasswordRequestSchema>;
 
 // 发送 OTP验证码 响应的类型
 export type SendOTPResponse = z.infer<typeof sendOTPResponseSchema>;
+
+// OTP 验证码 频率限制 请求的类型
+export type OTPRateLimitRequest = z.infer<typeof otpRateLimitRequestSchema>;

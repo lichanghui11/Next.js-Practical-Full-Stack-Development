@@ -53,13 +53,14 @@ export const categorySchema: z.ZodType<Category> = baseCategorySchema
       .meta({ description: '子分类列表' }),
   })
   // id 为 OpenAPI 中的 Schema 名称（用于 $ref 引用）
-  .meta({ description: '分类详情数据' });
+  .meta({ id: 'Category', $id: 'Category', description: '分类详情数据' });
 
 /**
  * 分类列表查询响应数据结构
  * 扁平数组，没有嵌套的 children 字段，用于下拉选择器、表格等
  */
 export const categoryListSchema = z.array(baseCategorySchema).meta({
+  $id: 'CategoryList',
   description: '分类列表数据，这是一个扁平数组，可以适用于下拉选择器，表格之类的用于显示这些分类',
 });
 
