@@ -11,7 +11,7 @@ import type {
 
 import { authClient } from '@/lib/auth/client';
 import { buildClient, fetchApi } from '@/lib/rpc.client';
-import { authPath } from '@/server/modules/user/user.route';
+import { authPath } from '@/server/modules/user/user.constants';
 
 // 这里需要传入泛型，在使用这个客户端时才会有路由的类型提示
 const authClientRpc = buildClient<AuthRoutes>(authPath);

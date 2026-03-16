@@ -1,7 +1,7 @@
 import type { Metadata, ResolvingMetadata } from 'next';
 import type { FC } from 'react';
 
-import { AuthSigninForm } from '@/app/_components/auth/forms/signin';
+import { SignInForm } from '@/app/_components/auth/forms/signin';
 import { cn } from '@/app/utils/utils';
 
 import $styles from './style.module.css';
@@ -18,7 +18,7 @@ const AuthSigninPage: FC = () => {
     <div className="page-item">
       <div className={cn($styles.item, 'page-container page-block')} style={{ flex: 'none' }}>
         <div className="text-center text-xl font-bold">用户登录</div>
-        <AuthSigninForm />
+        <SignInForm />
       </div>
     </div>
   );

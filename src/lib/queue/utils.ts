@@ -63,15 +63,19 @@ export const getWorkerConnection = (queueName: string, redisClients: { [key: str
  * 往队列中添加任务，如果队列不存在，直接同步发送邮件
  */
 export const addOTPQueue = async (email: string, code: string, type: `${EmailOTPType}`) => {
-  if (!isNil(serverInstances.queues.emailOTP)) {
+  console.log('===========加入任务队列============');
+  console.log('addOTPQueue', email, code, type);
+  console.log('===========加入任务队列============');
+  if (!isNil(serverInstances.queues.OTP)) {
     // 队列存在，添加任务
-    return serverInstances.queues.emailOTP.add(type, { email, code });
+    return serverInstances.queues.OTP.add(type, { email, code });
   } else {
     return sendOTPHandler({ email, code }, type);
   }
 };
 
 const addOTPWorker = async () => {
+  console.log('===========queue worker============');
   // 检查OTP队列是否已初始化
   if (!isNil(serverInstances.queues.OTP)) {
     // 创建bull/bullmq的Worker，监听"OTP"队列
@@ -82,6 +86,7 @@ const addOTPWorker = async () => {
       async (job: Job) => {
         // 从任务中获取邮箱和验证码
         const { email, code } = job.data;
+
         // 执行发送OTP的逻辑
         await sendOTPHandler({ email, code }, job.name as `${EmailOTPType}`);
       },
@@ -89,8 +94,26 @@ const addOTPWorker = async () => {
       { connection: getWorkerConnection('OTP', serverInstances.redis) },
     );
     // 监听任务完成事件（可在这里记录日志、清理资源等）
-    worker.on('completed', (_job) => {
-      console.log('OTP job completed');
+    worker.on('completed', (job) => {
+      console.log('worker 任务完成');
+      console.log(`OTP job completed: ${job.id}`);
+    });
+    // 监听任务失败事件
+    worker.on('failed', (job, err) => {
+      console.log('worker 任务失败');
+      console.error(`OTP job failed: ${job?.id}`, err.message);
+    });
+    worker.on('error', (err) => {
+      console.log('worker 任务错误');
+      console.error('OTP worker error:', err.message);
+    });
+    worker.on('active', (job) => {
+      console.log(`OTP job active: ${job.id}`);
+      console.log('worker 任务正在处理');
+    });
+    worker.on('ready', () => {
+      console.log('OTP worker ready');
+      console.log('OTP worker 已准备好开始处理任务');
     });
   }
 };

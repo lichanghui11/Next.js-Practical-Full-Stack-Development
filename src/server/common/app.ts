@@ -4,7 +4,7 @@ import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 import { prettyJSON } from 'hono/pretty-json';
 
-import { addUserQueueWorker, createQueue } from '@/lib/queue/utilis';
+import { addUserQueueWorker, createQueue } from '@/lib/queue/utils';
 import { createRedisClients } from '@/lib/redis/client';
 
 // 后端启动器

@@ -19,7 +19,7 @@ import { checkOTPRateLimit, recordOTPSendTime } from '@/server/modules/user/user
 const UserRepo = {
   // 获取当前用户会话信息
   getCurrentSession: async (req: Request) => {
-    return await auth.api.getSession({
+    return auth.api.getSession({
       headers: req.headers,
     });
   },
@@ -32,7 +32,6 @@ const UserRepo = {
         OR: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
       },
     });
-
     if (isNil(user)) return null;
 
     // 使用 Better Auth 内部验证方法
@@ -48,7 +47,7 @@ const UserRepo = {
 
   // 用户登出
   signOut: async (req: Request) => {
-    return await auth.api.signOut({
+    return auth.api.signOut({
       headers: req.headers,
     });
   },
@@ -201,6 +200,9 @@ const UserRepo = {
 
     // 检查发送频率
     const rateLimitCheck = await checkOTPRateLimit(email, type);
+    console.log('=======user repo 发送验证码=======');
+    console.log('rateLimitCheck', rateLimitCheck);
+    console.log('=======user repo 发送验证码=======');
 
     // 不能发送
     if (!rateLimitCheck.canSend) {
@@ -217,10 +219,10 @@ const UserRepo = {
     }
 
     // 发送验证码
-    await auth.api.sendVerificationOTP({
+    const res = await auth.api.sendVerificationOTP({
       body: { email, type },
     });
-
+    console.log('验证码发送成功 res: ', res);
     // 记录发送时间
     await recordOTPSendTime(email, type);
 

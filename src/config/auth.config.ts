@@ -19,9 +19,9 @@ export const authConfig: AuthConfig = {
   },
   mails: {
     OTP: {
-      rateLimit: process.env.NODE_ENV === 'development' ? 5 : 60,
+      rateLimit: process.env.NODE_ENV === 'development' ? 20 : 60,
       allowedAttempts: 5,
-      expire: process.env.NODE_ENV === 'development' ? 30000 : 300,
+      expire: process.env.NODE_ENV === 'development' ? 30 : 300,
       send: {
         'email-verification': {
           client: 'tcloud',

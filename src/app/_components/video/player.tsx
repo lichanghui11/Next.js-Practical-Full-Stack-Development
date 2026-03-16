@@ -11,7 +11,7 @@ import { cn } from '@/app/utils/utils';
 
 import $styles from './player.module.css';
 
-export const VideoPlayer: FC<{
+const VideoPlayer: FC<{
   option: Omit<Option, 'container'>;
   getInstance?: any;
   className?: string;
@@ -71,3 +71,5 @@ export const VideoPlayer: FC<{
 
   return <div ref={artRef} className={cn($styles.container, className)} {...rest} />;
 };
+
+export default VideoPlayer;

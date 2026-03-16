@@ -92,6 +92,9 @@ const FormComponent: FC = () => {
         <Button type="submit" disabled={form.formState.isSubmitting} className="!mt-5 w-full">
           {form.formState.isSubmitting ? '登录中...' : '登录'}
         </Button>
+        <Button asChild className="!mt-5 w-full">
+          <Link href={signupUrl}>注册</Link>
+        </Button>
       </form>
     </Form>
   );

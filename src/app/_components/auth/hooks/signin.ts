@@ -44,12 +44,22 @@ export const useSigninForm = () => {
 // 创建登陆表单提交函数
 export const useSigninSubmit = () => {
   const router = useRouter();
+  const setAuth = useSetAuth();
 
   return useCallback(
     async (params: DeepNonNullable<SigninRequest>) => {
       try {
         await authApi.signIn(params, {
-          onSuccess: () => {
+          onSuccess: async () => {
+            try {
+              const authUser = await authApi.getAuth();
+              setAuth(authUser);
+            } catch (error) {
+              toast.error('获取登录用户信息失败', {
+                description: (error as Error).message || '请重新登录',
+              });
+            }
+
             toast.success('登录成功');
             // 检查是否有回调的url参数
             const urlParams = new URLSearchParams(window.location.search);
@@ -58,7 +68,7 @@ export const useSigninSubmit = () => {
           },
           onError: (error) => {
             toast.error('登录失败', {
-              description: error.message || '请检查用户名/邮箱和密码',
+              description: (error as Error).message || '请检查用户名/邮箱和密码',
             });
           },
         });
@@ -68,6 +78,6 @@ export const useSigninSubmit = () => {
         });
       }
     },
-    [authApi, router],
+    [authApi, router, setAuth],
   );
 };

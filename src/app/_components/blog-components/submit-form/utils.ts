@@ -18,7 +18,7 @@ export const getDefaultValues = <T extends Record<string, any>, A extends Record
   // 根据实际的分支进行填充默认值
   const defaultValues = fields.reduce(
     (acc, field) => {
-      acc[field] = params?.type === 'create' ? '' : items[field];
+      acc[field] = params?.type === 'create' ? '' : items[field] || '';
       return acc;
     },
     items as Record<keyof T, any>,

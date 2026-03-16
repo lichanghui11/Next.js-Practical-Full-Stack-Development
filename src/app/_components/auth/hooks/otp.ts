@@ -58,6 +58,10 @@ export const useOTPSender = (
   credential: string,
   type: `${EmailOTPType}`,
 ) => {
+  console.log('==========useOTPSender 被调用===========');
+  console.log('credential', credential);
+  console.log('type', type);
+  console.log('==========useOTPSender 被调用===========');
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const initializedRef = useRef(false);
@@ -158,11 +162,15 @@ export const useOTPSender = (
 // 发送 注册 验证码
 export const useSendVerificationOTP = (email: string) =>
   useOTPSender(
-    (email: string) => authApi.sendEmailVerificationOTP(email),
+    async (email: string) => authApi.sendEmailVerificationOTP(email),
     email,
     'email-verification',
   );
 
 // 发送 忘记密码 验证码
 export const useSendForgetPasswordOTP = (email: string) =>
-  useOTPSender((email: string) => authApi.sendForgetPasswordOTP(email), email, 'forget-password');
+  useOTPSender(
+    async (email: string) => authApi.sendForgetPasswordOTP(email),
+    email,
+    'forget-password',
+  );

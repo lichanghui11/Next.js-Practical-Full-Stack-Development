@@ -7,9 +7,9 @@ const tagClient = buildClient<TagRoutesType>('/tags');
 
 export const tagApi = {
   // 查出所有的标签
-  list: async (): Promise<Response> => fetchApi(tagClient, (client) => client.index.$get()),
+  list: async (): Promise<Response> => fetchApi(tagClient, async (client) => client.index.$get()),
 
   // 根据某个 id 查出该标签的详情
   detail: async (id: string): Promise<Response> =>
-    fetchApi(tagClient, (client) => client[':id'].$get({ param: { id } })),
+    fetchApi(tagClient, async (client) => client[':id'].$get({ param: { id } })),
 };

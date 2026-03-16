@@ -26,7 +26,6 @@ import { AuthChecker } from '@/app/_components/auth';
 import { useSetAuth } from '@/app/_components/auth/hooks';
 
 // 工程化工具会将 svg 处理为静态资源，并生成一个唯一的 URL 地址
-import UserAvatar from './avatar.svg';
 import $styles from './user-action.module.css';
 
 // 使用头像控制登陆登出
@@ -78,13 +77,22 @@ export const HandleButton: FC<{ auth: User | null }> = ({ auth }) => {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Avatar className={$styles.avatar}>
-          <AvatarImage src={UserAvatar.src} />
+          <AvatarImage src="/placeholder-blog.png" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center" className="w-56 text-center text-stone-500">
         <DropdownMenuLabel className="justify-center">我的</DropdownMenuLabel>
         <DropdownMenuSeparator></DropdownMenuSeparator>
+        <DropdownMenuItem disabled>
+          <div>昵称：{auth.displayUsername}</div>
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled>
+          <div>登录名：{auth.username}</div>
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled>
+          <div>邮箱：{auth.email}</div>
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <Link href="#" onClick={handleLogout}>
             退出登录

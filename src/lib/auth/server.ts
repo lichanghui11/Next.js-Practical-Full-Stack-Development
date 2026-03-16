@@ -9,9 +9,8 @@ import { Pool } from 'pg';
 
 // 服务端 auth 配置
 import { authConfig } from '@/config/auth.config';
-import { sendOTPHandler } from '@/server/modules/user/user.otp';
 
-import { addOTPQueue } from '../queue/utilis';
+import { addOTPQueue } from '../queue/utils';
 
 const connectionString = `${process.env.DATABASE_URL}`;
 if (!connectionString) {
@@ -76,7 +75,6 @@ export const createServerAuth = () => {
         expiresIn: authConfig.mails?.OTP?.expire ?? 60 * 5,
         async sendVerificationOTP({ email, otp, type }) {
           // 这里修改前是直接发送邮件，现在改为添加到队列，由 Worker 处理
-          // sendOTPHandler({ email, code: otp }, type);
           addOTPQueue(email, otp, type);
         },
       }),

@@ -16,6 +16,7 @@ onlyBuiltDependencies:
 overrides:
   ioredis: ^5.10.0
   rehype-prism-plus: 2.0.0
+  '@types/pg': '8.11.11'
   eslint-config-next>eslint-import-resolver-typescript: 3.10.0
 
 patchedDependencies:

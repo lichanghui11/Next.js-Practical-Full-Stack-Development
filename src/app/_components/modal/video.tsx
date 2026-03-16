@@ -23,7 +23,7 @@ import { cn } from '@/app/utils/utils';
 
 import $styles from './video.module.css';
 
-const VideoPlayer = dynamic(() => import('../video/player'), { ssr: false });
+const VideoPlayer = dynamic(async () => import('../video/player'), { ssr: false });
 interface Props {
   className?: string;
   videoOptions: Omit<Option, 'container'>;

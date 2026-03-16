@@ -7,7 +7,8 @@ import { beforeServer, createHonoApp } from './common/app'; // common 文件里�
 import { blogRoutes, postPath } from './modules/blog/blog.route';
 import { categoryPath, categoryRoutes } from './modules/category/category.route';
 import { tagPath, tagRoutes } from './modules/tag/tag.route';
-import { authPath, authRoutes } from './modules/user/user.route';
+import { authPath } from './modules/user/user.constants';
+import { authRoutes } from './modules/user/user.route';
 // 在所有其他模块导入之前清除 Zod 全局 registry，解决 HMR 重复 ID 问题
 import './common/zod-registry';
 

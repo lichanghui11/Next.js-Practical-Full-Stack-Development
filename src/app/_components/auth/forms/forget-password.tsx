@@ -1,7 +1,8 @@
+'use client';
 import type { FC } from 'react';
 
 import { KeyRound, Lock, User } from 'lucide-react';
-import Link from 'next/Link';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useMemo } from 'react';
 import { Button } from 'ui/button';

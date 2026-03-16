@@ -43,7 +43,7 @@ import {
  * 它只是一个用来定义和收集路由的容器。
  */
 const app = createHonoApp();
-export const authPath = '/auth';
+
 export const userTags = ['用户认证'];
 
 export type AuthRoutes = typeof authRoutes;
@@ -127,7 +127,7 @@ export const authRoutes = app
         // 使用better auth 进行认证
         const result = await signIn(username, password);
         if (isNil(result) || isNil(result.token)) {
-          c.json(createErrorResult('认证失败', '用户名或密码错误', 401));
+          return c.json(createErrorResult('认证失败', '用户名或密码错误', 401), 401);
         }
         return c.json(result, 200);
       } catch (error) {
@@ -234,6 +234,9 @@ export const authRoutes = app
     async (c) => {
       try {
         const { email } = c.req.valid('json');
+        console.log('==========发送邮箱验证码===========');
+        console.log('email', email);
+        console.log('==========发送邮箱验证码===========');
         const res = await sendOTP(email, EmailOTPType.EMAIL_VERIFICATION);
 
         return c.json(res.result, res.code);

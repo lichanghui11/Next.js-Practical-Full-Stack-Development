@@ -7,7 +7,17 @@ export const createRedisClients = () => {
   const clients: { [key: string]: Redis } = {};
 
   for (const connection of redisConfig.connections) {
-    clients[connection.name] = new Redis(omit(connection, 'name'));
+    const client = new Redis({
+      ...omit(connection, 'name'),
+      lazyConnect: true,
+      // retryStrategy: () => null, // 禁用自动重连
+    });
+
+    client.on('error', (err) => {
+      console.error(`Redis connection error [${connection.name}]:`, err.message);
+    });
+
+    clients[connection.name] = client;
   }
 
   return clients;
