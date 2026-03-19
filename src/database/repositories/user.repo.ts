@@ -14,7 +14,14 @@ import type {
 import { authConfig } from '@/config/auth.config';
 import prismaClient from '@/database/client/app-client';
 import { auth } from '@/lib/auth/server';
-import { checkOTPRateLimit, recordOTPSendTime } from '@/server/modules/user/user.otp';
+import { addOTPQueue } from '@/lib/queue/utils';
+import {
+  checkOTPRateLimit,
+  generateOTP,
+  recordOTPSendTime,
+  storeRegisterOTP,
+  verifyRegisterOTP,
+} from '@/server/modules/user/user.otp';
 
 const UserRepo = {
   // 获取当前用户会话信息
@@ -144,10 +151,8 @@ const UserRepo = {
       })) as unknown as { token: string; user: User };
 
       // 使用验证码验证邮箱
-      const checkOtp = await auth.api.checkVerificationOTP({
-        body: { email, type: 'email-verification', otp },
-      });
-      if (!checkOtp.success) {
+      const checkOtp = await UserRepo.checkVerificationOTP(email, otp);
+      if (!checkOtp) {
         // 验证不通过，删除用户
         await UserRepo.deleteUser(res.user.id);
         return { result: false, message: '验证码错误' };
@@ -200,9 +205,6 @@ const UserRepo = {
 
     // 检查发送频率
     const rateLimitCheck = await checkOTPRateLimit(email, type);
-    console.log('=======user repo 发送验证码=======');
-    console.log('rateLimitCheck', rateLimitCheck);
-    console.log('=======user repo 发送验证码=======');
 
     // 不能发送
     if (!rateLimitCheck.canSend) {
@@ -213,17 +215,32 @@ const UserRepo = {
           remainingTime: rateLimitCheck.remainingTime,
           nextSendTime: rateLimitCheck.nextSendTime,
         },
-        // 429 Too Many Requests
         code: 429,
       };
     }
 
-    // 发送验证码
-    const res = await auth.api.sendVerificationOTP({
+    // 注册场景：使用自定义验证码逻辑
+    if (type === 'email-verification') {
+      const otp = generateOTP();
+      await storeRegisterOTP(email, otp);
+      await addOTPQueue(email, otp, type);
+      await recordOTPSendTime(email, type);
+
+      return {
+        result: {
+          message: '验证码发送成功',
+          canSend: true,
+          remainingTime: limit,
+          nextSendTime: Date.now() + limit * 1000,
+        },
+        code: 200,
+      };
+    }
+
+    // 其他场景（如忘记密码）：使用 Better Auth
+    await auth.api.sendVerificationOTP({
       body: { email, type },
     });
-    console.log('验证码发送成功 res: ', res);
-    // 记录发送时间
     await recordOTPSendTime(email, type);
 
     return {
@@ -235,6 +252,12 @@ const UserRepo = {
       },
       code: 200,
     };
+  },
+
+  // 自定义验证邮箱验证码逻辑，不使用 better-auth 内部的验证方法
+  checkVerificationOTP: async (email: string, otp: string) => {
+    const isValid = await verifyRegisterOTP(email, otp);
+    return isValid;
   },
 };
 

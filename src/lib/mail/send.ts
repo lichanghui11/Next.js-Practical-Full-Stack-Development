@@ -77,11 +77,29 @@ export const sendTencentMail = async (
     'replace', // 合并策略：自定义覆盖默认
   ) as DefaultTencentSendOptions;
 
-  // 步骤2：填充模板变量（腾讯云预定义模板）
-  newOptions.Template = {
-    TemplateID: Number(options.templateId), // 通用templateId（数字）→ 腾讯云TemplateID
-    TemplateData: JSON.stringify(options.vars), // 通用vars → 腾讯云要求JSON字符串
-  };
+  // 步骤2：根据配置选择腾讯云平台模板或本地渲染内容
+  if ('templateId' in options) {
+    newOptions.Template = {
+      TemplateID: Number(options.templateId), // 通用templateId（数字）→ 腾讯云TemplateID
+      TemplateData: JSON.stringify(options.vars), // 通用vars → 腾讯云要求JSON字符串
+    };
+  } else if ('templatePath' in options) {
+    const html = await emailTemplates.render(
+      `${options.templatePath.toString()}/html`,
+      options.vars,
+    );
+    const text = await emailTemplates.render(
+      `${options.templatePath.toString()}/text`,
+      options.vars,
+    );
+
+    newOptions.Simple = {
+      Html: Buffer.from(html).toString('base64'),
+      Text: Buffer.from(text).toString('base64'),
+    };
+  } else {
+    throw new Error('腾讯云邮件必须提供 templateId 或 templatePath');
+  }
 
   // 步骤3：调用腾讯云客户端发送邮件
   return params.client.SendEmail(newOptions);

@@ -7,7 +7,7 @@
     @apply items-center justify-between flex h-auto w-full flex-col lg:flex-row px-0 md:px-3;
 
     & > .block {
-      @apply my-2 flex min-h-80 w-full lg:my-8 lg:w-1/2;
+      @apply my-2 flex min-h-80 w-full min-w-0  lg:my-8 lg:w-1/2;
     }
   }
 }

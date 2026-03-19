@@ -31,6 +31,7 @@ export async function sendOTPHandler(
   try {
     // 拿到 OTP 的类型
     const config = authConfig.mails?.OTP?.send?.[type];
+    console.log('邮件配置详情，authConfig.mails?.OTP?.send?.[type]: ', config);
 
     if (!isNil(config)) {
       const newOptions = customMerge(
@@ -116,10 +117,22 @@ export async function checkOTPRateLimit(
  * @param type
  */
 export async function recordOTPSendTime(email: string, type: string): Promise<void> {
+  console.log('-----------------');
+  console.log('文件位置：src/server/modules/user/user.otp.ts，参数email：', email);
+  console.log('这个函数记录发送时间，会存在redis里面');
+  console.log('\n');
   const key = `${OTP_RATE_LIMIT_KEY_PREFIX}${type}:${email}`;
 
   try {
     const redis = getRedisClient(serverInstances.redis);
+
+    // 打印实际使用的连接信息
+    console.log('Redis 连接配置:', {
+      host: redis.options.host,
+      port: redis.options.port,
+      db: redis.options.db,
+      password: redis.options.password ? '***' : '无密码',
+    });
     const now = Date.now();
     // ==========================
     // setex(key, seconds, value) = set(key, value) + expire(key, seconds)
@@ -148,4 +161,44 @@ export async function getOTPSendStatus(
     ...result,
     message: result.canSend ? '可以发送' : `请等待 ${result.remainingTime} 秒`,
   };
+}
+
+// ============ 注册 OTP 管理（不依赖 Better Auth）============
+
+const REGISTER_OTP_KEY_PREFIX = 'otp:code:register:';
+
+/**
+ * 生成 6 位数字验证码
+ */
+export function generateOTP(): string {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+/**
+ * 存储注册验证码到 Redis
+ */
+export async function storeRegisterOTP(email: string, otp: string): Promise<void> {
+  const key = `${REGISTER_OTP_KEY_PREFIX}${email}`;
+  const redis = getRedisClient(serverInstances.redis);
+  const expire = authConfig.mails?.OTP?.expire ?? 300;
+
+  await redis.setex(key, expire, otp);
+}
+
+/**
+ * 验证注册验证码
+ */
+export async function verifyRegisterOTP(email: string, otp: string): Promise<boolean> {
+  const key = `${REGISTER_OTP_KEY_PREFIX}${email}`;
+  const redis = getRedisClient(serverInstances.redis);
+
+  const storedOTP = await redis.get(key);
+  if (!storedOTP) return false;
+
+  const isValid = storedOTP === otp;
+  if (isValid) {
+    await redis.del(key); // 验证成功后删除
+  }
+
+  return isValid;
 }

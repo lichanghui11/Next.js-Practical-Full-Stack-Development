@@ -48,20 +48,27 @@ export interface BaseMailSendOptions {
 }
 
 // 腾讯云邮件发送函数的 参数类型
-export type TencentCloudSendMailOptions = BaseMailSendOptions & {
-  templateId: number; // 腾讯云必填的 模版ID （number）
-  // 这里排除掉已经封装的核心的通用参数，透传腾讯云的其他核心参数
-  others?: Omit<
-    DefaultTencentSendOptions,
-    | 'FromEmailAddress'
-    | 'Destination'
-    | 'Subject'
-    | 'Template'
-    | 'Simple'
-    | 'ReplyToAddresses'
-    | 'vars'
-  >;
-};
+export type TencentCloudSendMailOptions = BaseMailSendOptions &
+  (
+    | {
+        templateId: number; // 腾讯云平台模板 ID
+      }
+    | {
+        templatePath: string; // 本地模板路径，渲染后走 Simple 模式发送
+      }
+  ) & {
+    // 这里排除掉已经封装的核心的通用参数，透传腾讯云的其他核心参数
+    others?: Omit<
+      DefaultTencentSendOptions,
+      | 'FromEmailAddress'
+      | 'Destination'
+      | 'Subject'
+      | 'Template'
+      | 'Simple'
+      | 'ReplyToAddresses'
+      | 'vars'
+    >;
+  };
 
 // 阿里云邮件发送函数的 参数类型
 // 阿里云的模版方式有两种：使用阿里云预设的模版ID ｜ 自定义模版文件路径（阿里云支持本地模版渲染）

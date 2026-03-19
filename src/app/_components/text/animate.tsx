@@ -327,7 +327,7 @@ export function TextAnimate({
   as: Component = 'p',
   startOnView = true,
   once = false,
-  by = 'word',
+  by = 'line',
   animation = 'fadeIn',
   ...props
 }: TextAnimateProps) {

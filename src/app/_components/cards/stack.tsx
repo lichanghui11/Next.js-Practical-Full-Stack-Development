@@ -21,9 +21,9 @@ export const StackCard: FC<PropsWithChildren<StackCardProps>> = ({
   return (
     <div
       className={cn(
-        `relative flex h-80 w-full items-center justify-center`,
+        `relative flex h-80 w-full items-center justify-center items-center`,
         className,
-        'w-[400px] h-[400px] ml-[20px]', // 视频卡片样式丢失了，这里强制覆盖
+        'w-[370px] h-[400px]', // 视频卡片样式丢失了，这里强制覆盖
       )}
     >
       <div

@@ -2,6 +2,7 @@ import type { FC } from 'react';
 
 import { Suspense } from 'react';
 
+import { cn } from '@/app/utils/utils';
 import { homeConfig } from '@/config/home.config';
 
 import { FadeInMotion } from '../motion/fadeIn';
@@ -22,11 +23,11 @@ export const Home: FC = () => {
     <>
       <HomeBackground />
       <Suspense fallback={<HomeSeketon />}>
-        <div className={$styles.home}>
+        <div className={cn($styles.home, 'border')}>
           {(welcome || video) && (
-            <HomeLineContainer>
+            <HomeLineContainer className="w-full">
               {welcome && (
-                <HomeBlockContainer>
+                <HomeBlockContainer className="">
                   <FadeInMotion>
                     <HomeWelcomeCard {...welcome}></HomeWelcomeCard>
                   </FadeInMotion>
@@ -34,7 +35,7 @@ export const Home: FC = () => {
               )}
               {video && (
                 <HomeBlockContainer>
-                  <div className="flex h-auto w-full">
+                  <div className="flex h-auto w-full justify-center">
                     <FadeInMotion>
                       <HomeVideoCard {...video}></HomeVideoCard>
                     </FadeInMotion>
