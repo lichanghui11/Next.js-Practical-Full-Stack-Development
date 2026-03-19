@@ -1,5 +1,4 @@
 import { createMiddleware } from 'hono/factory';
-import { HTTPException } from 'hono/http-exception';
 import { isNil } from 'lodash';
 
 import { auth } from '@/lib/auth/server';
@@ -14,19 +13,18 @@ export const AuthProtectedMiddleware = createMiddleware(async (ctx, next) => {
   } catch (error) {
     ctx.set('user', null);
     ctx.set('session', null);
-    throw new HTTPException(500, {
-      res: new Response(JSON.stringify(createErrorResult('服务器错误', error))),
-    });
+
+    return ctx.json(createErrorResult('服务器错误', error), 500);
   }
 
   if (isNil(session?.user)) {
     ctx.set('user', null);
     ctx.set('session', null);
-    throw new HTTPException(401, {
-      res: new Response(JSON.stringify(createErrorResult('用户未认证', 401))),
-    });
+
+    return ctx.json(createErrorResult('用户未认证'), 401);
   }
 
+  // 注意：ctx.set(key, value) 是 Hono 存储请求上下文的正确方式（不是响应头）
   ctx.set('user', session.user);
   ctx.set('session', session);
   await next();

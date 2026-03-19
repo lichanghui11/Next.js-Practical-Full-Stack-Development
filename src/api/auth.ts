@@ -73,7 +73,7 @@ export const authApi = {
     return session.data.user as any as User;
   },
 
-  // 通过 邮箱验证码 注册用户
+  // 通过 邮箱验证码 注册用户 未使用Better Auth 内部的注册方法
   signUp: async (data: SignupRequest) => {
     return fetchApi(authClientRpc, async (c) => {
       return c['sign-up'].$post({ json: data });
@@ -88,6 +88,7 @@ export const authApi = {
   },
 
   // 往邮箱发送验证码-邮箱认证
+  // 这里没有使用 authClient 客户端的方法
   sendEmailVerificationOTP: async (email: string) => {
     return fetchApi(authClientRpc, async (c) => {
       return c.otp['email-verification'].$post({ json: { email } });

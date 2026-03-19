@@ -16,7 +16,7 @@ export const createErrorResult = (title: string, error?: any, code?: number) => 
     // 可以处理 错误对象 || 带有 message 字段的自定义的对象 || 一个纯字符串
     message =
       error instanceof Error || (isObject(error) && 'message' in error)
-        ? `${title}:${error.message}`
+        ? `${title}:${(error as Error).message}`
         : `${title}:${error.toString()}`;
   }
 

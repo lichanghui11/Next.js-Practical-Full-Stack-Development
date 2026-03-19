@@ -65,17 +65,39 @@ export const createServerAuth = () => {
       // 用户名登陆插件
       username(),
 
-      // 配置 disableDefaultReference 为 false ，会使用网页展示 API文档 详情
-      // 因为默认配置是不使用网页展示的
-      // 如果不需要展示给他人查看，设置为 true，或不配置
+      /**
+       *  配置 disableDefaultReference 为 false ，会使用网页展示 API文档 详情
+       *  因为默认配置是不使用网页展示的
+       * 如果不需要展示给他人查看，设置为 true，或不配置
+       * 这是服务端功能，用于开发者查看 API
+       * 客户端不需要知道文档的存在，所以不需要在客户端配置对应的插件
+       */
       openAPI({ path: '/reference', disableDefaultReference: false }),
 
       emailOTP({
         allowedAttempts: authConfig.mails?.OTP?.allowedAttempts ?? 3,
         expiresIn: authConfig.mails?.OTP?.expire ?? 60 * 5,
         async sendVerificationOTP({ email, otp, type }) {
-          // 这里修改前是直接发送邮件，现在改为添加到队列，由 Worker 处理
-          addOTPQueue(email, otp, type);
+          console.error('🔥🔥🔥 sendVerificationOTP 回调被触发了！');
+          console.error('参数 email:', email, 'type:', type, 'otp:', otp);
+
+          if (type === 'sign-in') {
+            // Send the OTP for sign in
+          } else if (type === 'email-verification') {
+            // Send the OTP for email verification
+
+            // 这里修改前是直接发送邮件，现在改为添加到队列，由 Worker 处理
+            console.log('----------better-auth 插件函数--------------');
+            console.log('OTP:', otp);
+            console.log('type:', type);
+            console.log('发送验证码到邮箱:', email);
+            console.error('🚀🚀🚀 OTP回调被调用了！email:', email); // 用error 更醒目
+            console.log('添加到任务队列之前》〉》〉》〉》〉》〉》〉》〉');
+            console.log('----------better-auth 插件函数--------------');
+            await addOTPQueue(email, otp, type);
+          } else {
+            // Send the OTP for password reset
+          }
         },
       }),
     ],
@@ -84,6 +106,15 @@ export const createServerAuth = () => {
 
 // 这里必须要使用 auth 的名字，生成 user model的时候命令行脚本会使用这个名字会使用到
 export const auth = createServerAuth();
+
+// 检查插件是否加载
+console.log('🔍 检查 auth 实例配置：');
+console.log('插件数量:', auth.options.plugins?.length);
+console.log('是否有 sendVerificationOTP API:', typeof auth.api.sendVerificationOTP);
+console.log(
+  'emailOTP 配置:',
+  auth.options.plugins?.find((p: any) => p.id === 'email-otp') ? '✅ 已加载' : '❌ 未加载',
+);
 
 /**
  * NextCookiePlugin 这个插件是需要 Next.js 环境的，

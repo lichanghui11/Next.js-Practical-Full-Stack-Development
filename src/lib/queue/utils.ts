@@ -63,9 +63,6 @@ export const getWorkerConnection = (queueName: string, redisClients: { [key: str
  * 往队列中添加任务，如果队列不存在，直接同步发送邮件
  */
 export const addOTPQueue = async (email: string, code: string, type: `${EmailOTPType}`) => {
-  console.log('===========加入任务队列============');
-  console.log('addOTPQueue', email, code, type);
-  console.log('===========加入任务队列============');
   if (!isNil(serverInstances.queues.OTP)) {
     // 队列存在，添加任务
     return serverInstances.queues.OTP.add(type, { email, code });
@@ -75,7 +72,6 @@ export const addOTPQueue = async (email: string, code: string, type: `${EmailOTP
 };
 
 const addOTPWorker = async () => {
-  console.log('===========queue worker============');
   // 检查OTP队列是否已初始化
   if (!isNil(serverInstances.queues.OTP)) {
     // 创建bull/bullmq的Worker，监听"OTP"队列
@@ -84,11 +80,18 @@ const addOTPWorker = async () => {
       'OTP',
       // 任务处理函数：消费队列中的OTP任务
       async (job: Job) => {
-        // 从任务中获取邮箱和验证码
-        const { email, code } = job.data;
+        try {
+          // 从任务中获取邮箱和验证码
+          const { email, code } = job.data;
+          console.log('正在处理 OTP 任务，email: ', email);
+          console.log('正在处理 OTP 任务，code: ', code);
 
-        // 执行发送OTP的逻辑
-        await sendOTPHandler({ email, code }, job.name as `${EmailOTPType}`);
+          // 执行发送OTP的逻辑
+          await sendOTPHandler({ email, code }, job.name as `${EmailOTPType}`);
+          console.log('任务处理成功，OTP邮件发送成功');
+        } catch (error) {
+          console.error('Worker 里面，处理 OTP 任务时发生错误:', error);
+        }
       },
       // 配置：指定Redis连接（bull/bullmq依赖Redis存储任务）
       { connection: getWorkerConnection('OTP', serverInstances.redis) },
