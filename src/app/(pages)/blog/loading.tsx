@@ -1,10 +1,6 @@
 import type { FC } from 'react';
 
-import { PageSkeleton } from '@/app/_components/skeleton';
+import { BlogIndexSkeleton } from '@/app/_components/blog/skeleton';
 
-const PostLoadingPage: FC = () => (
-  <div className="">
-    <PageSkeleton />
-  </div>
-);
+const PostLoadingPage: FC = () => <BlogIndexSkeleton />;
 export default PostLoadingPage;

@@ -17,6 +17,8 @@ const BlogIndexPage: FC<{
 }> = async ({ searchParams, params }) => {
   const { categories } = await params;
   const rest = { ...(await searchParams), categories };
+  // 延迟 10 秒以观察骨架屏
+  await new Promise((resolve) => setTimeout(resolve, 10_000));
   return <BlogIndex {...rest} />;
 };
 

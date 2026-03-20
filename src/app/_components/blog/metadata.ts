@@ -1,4 +1,4 @@
-import type { Metadata, ResolvedMetadata } from 'next';
+import type { Metadata, ResolvingMetadata } from 'next';
 
 import { isNil } from 'lodash';
 import { cache } from 'react';
@@ -14,19 +14,19 @@ import { tagApi } from '@/api/tag';
 export interface IBlogMetadata {
   params: Promise<{ categories?: string[] }>; // 动态路由参数
   searchParams: Promise<{ tag?: string }>; //URL 查询参数
-  parent: ResolvedMetadata; // 父布局的元数据解析器
+  parent: ResolvingMetadata; // 父布局的元数据解析器
 }
 
 // 这个类型用于 单篇博客 详情页面的元数据
 export interface IPostMetadata {
   params: Promise<{ item: string }>;
-  parent: ResolvedMetadata;
+  parent: ResolvingMetadata;
 }
 
 // 缓存
-const getBreadcrumbs = cache(async (lastId: string) => await categoryApi.breadcrumb(lastId));
-const getTagDetail = cache(async (tag: string) => await tagApi.detail(tag));
-const getPostDetail = cache(async (id: string) => await blogApi.detailById(id));
+const getBreadcrumbs = cache(async (lastId: string) => categoryApi.breadcrumb(lastId));
+const getTagDetail = cache(async (tag: string) => tagApi.detail(tag));
+const getPostDetail = cache(async (id: string) => blogApi.detailById(id));
 
 /**
  *
@@ -46,7 +46,7 @@ export const getBlogListMetadata = async ({
   const { tag } = await searchParams;
 
   if (!isNil(categories) && categories.length > 0) {
-    const result = await categoryApi.breadcrumb(categories[categories.length - 1]);
+    const result = await getBreadcrumbs(categories[categories.length - 1]);
     if (!result.ok) return {};
     const data = await result.json();
     if (data.length > 0) {
@@ -55,7 +55,7 @@ export const getBlogListMetadata = async ({
     }
   }
   if (!isNil(tag)) {
-    const result = await tagApi.detail(tag);
+    const result = await getTagDetail(tag);
     if (result.ok) {
       const data = await result.json();
       if (!isNil(data)) {
@@ -76,7 +76,7 @@ export const getBlogListMetadata = async ({
  */
 export const getPostItemMetadata = async ({ params, parent }: IPostMetadata): Promise<Metadata> => {
   const { item } = await params;
-  const result = await blogApi.detailById(item);
+  const result = await getPostDetail(item);
   if (!result.ok) return {};
   const post = await result.json();
   const title = `${post.title} - ${(await parent).title?.absolute}`;
