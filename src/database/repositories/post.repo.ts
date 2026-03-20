@@ -16,10 +16,12 @@ import prismaClient from '../client/app-client';
 export type PostCreateInput = Omit<Prisma.PostCreateInput, 'thumb' | 'tags' | 'category'> & {
   tags?: TagType[];
   categoryId?: string;
+  authorId?: string;
 };
 export type PostUpdateInput = Omit<Prisma.PostUpdateInput, 'thumb' | 'tags' | 'category'> & {
   tags?: TagType[];
   categoryId?: string;
+  authorId?: string;
 };
 
 // 请求分页数据的参数的类型，加入了标签和分类的过滤条件
@@ -35,11 +37,13 @@ const defaultPostItemQueryOptions = {
   // 把 categoryId 这个标量字段从结果里去掉（不返回给前端）
   omit: {
     categoryId: true,
+    authorId: true,
   },
   // 查询时把关联的 tags、category 一起带出来（类似 join/关联查询）
   include: {
     tags: true,
     category: true,
+    author: true,
   },
 } as const;
 /**
@@ -98,6 +102,7 @@ const PostRepo = {
         include: {
           tags: true,
           category: true,
+          author: true,
         },
       })
       .withPages({
@@ -121,7 +126,7 @@ const PostRepo = {
 
     for (let i = 0; i < posts[0].length; i++) {
       posts[0][i] = {
-        ...omit(posts[0][i], ['body', 'categoryId']),
+        ...omit(posts[0][i], ['body', 'categoryId', 'authorId']),
         categories: !isNil(posts[0][i].category?.id)
           ? await prismaClient.category.getAncestorChainWithSelf({
               where: { id: posts[0][i].category?.id },
@@ -210,12 +215,19 @@ const PostRepo = {
       };
     }
 
-    // ④ 执行创建
+    // ④ 处理作者（多对一关系）
+    if (!isNil(post.authorId)) {
+      createInput.author = {
+        connect: { id: post.authorId },
+      };
+    }
+
+    // ⑤ 执行创建
     const newPost = await prismaClient.post.create({
       data: createInput,
     });
 
-    // ⑤ 创建成功后，重新用 queryPostItemById 查一次
+    // ⑥ 创建成功后，重新用 queryPostItemById 查一次
     //    为什么不直接返回 item？因为 create 返回的是裸数据，没有关联数据（tags, category, categories）
     //    重新查一次才能带上完整的关联数据返回给前端
     if (!isNil(newPost.id)) return PostRepo.queryPostByIdOrSlug(newPost.id);
@@ -225,7 +237,9 @@ const PostRepo = {
   // 更新文章 (支持部分更新，只需要传入 id 和要更新的字段)
   updatePost: async (post: PostUpdateInput & { id: string }): Promise<Post | null> => {
     // ① 同样先去掉 tags 和 categoryId，剩余字段直接展开
-    const updateInput: Prisma.PostUpdateInput = { ...omit(post, ['tags', 'categoryId']) };
+    const updateInput: Prisma.PostUpdateInput = {
+      ...omit(post, ['tags', 'categoryId', 'authorId']),
+    };
     // ② 处理标签更新
     if (!isNil(post.tags)) {
       // set: [] 的含义
@@ -249,14 +263,20 @@ const PostRepo = {
         connect: { id: post.categoryId },
       };
     }
-    // ④ 执行更新
+    // ④ 处理作者更新
+    if (!isNil(post.authorId)) {
+      updateInput.author = {
+        connect: { id: post.authorId },
+      };
+    }
+    // ⑤ 执行更新
     const updatedPost = await prismaClient.post.update({
       where: {
         id: post.id,
       },
       data: updateInput,
     });
-    // ⑤ 同创建逻辑：重新查一次返回完整数据
+    // ⑥ 同创建逻辑：重新查一次返回完整数据
     if (!isNil(updatedPost.id)) return PostRepo.queryPostByIdOrSlug(updatedPost.id);
     return updatedPost;
   },

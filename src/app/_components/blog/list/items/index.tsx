@@ -60,7 +60,7 @@ export const PostListItems: FC<
                   <div className={styles.cardHeader}>
                     <div className={styles.thumbnailContainer}>
                       <Image
-                        src={item.thumbnail || '/placeholder-blog.png'}
+                        src={item.author?.image || '/logo.png'}
                         alt={item.title}
                         fill
                         className={styles.thumbnail}

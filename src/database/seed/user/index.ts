@@ -11,32 +11,14 @@ export const createSeedUsers = async () => {
     body: {
       name: 'lichanghui', // 用户名
       email: 'weeesti470@gmail.com',
-      password: 'weeesti470@gmail.com',
+      password: 'hui8449600004',
       username: 'lichanghui', // 登陆用的用户名
       displayUsername: 'lichanghui', // 展示用的用户名
+      image: '/logo.png',
     },
   });
-
-  // 再添加一个用户
-  const res1 = await auth.api.signUpEmail({
-    body: {
-      name: 'weeesti', // 用户名
-      email: '1769444976@qq.com',
-      password: 'hui8449600004',
-      username: 'weeesti', // 登陆用的用户名
-      displayUsername: 'weeesti', // 展示用的用户名
-    },
-  });
-
   // 将这个固定用户设置为“邮箱已验证” （跳过邮箱验证步骤）
   if (res?.user?.email) {
-    await prisma.user.update({
-      where: { email: res1.user.email }, // 根据邮箱找到这个用户
-      data: { emailVerified: true }, // 直接将这个用户的 邮箱验证情况 标记为已验证
-    });
-  }
-  // 将这个固定用户设置为“邮箱已验证” （跳过邮箱验证步骤）
-  if (res1?.user?.email) {
     await prisma.user.update({
       where: { email: res.user.email }, // 根据邮箱找到这个用户
       data: { emailVerified: true }, // 直接将这个用户的 邮箱验证情况 标记为已验证

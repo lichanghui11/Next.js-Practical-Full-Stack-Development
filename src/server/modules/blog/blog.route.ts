@@ -226,7 +226,8 @@ export const blogRoutes = app
     async (c) => {
       try {
         const body = await c.req.json();
-        const result = await addPost(body);
+        const user = c.get('user');
+        const result = await addPost({ ...body, authorId: user?.id });
         return c.json(result, 201);
       } catch (error) {
         return c.json(createErrorResult('新增文章失败', error), 500);

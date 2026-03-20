@@ -77,7 +77,7 @@ export const HandleButton: FC<{ auth: User | null }> = ({ auth }) => {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Avatar className={$styles.avatar}>
-          <AvatarImage src="/placeholder-blog.png" />
+          <AvatarImage src={auth?.image || '/logo.png'} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

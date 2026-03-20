@@ -69,8 +69,9 @@ const FormComponent: FC = () => {
                     <Input
                       {...field}
                       className="pl-10"
+                      type="password"
                       // autoComplete 是 HTML 原生属性，password 是标准化值（对应 “密码”）；浏览器自动补全提示
-                      autoComplete="password"
+                      autoComplete="current-password"
                       placeholder="请输入密码"
                       disabled={form.formState.isSubmitting}
                     />

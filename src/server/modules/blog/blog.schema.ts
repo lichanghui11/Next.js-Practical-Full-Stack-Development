@@ -91,6 +91,15 @@ export const postItemSchema = z
     content: z.string().meta({ description: '文章内容' }),
     createdAt: z.string().meta({ description: '文章创建时间' }),
     updatedAt: z.string().meta({ description: '文章更新时间' }),
+    author: z
+      .object({
+        id: z.string(),
+        name: z.string().nullable().optional(),
+        username: z.string().nullable().optional(),
+        displayUsername: z.string().nullable().optional(),
+        image: z.string().nullable().optional(),
+      })
+      .meta({ description: '作者信息' }),
     tags: tagListSchema.optional().meta({ description: '关联标签列表，这是一个数组' }),
     categories: categoryListSchema.meta({
       description: '关联分类及其祖先分类列表，这是一个扁平数组，没有 children 字段',

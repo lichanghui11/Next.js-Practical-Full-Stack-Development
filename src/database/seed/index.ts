@@ -12,9 +12,9 @@ async function main() {
     await prisma.category.$truncate();
     await prisma.user.$truncate();
 
+    await createSeedUsers();
     await createSeedCategories();
     await createSeedPosts();
-    await createSeedUsers();
     console.log('✅ Seed data created successfully');
   } catch (error) {
     console.error('❌ Error seeding data:', error);
