@@ -50,9 +50,11 @@ function createPrisma() {
 
   // 在扩展之前监听查询事件
   baseClient.$on('query', (e: any) => {
-    console.log(`Query: ${e.query}`);
-    console.log(`Params: ${e.params}`);
-    console.log(`Duration: ${e.duration}ms`);
+    console.log('==========扩展 Prisma 之前监听查询事件===========');
+    console.log(`Query: ${e.query}\n`);
+    console.log(`Params: ${e.params}\n`);
+    console.log(`Duration: ${e.duration}ms\n`);
+    console.log('==============================================');
   });
 
   const client = baseClient.$extends(pagination()).$extends(withBark({ modelNames: ['category'] }));

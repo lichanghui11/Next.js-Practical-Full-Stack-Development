@@ -58,10 +58,6 @@ export const useOTPSender = (
   credential: string,
   type: `${EmailOTPType}`,
 ) => {
-  console.log('==========useOTPSender 被调用===========');
-  console.log('credential', credential);
-  console.log('type', type);
-  console.log('==========useOTPSender 被调用===========');
   const [isLoading, setIsLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const initializedRef = useRef(false);

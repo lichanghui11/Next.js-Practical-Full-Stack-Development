@@ -70,7 +70,6 @@ const PostRepo = {
    * 两种风格底层做的事一样，只是 API 形式和返回值格式不同。
    */
   queryPosts: async (options: PostPaginationOptions): Promise<PageResult<Post>> => {
-    console.log('进入 queryPosts, repositories post.repo.ts 查看参数：', options);
     const { tag, category, ...rest } = options;
     //    因为 tag/category 不是 Prisma 原生参数，需要手动转换成 where 条件
     const where: Prisma.PostWhereInput = {};
@@ -105,9 +104,7 @@ const PostRepo = {
       });
 
     for (let i = 0; i < posts[0].length; i++) {
-      (posts[0][i] as ((typeof posts)[0] extends (infer ItemType)[] ? ItemType : never) & {
-        categories: CategoryItem[];
-      }) = {
+      posts[0][i] = {
         ...omit(posts[0][i], ['body', 'categoryId']),
         categories: !isNil(posts[0][i].category?.id)
           ? await prismaClient.category.getAncestorChainWithSelf({

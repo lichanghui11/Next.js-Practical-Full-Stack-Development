@@ -234,9 +234,6 @@ export const authRoutes = app
     async (c) => {
       try {
         const { email } = c.req.valid('json');
-        console.log('==========发送邮箱验证码===========');
-        console.log('email', email);
-        console.log('==========发送邮箱验证码===========');
         const res = await sendOTP(email, EmailOTPType.EMAIL_VERIFICATION);
 
         return c.json(res.result, res.code);

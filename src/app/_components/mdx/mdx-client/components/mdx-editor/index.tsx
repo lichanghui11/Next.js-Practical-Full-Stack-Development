@@ -18,7 +18,6 @@ export const MdxEditor: FC<MdxEditorProps> = (props) => {
   const { content, setContent, disabled } = props;
   const [serialized, setSerialized] = useState<MdxHydrateProps['compiledSource']>();
   const { mode: theme } = useThemeMode();
-  console.log('mdx 编辑器里面拿到的 mode', theme);
   const containerRef = useRef<HTMLDivElement>(null);
   const [editorHeight, setEditorHeight] = useState<string>('100%');
   const isMobile = useIsMobile();

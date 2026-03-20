@@ -31,6 +31,7 @@ export const BlogDetail: FC<{
     return notFound();
   }
   const post = await result.json();
+  console.log('文章详情：', post);
   const breadcrumbs: IBlogBreadcrumbItem[] = [...getBreadcrumbLinks(post.categories, 'post')];
   // 这里使用的 post 模式的面包屑，最后一个元素是可以点击的
   // 手动 push 一个当前文章的标题显示在最后，没有 link ，不可点击

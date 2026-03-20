@@ -10,8 +10,6 @@ export const getCurrentSession = async (request: Request) => {
 
 // 用户登陆：支持用户名或邮箱
 export const signIn = async (usernameOrEmail: string, password: string) => {
-  console.log('server 层： usernameOrEmail', usernameOrEmail);
-  console.log('server 层： password', password);
   return UserRepo.signIn(usernameOrEmail, password);
 };
 
@@ -62,6 +60,5 @@ export const signUpByEmail = async (data: Omit<SignupRequest, 'validateType'>) =
 
 // 发送验证码
 export const sendOTP = async (email: string, type: `${EmailOTPType}`) => {
-  console.log('server 层： sendOTP', email, type);
   return UserRepo.sendOTP(email, type);
 };

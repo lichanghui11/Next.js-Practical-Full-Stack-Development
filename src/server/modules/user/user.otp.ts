@@ -31,7 +31,6 @@ export async function sendOTPHandler(
   try {
     // 拿到 OTP 的类型
     const config = authConfig.mails?.OTP?.send?.[type];
-    console.log('邮件配置详情，authConfig.mails?.OTP?.send?.[type]: ', config);
 
     if (!isNil(config)) {
       const newOptions = customMerge(
@@ -117,22 +116,11 @@ export async function checkOTPRateLimit(
  * @param type
  */
 export async function recordOTPSendTime(email: string, type: string): Promise<void> {
-  console.log('-----------------');
-  console.log('文件位置：src/server/modules/user/user.otp.ts，参数email：', email);
-  console.log('这个函数记录发送时间，会存在redis里面');
-  console.log('\n');
   const key = `${OTP_RATE_LIMIT_KEY_PREFIX}${type}:${email}`;
 
   try {
     const redis = getRedisClient(serverInstances.redis);
 
-    // 打印实际使用的连接信息
-    console.log('Redis 连接配置:', {
-      host: redis.options.host,
-      port: redis.options.port,
-      db: redis.options.db,
-      password: redis.options.password ? '***' : '无密码',
-    });
     const now = Date.now();
     // ==========================
     // setex(key, seconds, value) = set(key, value) + expire(key, seconds)

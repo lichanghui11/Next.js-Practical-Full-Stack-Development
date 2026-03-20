@@ -30,8 +30,6 @@ type BlogListItemsProps<T extends Record<string, any> = Record<never, never>> = 
 export const PostListItems: FC<
   BlogListItemsProps & { activeTag?: string; activeCategories?: string[] }
 > = ({ items: posts, activeTag }) => {
-  console.log('上层传下来的items: ', posts);
-
   return (
     <div className={styles.container}>
       {posts.length === 0 ? (
