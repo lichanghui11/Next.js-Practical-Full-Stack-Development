@@ -69,7 +69,11 @@ export const PostListItems: FC<
                     </div>
                     <div className={styles.titleWrapper}>
                       <Link href={`/blog/posts/${item.slug || item.id}`}>
-                        <h2 className={styles.title}>{item.title}</h2>
+                        <span className={cn(styles.title)}>
+                          <span className="animate-decoration animate-decoration-sm">
+                            {item.title}
+                          </span>
+                        </span>
                       </Link>
                       {item.categories.length > 0 && (
                         <div className="flex gap-0.5">
@@ -96,7 +100,7 @@ export const PostListItems: FC<
 
                     <div>
                       {!isNil(item.tags) && item.tags.length > 0 && (
-                        <div className="flex gap-0.5">
+                        <div className={styles.tagsRow}>
                           <span className={styles.iconWrapper}>
                             <Tag className={styles.iconSmall} />
                           </span>
@@ -104,8 +108,7 @@ export const PostListItems: FC<
                             <TagLink
                               key={tag.id}
                               tag={tag}
-                              className={cn({
-                                // 此处的样式需要后续重新写
+                              className={cn('animate-decoration animate-decoration-sm', {
                                 'border-amber-400': activeTag === tag.text,
                               })}
                             />
