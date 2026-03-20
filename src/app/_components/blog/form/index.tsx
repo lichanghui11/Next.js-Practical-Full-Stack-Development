@@ -42,17 +42,16 @@ export const PostPageForm: FC<{ post?: PostItem }> = ({ post }) => {
 
   return (
     <>
-      <div className="flex justify-between">
-        <Button onClick={handleSave} disabled={pending}>
-          {pending ? '保存中...' : '保存'}
-        </Button>
-      </div>
-
       {isNil(post) ? (
         <BlogForm ref={ref} type="create" isPending={handlePending} />
       ) : (
         <BlogForm ref={ref} type="update" blog={post} isPending={handlePending} />
       )}
+      <div className="flex justify-center md:justify-end mt-4">
+        <Button onClick={handleSave} disabled={pending}>
+          {pending ? '保存中...' : '保存'}
+        </Button>
+      </div>
     </>
   );
 };

@@ -160,19 +160,18 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
 
     return (
       <Form {...blogForm}>
-        <form onSubmit={blogForm.handleSubmit(onBlogSubmit)} className={styles.blogForm}>
+        <form onSubmit={blogForm.handleSubmit(onBlogSubmit)} className={styles.form}>
           <FormField
             control={blogForm.control}
             name="title"
             render={({ field }) => (
               <FormItem className={styles.formItem}>
-                <FormLabel className={styles.formLabel}>文章标题 (*)</FormLabel>
-                <FormControl>
+                <FormLabel className={styles.formLabel}>文章标题</FormLabel>
+                <FormControl className={styles.formControl}>
                   <Input
                     {...field}
                     placeholder="请输入标题"
                     disabled={blogForm.formState.isSubmitting}
-                    className={styles.input}
                   />
                 </FormControl>
                 <FormMessage className={styles.formMessage} />
@@ -183,14 +182,13 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
             control={blogForm.control}
             name="summary"
             render={({ field }) => (
-              <FormItem className={`${styles.formItem} mt-2 pb-1`}>
-                <FormLabel>摘要简述</FormLabel>
-                <FormControl>
+              <FormItem className={styles.formItem}>
+                <FormLabel className={styles.formLabel}>摘要简述</FormLabel>
+                <FormControl className={styles.formControl}>
                   <Textarea
                     {...field}
                     placeholder="请输入文章摘要"
                     disabled={blogForm.formState.isSubmitting}
-                    className={styles.textarea}
                   />
                 </FormControl>
                 <FormMessage className={styles.formMessage} />
@@ -202,9 +200,9 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
               control={blogForm.control}
               name="slug"
               render={({ field }) => (
-                <FormItem className="">
-                  <FormLabel>唯一URL</FormLabel>
-                  <FormControl>
+                <FormItem className={styles.formItem}>
+                  <FormLabel className={styles.formLabel}>唯一URL</FormLabel>
+                  <FormControl className={styles.formControl}>
                     <Input
                       {...field}
                       value={slug}
@@ -213,7 +211,7 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
                       disabled={blogForm.formState.isSubmitting}
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className={styles.formDescription}>
                     如果留空,则文章访问地址是id
                     <Link
                       className="ml-5 mr-1 text-black dark:text-white"
@@ -225,7 +223,7 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
                     </Link>
                     自动生成slug(根据标题使用&apos;-&apos;连接字符拼接而成,中文字自动转换为拼音)
                   </FormDescription>
-                  <FormMessage />
+                  <FormMessage className={styles.formMessage} />
                 </FormItem>
               )}
             />
@@ -234,22 +232,20 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
             control={blogForm.control}
             name="categoryId"
             render={({ field }) => (
-              <FormItem className="mt-2 border-b border-dashed pb-1">
-                <div className="w-full flex-col space-y-2">
-                  <FormLabel className="block">分类选择</FormLabel>
-                  <FormControl className="block pt-1">
-                    <CategorySelect
-                      {...field}
-                      value={categoryId}
-                      setValue={setCategoryId}
-                      categories={allCategories}
-                    />
-                  </FormControl>
-                </div>
-                <FormDescription>
+              <FormItem className={styles.formItem}>
+                <FormLabel className={styles.formLabel}>分类选择</FormLabel>
+                <FormControl className={styles.formControl}>
+                  <CategorySelect
+                    {...field}
+                    value={categoryId}
+                    setValue={setCategoryId}
+                    categories={allCategories}
+                  />
+                </FormControl>
+                <FormDescription className={styles.formDescription}>
                   选择一个分类后,在读取该分类的父分类(如果有)时,列表中也会包含此文章
                 </FormDescription>
-                <FormMessage />
+                <FormMessage className={styles.formMessage} />
               </FormItem>
             )}
           />
@@ -257,25 +253,23 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
             control={blogForm.control}
             name="tags"
             render={({ field }) => (
-              <FormItem className="mt-2 border-b border-dashed pb-1">
-                <FormLabel>标签</FormLabel>
-                <FormControl>
+              <FormItem className={styles.formItem}>
+                <FormLabel className={styles.formLabel}>标签</FormLabel>
+                <FormControl className={styles.formControl}>
                   <TagInput
                     {...field}
-                    placeholder="输入标签"
                     tags={tags}
                     setTags={setTags}
-                    className="w-full"
                     activeTagIndex={activeTagIndex}
                     setActiveTagIndex={setActiveTagIndex}
                     autocompleteOptions={allTags}
                   />
                 </FormControl>
-                <FormDescription>
+                <FormDescription className={styles.formDescription}>
                   每个标签之间请用英文逗号(,)分割,
                   如果单独不设置SEO关键字则会根据标签生成关键字用于SEO
                 </FormDescription>
-                <FormMessage />
+                <FormMessage className={styles.formMessage} />
               </FormItem>
             )}
           />
@@ -284,19 +278,19 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
               control={blogForm.control}
               name="keywords"
               render={({ field }) => (
-                <FormItem className="mt-2 border-b border-dashed pb-1">
-                  <FormLabel>关键字</FormLabel>
-                  <FormControl>
+                <FormItem className={styles.formItem}>
+                  <FormLabel className={styles.formLabel}>关键字</FormLabel>
+                  <FormControl className={styles.formControl}>
                     <Input
                       {...field}
                       placeholder="请输入关键字,用逗号分割(关键字是可选的)"
                       disabled={blogForm.formState.isSubmitting}
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className={styles.formDescription}>
                     关键字不会显示,仅在SEO时发挥作用.每个关键字之间请用英文逗号(,)分割
                   </FormDescription>
-                  <FormMessage />
+                  <FormMessage className={styles.formMessage} />
                 </FormItem>
               )}
             />
@@ -304,17 +298,19 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
               control={blogForm.control}
               name="description"
               render={({ field }) => (
-                <FormItem className="mt-2 border-b border-dashed pb-1">
-                  <FormLabel>文章描述</FormLabel>
-                  <FormControl>
+                <FormItem className={styles.formItem}>
+                  <FormLabel className={styles.formLabel}>文章描述</FormLabel>
+                  <FormControl className={styles.formControl}>
                     <Textarea
                       {...field}
                       placeholder="请输入文章描述"
                       disabled={blogForm.formState.isSubmitting}
                     />
                   </FormControl>
-                  <FormDescription>文章描述不会显示,仅在SEO时发挥作用</FormDescription>
-                  <FormMessage />
+                  <FormDescription className={styles.formDescription}>
+                    文章描述不会显示,仅在SEO时发挥作用
+                  </FormDescription>
+                  <FormMessage className={styles.formMessage} />
                 </FormItem>
               )}
             />
@@ -324,24 +320,14 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
             control={blogForm.control}
             name="content"
             render={({ field }) => (
-              <FormItem className={styles.formItem}>
-                <div className={styles.contentHeader}>
-                  <FormLabel className={styles.formLabel}>文章内容 (*)</FormLabel>
-                  {/*props.type === 'update' && (
-                    <Button type="submit" disabled={blogForm.formState.isSubmitting}>
-                      {blogForm.formState.isSubmitting ? '保存中...' : '保存修改'}
-                    </Button>
-                  )*/}
-                </div>
-                <FormControl>
-                  <MdxEditor
-                    content={field.value}
-                    setContent={field.onChange}
-                    disabled={blogForm.formState.isSubmitting}
-                  />
-                </FormControl>
+              <div className="space-y-2">
+                <MdxEditor
+                  content={field.value}
+                  setContent={field.onChange}
+                  disabled={blogForm.formState.isSubmitting}
+                />
                 <FormMessage className={styles.formMessage} />
-              </FormItem>
+              </div>
             )}
           />
         </form>

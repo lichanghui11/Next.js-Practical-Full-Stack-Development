@@ -1,6 +1,6 @@
 /* eslint-disable unused-imports/no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable react/no-unstable-default-props */
+
 'use client';
 
 import type { VariantProps } from 'class-variance-authority';
@@ -421,7 +421,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
           tags={tags}
           setTags={setTags}
           setInputValue={setInputValue}
-          autocompleteOptions={filteredAutocompleteOptions as Tag[]}
+          autocompleteOptions={filteredAutocompleteOptions}
           setTagCount={setTagCount}
           maxTags={maxTags}
           onTagAdd={onTagAdd}
@@ -439,9 +439,9 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
         >
           <div
             className={cn(
-              `flex flex-row flex-wrap items-center p-0 gap-0 h-fit w-full space-x-2
+              `flex flex-row flex-nowrap items-center p-0 gap-2 h-fit w-full overflow-x-auto whitespace-nowrap
                                     text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none
-                                    focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`,
+                                    focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 `,
               styleClasses?.inlineTagsContainer,
             )}
           >
@@ -483,8 +483,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
               onBlur={handleInputBlur}
               {...inputProps}
               className={cn(
-                'border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 flex-1 w-fit',
-                // className,
+                'border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 flex-none min-w-[140px]',
                 styleClasses?.input,
               )}
               autoComplete="on"

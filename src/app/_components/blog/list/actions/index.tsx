@@ -30,10 +30,7 @@ const Buttons: FC<{ item: PostItem; className?: string; auth: User | null }> = (
   );
 };
 
-export const PostActions: FC<{ item: PostItem; className?: string } & { auth: User | null }> = ({
-  item,
-  className,
-}) => {
+export const PostActions: FC<{ item: PostItem; className?: string }> = ({ item, className }) => {
   return (
     <AuthChecker render={(props) => <Buttons item={item} className={className} {...props} />} />
   );

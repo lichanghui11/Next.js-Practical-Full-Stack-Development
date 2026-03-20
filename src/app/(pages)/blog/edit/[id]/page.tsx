@@ -27,7 +27,7 @@ const BlogEditPage: FC<{ params: Promise<{ id: string }> }> = async ({ params })
   }
   const post = await result.json();
   return (
-    <div className="">
+    <div className="max-w-7xl mx-auto px-4">
       <PostPageForm post={post} />
     </div>
   );

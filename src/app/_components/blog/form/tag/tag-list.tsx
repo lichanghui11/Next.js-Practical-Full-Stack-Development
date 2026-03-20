@@ -57,7 +57,7 @@ export const TagList: React.FC<TagListProps> = ({
       {draggable ? (
         <SortableList
           onSortEnd={onSortEnd}
-          className="list flex flex-wrap gap-2"
+          className={cn('list flex flex-nowrap gap-2', className)}
           dropTarget={<DropTarget />}
         >
           {tags.map((tagObj, index) => (
@@ -90,22 +90,25 @@ export const TagList: React.FC<TagListProps> = ({
           ))}
         </SortableList>
       ) : (
-        tags.map((tagObj, index) =>
-          customTagRenderer ? (
-            customTagRenderer(tagObj, index === activeTagIndex)
-          ) : (
-            <Tag
-              key={tagObj.id}
-              tagObj={tagObj}
-              isActiveTag={index === activeTagIndex}
-              direction={direction}
-              draggable={draggable}
-              tagClasses={classStyleProps?.tagClasses}
-              {...tagListProps}
-              disabled={disabled}
-            />
-          ),
-        )
+        <div className={cn('flex flex-nowrap gap-2', className)}>
+          {tags.map((tagObj, index): React.ReactNode => {
+            if (customTagRenderer) {
+              return customTagRenderer(tagObj, index === activeTagIndex);
+            }
+            return (
+              <Tag
+                key={tagObj.id}
+                tagObj={tagObj}
+                isActiveTag={index === activeTagIndex}
+                direction={direction}
+                draggable={draggable}
+                tagClasses={classStyleProps?.tagClasses}
+                {...tagListProps}
+                disabled={disabled}
+              />
+            );
+          })}
+        </div>
       )}
     </>
   );

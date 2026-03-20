@@ -60,7 +60,7 @@ export const CategorySelect: FC<CategorySelectProps> = ({ categories, setValue, 
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="mr-0 flex h-full justify-between border-0 bg-transparent shadow-none ring-0 hover:bg-transparent! focus-visible:ring-0!"
+            className="mr-0 flex h-full justify-between border-0 bg-transparent shadow-none ring-0 hover:bg-transparent! focus-visible:ring-0! w-full"
           >
             {value ? categories.find((item) => item.id === value)?.name : '选择分类...'}
             <ChevronsUpDown className="opacity-50" />

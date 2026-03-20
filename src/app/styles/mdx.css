@@ -23,7 +23,7 @@ pre[class*='language-'] {
 pre {
   overflow: auto;
 
-  @apply max-h-[50rem];
+  /* @apply max-h-[50rem]; */
 
   /* 滚动条样式 */
   &::-webkit-scrollbar {

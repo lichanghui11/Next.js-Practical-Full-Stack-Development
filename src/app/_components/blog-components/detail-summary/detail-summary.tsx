@@ -83,19 +83,12 @@ export const DetailSummary: FC<
     open ? openDetails(true) : closeDetails(true);
     if (contentRef.current) {
       // 初始化完成，统一元素的状态之后，再设置过度动画，这样后续手动触发的开关效果就会带上动画
-      contentRef.current.style.transition =
-        'max-height 0.3s ease-out, opacity 0.2s ease-out';
+      contentRef.current.style.transition = 'max-height 0.3s ease-out, opacity 0.2s ease-out';
     }
   });
   return (
     <details ref={detailsRef} className={styles.details}>
-      <summary
-        onClick={toggleDetails}
-        className={styles.summary}
-      >
-        <span className={styles.icon}>
-          {open ? '📖' : '📕'}
-        </span>
+      <summary onClick={toggleDetails} className={styles.summary}>
         {summary}
       </summary>
       <div ref={contentRef} className={styles.content}>

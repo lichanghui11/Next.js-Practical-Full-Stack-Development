@@ -17,9 +17,10 @@ import { serializeMdx } from '../../serialize';
 export const MdxEditor: FC<MdxEditorProps> = (props) => {
   const { content, setContent, disabled } = props;
   const [serialized, setSerialized] = useState<MdxHydrateProps['compiledSource']>();
-  const theme = useThemeMode();
+  const { mode: theme } = useThemeMode();
+  console.log('mdx 编辑器里面拿到的 mode', theme);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [editorHeight, setEditorHeight] = useState<number>(400);
+  const [editorHeight, setEditorHeight] = useState<string>('100%');
   const isMobile = useIsMobile();
   // 防抖效果，减少序列化次数
   const debouncedSerialize = useMemo(
@@ -50,7 +51,7 @@ export const MdxEditor: FC<MdxEditorProps> = (props) => {
       const parentHeight = containerRef.current.clientHeight;
       if (parentHeight) {
         // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
-        setEditorHeight(parentHeight);
+        setEditorHeight(`${Math.floor(parentHeight)}px`);
       }
     }
   }, []);
@@ -74,16 +75,21 @@ export const MdxEditor: FC<MdxEditorProps> = (props) => {
   }
 
   return (
-    <div data-color-mode={theme} ref={containerRef} style={{ height: '100%' }}>
-      <div>
-        <div className="wmde-markdown-var"> </div>
+    <div
+      data-color-mode={theme}
+      ref={containerRef}
+      style={{ height: '100%' }}
+      className={cn('MDX-wrapper1')}
+    >
+      <div className="MDX-wrapper2">
+        <div className="wmde-markdown-var MDX-wrapper3"> </div>
         <MDEditor
           preview={isMobile ? 'edit' : 'live'}
           extraCommands={extraCommands}
           value={content}
           onChange={setContent}
           height={editorHeight}
-          minHeight={editorHeight}
+          minHeight={400}
           textareaProps={{ disabled }}
           visibleDragbar
           components={{
