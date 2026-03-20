@@ -17,7 +17,9 @@ export const Sidebar: FC<{
     <div className={$styles.sidebar}>
       <div className="space-y-4">
         <CategoryTreeWidget actives={activedCategories} />
+        <div className="border-b border-gray-200 w-full"></div>
         <TagListWidget actived={activedTag} />
+        <div className="border-b border-gray-200 w-full"></div>
       </div>
     </div>
   );

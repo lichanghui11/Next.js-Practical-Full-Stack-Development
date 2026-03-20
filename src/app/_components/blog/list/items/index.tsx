@@ -4,6 +4,7 @@ import type { FC } from 'react';
 
 import { isNil } from 'lodash';
 import { Book, Calendar, Tag } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 import type { PostItem } from '@/server/modules/blog/blog.type';
@@ -29,6 +30,8 @@ type BlogListItemsProps<T extends Record<string, any> = Record<never, never>> = 
 export const PostListItems: FC<
   BlogListItemsProps & { activeTag?: string; activeCategories?: string[] }
 > = ({ items: posts, activeTag }) => {
+  console.log('上层传下来的items: ', posts);
+
   return (
     <div className={styles.container}>
       {posts.length === 0 ? (
@@ -44,8 +47,28 @@ export const PostListItems: FC<
               >
                 {/* 白色背景内层 */}
                 <div className={styles.cardInner}>
+                  {item.thumbnail && (
+                    <div className={styles.thumbnailWrapper}>
+                      <Image
+                        src={item.thumbnail}
+                        alt={item.title}
+                        fill
+                        className={styles.thumbnailImage}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    </div>
+                  )}
                   {/* 头部行：头像 + 标题 */}
                   <div className={styles.cardHeader}>
+                    <div className={styles.thumbnailContainer}>
+                      <Image
+                        src={item.thumbnail || '/placeholder-blog.png'}
+                        alt={item.title}
+                        fill
+                        className={styles.thumbnail}
+                        sizes="40px"
+                      />
+                    </div>
                     <div className={styles.titleWrapper}>
                       <Link href={`/blog/posts/${item.slug || item.id}`}>
                         <h2 className={styles.title}>{item.title}</h2>
@@ -101,7 +124,7 @@ export const PostListItems: FC<
                           withSeconds: true,
                         })}
                       </time>
-                      <PostActions item={item} />
+                      <PostActions item={item} className="ml-auto" />
                     </div>
                   </div>
                 </div>

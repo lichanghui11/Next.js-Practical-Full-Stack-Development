@@ -5,7 +5,7 @@
 }
 
 .title {
-  @apply w-full py-2 flex space-x-1 items-center;
+  @apply w-full flex space-x-1 items-center;
 }
 
 .content {
@@ -13,6 +13,8 @@
 }
 
 .mobileWidget {
+  @apply mb-0;
+
   .mobileItem {
     @apply py-0 border-none;
 

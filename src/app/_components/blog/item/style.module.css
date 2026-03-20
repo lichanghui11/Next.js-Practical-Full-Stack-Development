@@ -6,9 +6,15 @@
   margin: 0 auto;
 }
 
-@media (width >= 768px) {
+@media (width >= 1024px) {
   .container {
-    padding: 3rem 2rem;
+    padding: 3rem 20rem;
+  }
+}
+
+@media (width >= 768px) and (width <= 1023px) {
+  .container {
+    padding: 3rem 5rem;
   }
 }
 

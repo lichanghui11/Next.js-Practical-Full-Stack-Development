@@ -16,10 +16,13 @@ export default async function Page() {
 
   return (
     <div className={styles.container}>
-      <div style={{ marginBottom: '2rem' }}>
-        <Link href="/blog" className={cn($styles.menuItem, 'border-none')}>
+      <div className=" border-b-2">
+        <Link
+          href="/blog"
+          className={cn($styles.menuItem, 'border-none cursor-pointer text-primary')}
+        >
           <BookOpen className="h-4 w-4" />
-          <span>返回博客</span>
+          <span className="">返回博客</span>
         </Link>
       </div>
       <h1 className={styles.title}>MDX 语法格式说明</h1>

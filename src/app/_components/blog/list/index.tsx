@@ -45,7 +45,7 @@ export const BlogIndex: FC<BlogIndexProps> = async ({ page, limit = 8, tag, cate
     return redirect('/');
   return (
     <Suspense fallback={<BlogIndexSkeleton />}>
-      <div className={cn('page-container', $styles.blogIndex)}>
+      <div className={cn('page-container', $styles.blogIndex, 'px-[4px]')}>
         <div className={$styles.container}>
           <div className="w-full flex-none">
             <BlogBreadcrumb items={breadcrumbs} tag={tag} basePath="/blog" />

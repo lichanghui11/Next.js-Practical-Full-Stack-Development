@@ -2,7 +2,7 @@
 
 /* 容器样式 */
 .container {
-  @apply max-w-5xl mx-auto px-4 py-8;
+  @apply w-full mx-auto px-4 py-2;
 }
 
 /* 博客列表 - 单列布局 */
@@ -46,6 +46,26 @@
   padding: 1rem;
   box-shadow: var(--shadow-ny);
   transition: all 0.3s ease;
+}
+
+.thumbnailWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+
+  @apply bg-muted;
+}
+
+.thumbnailImage {
+  @apply object-cover;
+  transition: transform 0.45s ease;
+}
+
+.blogCard:hover .thumbnailImage {
+  transform: scale(1.04);
 }
 
 .blogCard:hover .cardInner {
