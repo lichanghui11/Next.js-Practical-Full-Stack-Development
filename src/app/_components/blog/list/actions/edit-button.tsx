@@ -30,12 +30,12 @@ const EditButton: FC<{
         variant="secondary"
         className={cn('text-xs', {
           'mr-3': !iconBtn,
-          'btn-icon-transparent': iconBtn,
+          'btn-icon-transparent h-9 w-9 p-0 rounded-full': iconBtn,
         })}
       >
         <Link href={`/blog/edit/${id}${query}`}>
           {iconBtn ? (
-            <span className="xicon text-2xl">
+            <span className="xicon text-lg leading-none">
               <DocumentEdit24Regular />
             </span>
           ) : (

@@ -104,10 +104,15 @@
 
 ## 项目中比较严重的几个bug发现
 
-- better-auth 在发送注册验证码的时候，如果用户不存在，就会直接返回一个 {success:
-  true}，不会执行better-auth服务端的emailOTP插件里面的sendVerificationOTP回调函数，这可能是为了防止枚举攻击
-- 这个问题排查了很久，由于这个回调一直不触发，而前后的逻辑里面的日志都在正常打印，我一度觉得见鬼了
-- 使用 better-auth 内部的发送验证码的功能需要用户已经存在，也就是发送之前需要创建用户，验证之后不通过就需要删除用户，但是我的项目中的实际流程是先验证邮箱，再创建用户，所以需要把这个功能拿出来自己写
+- **Better-Auth 注册验证码行为**
+  - 官方默认防枚举策略：当邮箱不存在时直接返回 `{ success: true }`，不会触发
+    `sendVerificationOTP`。这不是 bug，而是安全设计。
+  - 项目流程是“先验证邮箱，再创建用户”，因此需要自定义一条“预注册发送验证码”的路由/服务，绕过默认必须先建用户再发码的限制。
+- **分页查询关联数据缺失（已修复）**
+  - 使用 `prisma-extension-pagination` 时曾把 `include` 放在 `paginate()` 里同时开启
+    `includePageCount`，导致插件在 `count` 时也带 `include`，Prisma 报错。
+  - 现已改为：分页查询时仅取数据，`count` 单独用 `where` 计算，再回填
+    `totalCount/pageCount`，列表页可正常返回分类与标签。
 
 ---
 

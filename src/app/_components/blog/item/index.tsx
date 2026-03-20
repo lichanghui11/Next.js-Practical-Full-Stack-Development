@@ -72,8 +72,9 @@ export const BlogDetail: FC<{
               <>
                 <header className={styles.header}>
                   <h1 className={styles.title}>{post.title}</h1>
-                  <div className="mt-[0.125rem]">
+                  <div className={styles.headerActions}>
                     <PostEditButton item={post} iconBtn />
+                    编辑文章
                   </div>
                   <div className={styles.meta}>
                     <div className={styles.metaItem}>
@@ -87,7 +88,7 @@ export const BlogDetail: FC<{
                     {post.tags.length > 0 && (
                       <div className="flex items-center gap-1">
                         <span>
-                          <Tag></Tag>
+                          <Tag className={styles.metaIcon} />
                         </span>
                         {post.tags.map((tag: TagType) => {
                           return (

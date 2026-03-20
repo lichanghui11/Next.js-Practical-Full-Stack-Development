@@ -72,9 +72,9 @@ export const PostListItems: FC<
                         <h2 className={styles.title}>{item.title}</h2>
                       </Link>
                       {item.categories.length > 0 && (
-                        <div>
-                          <span>
-                            <Book />
+                        <div className="flex gap-0.5">
+                          <span className={styles.iconWrapper}>
+                            <Book className={styles.iconSmall} />
                           </span>
                           {getBreadcrumbLinks(item.categories, 'post').map((category) => (
                             <Link
@@ -96,9 +96,9 @@ export const PostListItems: FC<
 
                     <div>
                       {!isNil(item.tags) && item.tags.length > 0 && (
-                        <div>
-                          <span>
-                            <Tag />
+                        <div className="flex gap-0.5">
+                          <span className={styles.iconWrapper}>
+                            <Tag className={styles.iconSmall} />
                           </span>
                           {item.tags?.map((tag) => (
                             <TagLink

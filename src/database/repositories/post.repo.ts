@@ -86,22 +86,38 @@ const PostRepo = {
       });
       where.categoryId = { in: categories.map((it: CategoryItem) => it.id) };
     }
+    const limit = rest.limit || 10;
+    const currentPage = rest.currentPage || 1;
+
+    // ① 查询当前页数据（带 include）
     const posts = await prismaClient.post
       .paginate({
         // Prisma 原生参数
         orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
         where,
-      })
-      .withPages({
-        includePageCount: true, // 必须开启，否则 paginationAdapter 拿不到 totalCount/pageCount
-        // 分页专用参数
-        limit: rest.limit || 10,
-        page: rest.currentPage || 1,
         include: {
           tags: true,
           category: true,
         },
+      })
+      .withPages({
+        // 不在这里做 count（Prisma count 不允许 include），单独查询 totalCount
+        includePageCount: false,
+        // 分页专用参数
+        limit,
+        page: currentPage,
       });
+
+    // ② 单独计算总条数（只用 where，避免 include 冲突）
+    const totalCount = await prismaClient.post.count({ where });
+    const pageCount = limit ? Math.ceil(totalCount / limit) : 1;
+
+    // ③ 补齐 meta，保持 paginationAdapter 期望的字段
+    posts[1] = {
+      ...posts[1],
+      totalCount,
+      pageCount,
+    };
 
     for (let i = 0; i < posts[0].length; i++) {
       posts[0][i] = {
