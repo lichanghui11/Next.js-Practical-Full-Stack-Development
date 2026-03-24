@@ -11,7 +11,7 @@ import styles from './style.module.css';
 
 export default async function Page() {
   // 读取 MDX 文件内容
-  const mdxPath = path.join(process.cwd(), 'src/docs/mdx-syntax-guide.md');
+  const mdxPath = path.join(process.cwd(), 'docs/mdx-syntax-guide.md');
   const source = await readFile(mdxPath, 'utf-8');
 
   return (

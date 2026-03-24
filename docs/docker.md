@@ -73,11 +73,11 @@ conda deactivate
 
 不同 Linux 发行版使用不同的包管理器：
 
-| 发行版 | 包管理器 | 更新软件源命令 |
-| -------- | ---------- | ---------------- |
-| Ubuntu/Debian | `apt` | `sudo apt update` |
+| 发行版             | 包管理器      | 更新软件源命令          |
+| ------------------ | ------------- | ----------------------- |
+| Ubuntu/Debian      | `apt`         | `sudo apt update`       |
 | CentOS/RHEL/Fedora | `dnf` / `yum` | `sudo dnf check-update` |
-| Arch Linux | `pacman` | `sudo pacman -Sy` |
+| Arch Linux         | `pacman`      | `sudo pacman -Sy`       |
 
 #### 架构兼容性问题
 
@@ -428,7 +428,8 @@ docker build --build-arg VERSION=1.0 -t my-app .
 
 ## Docker Compose
 
-**Docker Compose 是用于定义和运行多容器 Docker 应用程序的工具**。使用 YAML 文件配置应用的服务、网络和卷，然后使用单个命令创建并启动所有服务。
+**Docker
+Compose 是用于定义和运行多容器 Docker 应用程序的工具**。使用 YAML 文件配置应用的服务、网络和卷，然后使用单个命令创建并启动所有服务。
 
 ```bash
 # 启动所有服务（在后台运行）
@@ -630,13 +631,13 @@ docker run --mount type=bind,source=/home/user/data,target=/app/data nginx
 
 ### 数据卷 vs 绑定挂载
 
-| 特性 | 数据卷 (Volume) | 绑定挂载 (Bind Mount) |
-| ------ | ---------------- | ---------------------- |
-| 管理方式 | Docker 管理 | 用户管理 |
-| 路径 | Docker 默认路径 | 用户指定路径 |
-| 性能 | 更好 | 稍差（Linux 下相同） |
-| 备份 | 更方便 | 需要手动处理 |
-| 适用场景 | 生产环境数据持久化 | 开发环境代码同步 |
+| 特性     | 数据卷 (Volume)    | 绑定挂载 (Bind Mount) |
+| -------- | ------------------ | --------------------- |
+| 管理方式 | Docker 管理        | 用户管理              |
+| 路径     | Docker 默认路径    | 用户指定路径          |
+| 性能     | 更好               | 稍差（Linux 下相同）  |
+| 备份     | 更方便             | 需要手动处理          |
+| 适用场景 | 生产环境数据持久化 | 开发环境代码同步      |
 
 ---
 

@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: Postgres_18
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: esti_blog_db
+      TZ: Asia/Shanghai
+    volumes:
+      - postgres_esit_blog_data:/var/lib/postgresql
+    healthcheck: # 先保证数据库先启动
+      test: ["CMD-SHELL", "pg_isready -U postgres -d esti_blog_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:8.6.1
+    container_name: Redis_8
+    restart: always
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "redis"]
+    volumes:
+      - redis_esit_blog_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a redis ping | grep PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres_esit_blog_data:
+  redis_esit_blog_data:

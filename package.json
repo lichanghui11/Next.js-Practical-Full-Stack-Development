@@ -26,7 +26,13 @@
     "=== 生产环境 ===": "================================ 生成生产环境数据库 ====================",
     "db:prod:deploy": "cross-env NODE_ENV=production prisma migrate deploy",
     "---在线预览工具---": "-------------------------------------------------",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "-------docker------": "--------------------docker commands-----------------------------",
+    "infra:up": "docker compose -f docker-compose.yml up -d",
+    "infra:down": "docker compose -f docker-compose.yml down",
+    "infra:logs": "docker compose -f docker-compose.yml logs -f",
+    "infra:ps": "docker compose -f docker-compose.yml ps",
+    "infra:reset": "docker compose -f docker-compose.yml down -v && docker compose -f docker-compose.yml up -d"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} -r tsconfig-paths/register src/database/seed/index.ts"
