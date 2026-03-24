@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{appname}} 邮箱验证</title>
+  </head>
+  <body style="margin: 0; padding: 0; background: #f5f7fb; font-family: Arial, sans-serif">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding: 24px 0">
+      <tr>
+        <td align="center">
+          <table
+            role="presentation"
+            width="600"
+            cellspacing="0"
+            cellpadding="0"
+            style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px"
+          >
+            <tr>
+              <td style="padding: 28px 28px 12px; font-size: 22px; font-weight: 700; color: #111827">
+                验证您的邮箱
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0 28px 12px; font-size: 14px; line-height: 1.8; color: #374151">
+                您正在使用 <strong>{{appname}}</strong> 进行邮箱验证。请输入下方验证码完成验证。
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding: 8px 28px 18px">
+                <div
+                  style="
+                    display: inline-block;
+                    padding: 12px 26px;
+                    font-size: 30px;
+                    letter-spacing: 8px;
+                    font-weight: 700;
+                    color: #111827;
+                    background: #f3f4f6;
+                    border-radius: 6px;
+                  "
+                >
+                  {{code}}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0 28px 14px; font-size: 14px; line-height: 1.8; color: #374151">
+                验证码 <strong>{{expire}}</strong> 分钟内有效，请尽快完成操作。
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0 28px 28px; font-size: 12px; line-height: 1.8; color: #6b7280">
+                如果这不是您的操作，请忽略本邮件。请勿向任何人泄露验证码。
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

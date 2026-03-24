@@ -85,7 +85,9 @@ export const useSignupForm = () => {
   }, []);
 
   return useForm<SignupFormType>({
-    mode: 'all', // 触发时机，所有场景都触发
+    // 仅在输入框失焦后触发校验，避免每次输入都请求后端
+    mode: 'onBlur',
+    reValidateMode: 'onBlur',
     // 对接第三方库的校验器, 这里使用 zod 校验器
     resolver: zodResolver(signupFormSchema),
     // 表单初始值

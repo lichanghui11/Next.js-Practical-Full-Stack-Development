@@ -33,9 +33,6 @@ export interface AuthConfig {
 }
 
 interface BaseOTPSendConfig {
-  // OTP 邮件客户端名称，详情查看 mail.config.ts
-  client?: string;
-
   // OTP 邮件主题生成函数
   subject?: (type: `${EmailOTPType}`) => (...args: any[]) => string;
 }
@@ -48,10 +45,23 @@ interface BaseOTPSendConfig {
 // OTP 主题由「场景类型（如找回密码）+ 动态参数」自动生成（如你之前分析的嵌套函数），用户手动传会破坏主题统一性
 // ======================================================
 
-type AliyunOTPSendConfig = BaseOTPSendConfig &
-  Omit<AliyunSendMailOptions, 'to' | 'vars' | 'subject'>;
+type SmtpOTPSendConfig = BaseOTPSendConfig & {
+  client: 'smtp';
+} & Omit<SmtpSendMailOptions, 'to' | 'vars' | 'subject'>;
 
-type SmtpOTPSendConfig = BaseOTPSendConfig & Omit<SmtpSendMailOptions, 'to' | 'vars' | 'subject'>;
+type TencentCloudOTPSendConfig = BaseOTPSendConfig & {
+  client: 'tcloud';
+} & (
+    | Omit<Extract<TencentCloudSendMailOptions, { templateId: number }>, 'to' | 'vars' | 'subject'>
+    | Omit<
+        Extract<TencentCloudSendMailOptions, { templatePath: string }>,
+        'to' | 'vars' | 'subject'
+      >
+  );
 
-type TencentCloudOTPSendConfig = BaseOTPSendConfig &
-  Omit<TencentCloudSendMailOptions, 'to' | 'vars' | 'subject'>;
+type AliyunOTPSendConfig = BaseOTPSendConfig & {
+  client: 'aliyun';
+} & (
+    | Omit<Extract<AliyunSendMailOptions, { templateId: string }>, 'to' | 'vars' | 'subject'>
+    | Omit<Extract<AliyunSendMailOptions, { templatePath: string }>, 'to' | 'vars' | 'subject'>
+  );

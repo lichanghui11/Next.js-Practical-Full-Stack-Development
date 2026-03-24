@@ -24,26 +24,38 @@ export const authConfig: AuthConfig = {
       expire: process.env.NODE_ENV === 'development' ? 30 : 300,
       send: {
         'email-verification': {
-          client: 'tcloud',
+          client: 'smtp',
           templatePath: 'email-verification',
           subject: (_type: `${EmailOTPType}`) => (appname: string, code: string) =>
             `${appname}的用户注册邮件 | 您的验证码为：${code}`,
         },
         'forget-password': {
-          client: 'aliyun',
+          client: 'smtp',
           templatePath: 'forget-password',
           subject: (_type: `${EmailOTPType}`) => (appname: string, code: string) =>
             `${appname}的找回密码邮件 | 您的验证码为：${code}`,
         },
         // 'email-verification': {
         //   client: 'tcloud',
-        //   templateId: 37672,
+        //   templateId: 169546,
+        //   subject: (_type: `${EmailOTPType}`) => (appname: string, code: string) =>
+        //     `${appname}的用户注册邮件 | 您的验证码为：${code}`,
+        // },
+        // 'forget-password': {
+        //   client: 'tcloud',
+        //   templateId: 169547,
         //   subject: (_type: `${EmailOTPType}`) => (appname: string, code: string) =>
         //     `${appname}的用户注册邮件 | 您的验证码为：${code}`,
         // },
         // 'email-verification': {
-        //   client: 'smtp',
+        //   client: 'aliyun',
         //   templatePath: 'email-verification',
+        //   subject: (_type: `${EmailOTPType}`) => (appname: string, code: string) =>
+        //     `${appname}的用户注册邮件 | 您的验证码为：${code}`,
+        // },
+        // 'forget-password': {
+        //   client: 'aliyun',
+        //   templatePath: 'forget-password',
         //   subject: (_type: `${EmailOTPType}`) => (appname: string, code: string) =>
         //     `${appname}的用户注册邮件 | 您的验证码为：${code}`,
         // },

@@ -78,17 +78,18 @@ export const createServerAuth = () => {
         allowedAttempts: authConfig.mails?.OTP?.allowedAttempts ?? 3,
         expiresIn: authConfig.mails?.OTP?.expire ?? 60 * 5,
         async sendVerificationOTP({ email, otp, type }) {
-          console.error('🔥🔥🔥 sendVerificationOTP 回调被触发了！');
-          console.error('参数 email:', email, 'type:', type, 'otp:', otp);
-
           if (type === 'sign-in') {
             // Send the OTP for sign in
           } else if (type === 'email-verification') {
             // Send the OTP for email verification
 
             await addOTPQueue(email, otp, type);
-          } else {
+          } else if (type === 'forget-password') {
             // Send the OTP for password reset
+            await addOTPQueue(email, otp, type);
+          } else {
+            // Send the OTP for other types
+            console.error(`🔥🔥🔥 未处理的 OTP 类型: ${type}`);
           }
         },
       }),

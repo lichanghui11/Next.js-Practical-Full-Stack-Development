@@ -1,7 +1,7 @@
 import type { Job } from 'bullmq';
 import type Redis from 'ioredis';
 
-import { Queue, Worker } from 'bullmq';
+import { Queue, QueueEvents, Worker } from 'bullmq';
 import { isNil } from 'lodash';
 
 import type { EmailOTPType } from '@/server/modules/user/user.constants';
@@ -64,8 +64,14 @@ export const getWorkerConnection = (queueName: string, redisClients: { [key: str
  */
 export const addOTPQueue = async (email: string, code: string, type: `${EmailOTPType}`) => {
   if (!isNil(serverInstances.queues.OTP)) {
-    // 队列存在，添加任务
-    return serverInstances.queues.OTP.add(type, { email, code });
+    // 队列存在，添加任务并等待处理结果，确保错误能向上抛出
+    const job = await serverInstances.queues.OTP.add(type, { email, code });
+    const connection = getWorkerConnection('OTP', serverInstances.redis); // 这是一个 Redis 连接
+    const queueEvents = new QueueEvents('OTP', { connection });
+    await queueEvents.waitUntilReady();
+
+    // waitUntilFinished 会在 worker 抛错时 reject，方便接口层捕获并返回给前端
+    return job.waitUntilFinished(queueEvents);
   } else {
     return sendOTPHandler({ email, code }, type);
   }
@@ -87,10 +93,13 @@ const addOTPWorker = async () => {
           console.log('正在处理 OTP 任务，code: ', code);
 
           // 执行发送OTP的逻辑
-          await sendOTPHandler({ email, code }, job.name as `${EmailOTPType}`);
+          const result = await sendOTPHandler({ email, code }, job.name as `${EmailOTPType}`);
           console.log('任务处理成功，OTP邮件发送成功');
+          return result;
         } catch (error) {
           console.error('Worker 里面，处理 OTP 任务时发生错误:', error);
+          // 抛出错误给 bullmq，使任务标记为失败，便于上层感知
+          throw error;
         }
       },
       // 配置：指定Redis连接（bull/bullmq依赖Redis存储任务）

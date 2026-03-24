@@ -10,10 +10,14 @@ import { createMailClient } from './client';
 import { sendAliyunMail, sendSmtpMail, sendTencentMail } from './send';
 
 export const sendMail = async (option: MailSendOptions, clientName?: string) => {
+  console.log('-----------------sendMail-----------------');
+  console.log('option: ', option);
+  console.log('clientName: ', clientName);
   const rst = createMailClient(clientName);
-
+  console.log('mail client: ', rst);
   const name = rst.name;
 
+  console.log('-----------------sendMail-----------------');
   switch (rst.type) {
     case 'smtp':
       return sendSmtpMail(rst, option as SmtpSendMailOptions);

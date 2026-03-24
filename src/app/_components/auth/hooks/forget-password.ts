@@ -64,7 +64,7 @@ export const useForgetPasswordForm = () => {
   }, []);
 
   return useForm<ForgetPasswordFormType>({
-    mode: 'all',
+    mode: 'onBlur',
     resolver: zodResolver(forgetPasswordFormSchema),
     defaultValues,
   });

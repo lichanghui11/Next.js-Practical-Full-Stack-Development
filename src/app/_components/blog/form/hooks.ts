@@ -36,7 +36,7 @@ export const useBlogForm = (params: { type: 'create' } | { type: 'update'; blog:
   }, [params, params.type]);
 
   return useForm<PostFormData>({
-    mode: 'all',
+    mode: 'onBlur',
     resolver: zodResolver(
       buildPostRequestSchema(
         slugUniqueValidator(params.type === 'update' ? params.blog.id : undefined),
