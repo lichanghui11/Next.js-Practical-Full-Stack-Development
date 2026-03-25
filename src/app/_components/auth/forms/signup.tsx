@@ -12,6 +12,7 @@ import { Input } from 'ui/input';
 import { useSendVerificationOTP } from '../hooks/otp';
 import { useSignupForm, useSignupSubmit } from '../hooks/signup';
 import { AuthFormSkeleton } from '../skeleton';
+import { AvatarCropper } from './avatar-cropper';
 
 const FormComponent: FC = () => {
   const form = useSignupForm();
@@ -19,6 +20,7 @@ const FormComponent: FC = () => {
 
   const username = form.watch('username');
   const email = form.watch('email');
+  const avatarImage = form.watch('image');
   const { sendOTP, buttonText, canSend } = useSendVerificationOTP(email);
 
   const disableSendBtn = useMemo(() => {
@@ -63,6 +65,12 @@ const FormComponent: FC = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(submitHandler)} className="!mt-4 space-y-3">
+        {/* 头像上传区域 */}
+        <AvatarCropper
+          value={avatarImage || ''}
+          onChange={(base64) => form.setValue('image', base64)}
+          disabled={form.formState.isSubmitting}
+        />
         <FormField
           control={form.control}
           name="username"

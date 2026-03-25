@@ -94,6 +94,7 @@ export const signupRequestSchema = z.object({
   email: z.email('请输入有效的邮箱地址'),
   otp: z.string().length(6, '验证码为6位数字'),
   validateType: z.enum(['email', 'phone']),
+  image: z.string().optional(),
 });
 
 // 找回密码 请求的 schema

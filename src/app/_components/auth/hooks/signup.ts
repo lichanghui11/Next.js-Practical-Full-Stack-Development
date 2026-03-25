@@ -1,6 +1,5 @@
 'use client';
 import type { DeepNonNullable } from 'utility-types';
-import type { z } from 'zod';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { isNil } from 'lodash';
@@ -8,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { z } from 'zod';
 
 import { authApi } from '@/api/auth';
 import { getDefaultValues } from '@/app/_components/blog-components/submit-form/utils';
@@ -37,6 +37,7 @@ const isUsernameOrEmailUnique =
 const signupFormSchema = signupRequestSchema
   .extend({
     plainPassword: authConfig.validates.password,
+    image: z.string().optional(),
   })
   .refine((data) => data.password === data.plainPassword, {
     message: '两次输入的密码不一致',
@@ -81,7 +82,7 @@ export const useSignupForm = () => {
   const defaultValues = useMemo(() => {
     const values = getDefaultValues(['username', 'email', 'otp', 'password', 'plainPassword']);
 
-    return { ...values, validateType: 'email' } as SignupFormType;
+    return { ...values, validateType: 'email', image: '' } as SignupFormType;
   }, []);
 
   return useForm<SignupFormType>({
@@ -102,7 +103,7 @@ export const useSignupSubmit = () => {
   const searchParams = useSearchParams();
 
   return useCallback(
-    async (params: DeepNonNullable<SignupFormType>) => {
+    async (params: DeepNonNullable<Omit<SignupFormType, 'image'>> & { image?: string }) => {
       try {
         const { plainPassword: _, ...rest } = params;
         const result = await authApi.signUp(rest);

@@ -15,6 +15,7 @@ import { authConfig } from '@/config/auth.config';
 import prismaClient from '@/database/client/app-client';
 import { auth } from '@/lib/auth/server';
 import { addOTPQueue } from '@/lib/queue/utils';
+import { saveAvatar } from '@/server/modules/user/user.avatar';
 import {
   checkOTPRateLimit,
   generateOTP,
@@ -66,7 +67,7 @@ const UserRepo = {
   },
   // 根据用户id、用户名、邮箱地址等多种凭证查询用户
   queryUser: async (credential: string) => {
-    return await prismaClient.user.findUnique({
+    return await prismaClient.user.findFirst({
       where: {
         OR: [{ id: credential }, { username: credential }, { email: credential }],
       },
@@ -127,8 +128,10 @@ const UserRepo = {
   signUpByEmail: async (
     data: Omit<SignupRequest, 'validateType'>,
   ): Promise<{ result: false; message: string } | { result: true; user: User }> => {
-    const { username, email, password, otp } = data;
-
+    const { username, email, password, otp, image } = data;
+    console.log('------------repository 注册-----------------');
+    console.log('注册参数： ', data);
+    console.log('------------repository 注册-----------------');
     // 通过邮件查询用户是否存在
     const isExistByEmail = await UserRepo.queryUserByEmail(email);
     if (!isNil(isExistByEmail)) return { result: false, message: '邮箱已被注册' };
@@ -150,6 +153,16 @@ const UserRepo = {
         },
       })) as unknown as { token: string; user: User };
 
+      // 保存头像：上传了则保存上传的，未上传则生成随机纯色图片
+      const avatarUrl = saveAvatar(res.user.id, image);
+      // 更新用户头像路径
+      await prismaClient.user.update({
+        where: { id: res.user.id },
+        data: { image: avatarUrl },
+      });
+      // 更新内存中的用户对象
+      res.user.image = avatarUrl;
+
       // 使用验证码验证邮箱
       const checkOtp = await UserRepo.checkVerificationOTP(email, otp);
       if (!checkOtp) {
@@ -168,6 +181,7 @@ const UserRepo = {
         });
       }
     } catch (err: any) {
+      console.error('注册失败，捕获到内部错误:', err);
       // 注册过程中出现异常，删除用户
       if (!isNil(res?.user.id)) await UserRepo.deleteUser(res.user.id);
 
