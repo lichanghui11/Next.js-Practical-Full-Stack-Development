@@ -87,3 +87,10 @@ pre[class*='language-'] code {
   text-align: right;
   content: attr(line);
 }
+
+/* --- Fix @uiw/react-md-editor styles in Tailwind environment --- */
+
+/* 1. Prevent horizontal scrollbar inside the editor's syntax rendering layer (overrides global pre { overflow: auto } ) */
+.w-md-editor-text-pre {
+  overflow: hidden !important;
+}

@@ -21,7 +21,8 @@ const Buttons: FC<{ item: PostItem; className?: string; auth: User | null }> = (
   auth,
 }) => {
   return (
-    auth && (
+    auth &&
+    auth.id === item.author.id && (
       <div className={cn('flex items-end space-x-1', className)}>
         <PostEditButton item={item} />
         <DeleteDialog id={item.id} />

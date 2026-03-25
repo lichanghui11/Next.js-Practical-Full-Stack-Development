@@ -226,7 +226,7 @@ export const blogRoutes = app
     async (c) => {
       try {
         const body = await c.req.json();
-        const user = c.get('user');
+        const user = (c.get as any)('user');
         const result = await addPost({ ...body, authorId: user?.id });
         return c.json(result, 201);
       } catch (error) {
@@ -256,6 +256,16 @@ export const blogRoutes = app
       try {
         const { id } = c.req.valid('param');
         const body = await c.req.json();
+        const user = (c.get as any)('user');
+        // 鉴权：只有作者本人可以修改
+        const post = await queryPostByIdOrSlug(id);
+        if (!post) {
+          return c.json(createErrorResult('文章不存在'), 404);
+        }
+        if (post.authorId !== user?.id) {
+          return c.json(createErrorResult('没有修改该文章的权限'), 403);
+        }
+
         const result = await updatePost({ id, ...body });
         return c.json(result, 200);
       } catch (error) {
@@ -283,6 +293,16 @@ export const blogRoutes = app
     async (c) => {
       try {
         const { id } = c.req.valid('param');
+        const user = (c.get as any)('user');
+        // 鉴权：只有作者本人可以删除
+        const post = await queryPostByIdOrSlug(id);
+        if (!post) {
+          return c.json(createErrorResult('文章不存在'), 404);
+        }
+        if (post.authorId !== user?.id) {
+          return c.json(createErrorResult('没有删除该文章的权限'), 403);
+        }
+
         const result = await deletePost(id);
         return c.json(result, 200);
       } catch (error) {
