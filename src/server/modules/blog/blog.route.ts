@@ -1,5 +1,8 @@
 import { describeRoute, validator } from 'hono-openapi';
 import { isNil } from 'lodash';
+import fs from 'node:fs';
+import path from 'node:path';
+import { z } from 'zod';
 
 import type { PostPaginationOptions } from '@/database/repositories/post.repo';
 import type { PageParams } from '@/database/types/pagination';
@@ -206,6 +209,46 @@ export const blogRoutes = app
       }
     },
   )
+  // 上传博客图片
+  .post(
+    '/upload',
+    describeRoute({
+      tags,
+      summary: '上传博客图片',
+      description: '上传博客文章涉及的图片，例如缩略图',
+      responses: {
+        ...createResponse(z.object({ url: z.string() }), 201, '上传成功'),
+        ...createResponse(errorSchema, 400, '上传失败或文件无效'),
+        ...createResponse(errorSchema, 500, '服务器处理失败'),
+      },
+    }),
+    AuthProtectedMiddleware,
+    async (c) => {
+      try {
+        const body = await c.req.parseBody();
+        const file = body.file;
+        if (!file || typeof file === 'string') {
+          return c.json(createErrorResult('缺少文件数据'), 400);
+        }
+
+        const BLOG_UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads', 'blog');
+        if (!fs.existsSync(BLOG_UPLOAD_DIR)) {
+          fs.mkdirSync(BLOG_UPLOAD_DIR, { recursive: true });
+        }
+
+        const ext = file.name.split('.').pop() || 'png';
+        const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
+        const filepath = path.join(BLOG_UPLOAD_DIR, filename);
+
+        const arrayBuffer = await file.arrayBuffer();
+        fs.writeFileSync(filepath, Buffer.from(arrayBuffer));
+
+        return c.json({ url: `/uploads/blog/${filename}` }, 201);
+      } catch (error) {
+        return c.json(createErrorResult('图片上传失败', error), 500);
+      }
+    },
+  )
   // 新增一篇文章
   .post(
     '/',
@@ -227,6 +270,10 @@ export const blogRoutes = app
       try {
         const body = await c.req.json();
         const user = (c.get as any)('user');
+        console.log('后端路由----------------------------');
+        console.log('body', body);
+        console.log('user', user);
+        console.log('后端路由----------------------------');
         const result = await addPost({ ...body, authorId: user?.id });
         return c.json(result, 201);
       } catch (error) {
@@ -256,9 +303,18 @@ export const blogRoutes = app
       try {
         const { id } = c.req.valid('param');
         const body = await c.req.json();
+
+        console.log('=== DEBUG PATCH ROUTE ===');
+        console.log('Extracted param id:', id);
+        console.log('Body id field:', body.id);
+
         const user = (c.get as any)('user');
         // 鉴权：只有作者本人可以修改
         const post = await queryPostByIdOrSlug(id);
+
+        console.log('Query result for post:', post ? 'FOUND' : 'NULL');
+        console.log('=========================');
+
         if (!post) {
           return c.json(createErrorResult('文章不存在'), 404);
         }

@@ -191,8 +191,12 @@ const PostRepo = {
     //    因为 tags 是多对多关系、categoryId 是外键，不能直接塞进 create 里
     //    Prisma 要求用专门的关联操作语法（connectOrCreate / connect）来处理它们
     const createInput: Prisma.PostCreateInput = {
-      ...omit(post, ['tags', 'categoryId']),
+      ...omit(post, ['tags', 'categoryId', 'id', 'authorId']),
     };
+    console.log('---------addPost---------');
+    console.log('post: ', post);
+    console.log('createInput: ', createInput);
+    console.log('---------addPost---------');
 
     // ② 处理标签（多对多关系）
     if (!isNil(post.tags)) {

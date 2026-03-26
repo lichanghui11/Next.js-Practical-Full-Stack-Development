@@ -29,14 +29,8 @@ export async function sendOTPHandler(
   options?: MailSendOptions,
 ) {
   try {
-    console.log('-----------------sendOTPHandler-----------------');
-    console.log('type: ', type);
-    console.log('data: ', data);
-    console.log('options: ', options);
-    console.log('-----------------sendOTPHandler-----------------');
     // 拿到 OTP 的类型
     const config = authConfig.mails?.OTP?.send?.[type];
-    console.log('config: type:', config);
 
     if (!isNil(config)) {
       const newOptions = customMerge(

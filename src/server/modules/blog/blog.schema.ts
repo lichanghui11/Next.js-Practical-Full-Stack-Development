@@ -32,6 +32,7 @@ export const buildPostRequestSchema = (
   // 要理解这里返回的一个校验器，也就是许多校验规则的集合，其他文件拿到这份规则，再使用这份规则
   return z
     .object({
+      id: z.string().optional().meta({ description: '前端表单使用的可选项ID' }),
       title: z
         .string()
         .min(1, {
@@ -69,6 +70,7 @@ export const buildPostRequestSchema = (
         .optional()
         .meta({ description: '文章描述' }),
       slug, // 将提前定义好的对 slug 的校验规则放进来
+      thumbnail: z.string().optional().meta({ description: '文章缩略图URL' }),
       tags: tagListSchema.optional().meta({ description: '关联标签列表' }),
       categoryId: z.string().optional().meta({ description: '关联分类ID' }),
     })

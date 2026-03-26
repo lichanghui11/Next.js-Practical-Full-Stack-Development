@@ -18,7 +18,8 @@ export const slugUniqueValidator = (id?: string) => async (slug?: string | undef
   }
   // 有 slug , 查出来
   const result = await blogApi.detailById(slug);
-  if (!result.ok) throw new Error((await result.json()).message);
+  // 如果通过这个 slug 查不出来文章，说明 slug 唯一。
+  if (!result.ok) return true;
 
   const post = await result.json();
   // 进行比较

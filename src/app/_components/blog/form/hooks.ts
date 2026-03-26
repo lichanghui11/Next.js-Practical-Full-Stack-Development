@@ -74,13 +74,16 @@ export const useBlogSubmit = (params: BlogFormProps) => {
               •	json：JSON 请求体（对应 await c.req.json()）
               •	还有 form / formData / header 等（取决于版本）
            */
+        console.log('before blogApi.create: data: ', data);
         const result = await blogApi.create(data);
         if (!result.ok) {
           toast.error('遇到服务器错误,请联系管理员处理', {
             id: 'post-save-error',
             description: (await result.json()).message,
           });
+          return;
         }
+        post = await result.json();
       } else if (params.type === 'update') {
         // 更新已有的博客
         const result = await blogApi.update(params.blog.id, data);

@@ -49,8 +49,16 @@ export const blogApi = {
     fetchApi(blogClient, async (client) => client.limit.$get({ query: { limit } })),
 
   // 创建文章
-  create: async (data: PostCreateOrUpdateData): Promise<Response> =>
-    fetchApi(blogClient, async (client) => client.index.$post({ json: { ...data } })),
+  create: async (data: PostCreateOrUpdateData): Promise<Response> => {
+    console.log('------------api 创建文章-----------');
+    console.log('data: ', data);
+    console.log('------------api 创建文章-----------');
+    return fetchApi(blogClient, async (client) => client.index.$post({ json: { ...data } }));
+  },
+
+  // 上传图片
+  upload: async (file: File): Promise<Response> =>
+    fetchApi(blogClient, async (client) => client.upload.$post({ form: { file } })),
 
   // 更新文章
   update: async (id: string, data: PostCreateOrUpdateData): Promise<Response> =>

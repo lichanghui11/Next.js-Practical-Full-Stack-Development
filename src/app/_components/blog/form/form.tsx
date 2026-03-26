@@ -1,9 +1,12 @@
 'use client';
 import { isNil, trim } from 'lodash';
+import { Upload } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useState } from 'react';
 import { useDeepCompareEffect } from 'react-use';
 import { toast } from 'sonner';
+import { Button } from 'ui/button';
 import {
   Form,
   FormControl,
@@ -20,6 +23,7 @@ import type { CategoryItem } from '@/server/modules/category/category.type';
 import type { TagType as TagItem } from '@/server/modules/tag/tag.type';
 
 import { categoryApi } from '@/api/category';
+import { blogApi } from '@/api/post';
 import { tagApi } from '@/api/tag';
 import { CategorySelect } from '@/app/_components/blog/form/category/category-select';
 import { useBlogForm, useBlogSubmit } from '@/app/_components/blog/form/hooks';
@@ -36,6 +40,7 @@ import styles from './form.module.css';
 export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFormProps>(
   (props, ref) => {
     // 表单：这是 react-form 提供的表单组件
+
     const blogForm = useBlogForm(
       props.type === 'create' ? { type: 'create' } : { type: 'update', blog: props.blog },
     );
@@ -66,11 +71,26 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
      *  - 经过实际的测试之后，这里最终改成了只使用一个 save 字段来存这个提交函数
      */
     useImperativeHandle(ref, () => {
-      return { save: blogForm.handleSubmit(onBlogSubmit) };
-      // return props.type === 'create'
-      //   ? { create: blogForm.handleSubmit(onBlogSubmit) }
-      //   : { update: blogForm.handleSubmit(onBlogSubmit) };
-    }, [props.type]);
+      return {
+        save: blogForm.handleSubmit(onBlogSubmit, (errors) => {
+          let errorMessage = '表单包含未填写的必填项或格式错误';
+
+          const errorsRecord = errors as Record<string, any>;
+          if (errorsRecord[''] && errorsRecord[''].type === 'unrecognized_keys') {
+            errorMessage = '表单包含后端不被允许的字段映射';
+          } else {
+            const firstError = Object.values(errors)[0];
+            if (firstError?.message) {
+              errorMessage = String(firstError.message);
+            }
+          }
+
+          toast.error('表单校验失败', { description: errorMessage });
+        }),
+      };
+    }, [props.type, blogForm, onBlogSubmit]);
+
+    const [isUploading, setIsUploading] = useState(false);
 
     /**
      * slug
@@ -161,6 +181,70 @@ export const BlogForm = forwardRef<BlogFormRef, NewBlogFormProps | UpdateBlogFor
     return (
       <Form {...blogForm}>
         <form onSubmit={blogForm.handleSubmit(onBlogSubmit)} className={styles.form}>
+          <FormField
+            control={blogForm.control}
+            name="thumbnail"
+            render={({ field }) => (
+              <FormItem className={styles.formItem}>
+                <FormLabel className={styles.formLabel}>文章封面（可选）</FormLabel>
+                <FormControl className={styles.formControl}>
+                  <div className="flex flex-col gap-4">
+                    {field.value && (
+                      <div className="relative w-40 h-40 overflow-hidden rounded-md border">
+                        <Image
+                          src={field.value}
+                          fill
+                          alt="缩略图"
+                          className="object-cover w-full h-full"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-1 right-1"
+                          onClick={() => field.onChange('')}
+                        >
+                          移除
+                        </Button>
+                      </div>
+                    )}
+                    <label className="flex items-center gap-2 max-w-xs cursor-pointer rounded-md border bg-background px-3 py-2 text-sm shadow-sm hover:bg-accent">
+                      <Upload className="h-4 w-4" />
+                      <span>{isUploading ? '上传中...' : '选择图片并上传'}</span>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        disabled={isUploading || blogForm.formState.isSubmitting}
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+
+                          setIsUploading(true);
+                          try {
+                            const res = await blogApi.upload(file);
+                            if (res.ok) {
+                              const data = await res.json();
+                              field.onChange(data.url);
+                              toast.success('上传成功');
+                            } else {
+                              toast.error('上传失败', { description: (await res.json()).message });
+                            }
+                          } catch (err) {
+                            toast.error('上传出错', { description: err as string });
+                          } finally {
+                            setIsUploading(false);
+                            e.target.value = '';
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+                </FormControl>
+                <FormMessage className={styles.formMessage} />
+              </FormItem>
+            )}
+          />
           <FormField
             control={blogForm.control}
             name="title"

@@ -16,6 +16,9 @@ import { BlogForm } from './form';
  * @param param0
  */
 export const PostPageForm: FC<{ post?: PostItem }> = ({ post }) => {
+  console.log('------------------PostPageForm');
+  console.log('post', post);
+  console.log('------------------PostPageForm');
   const ref = useRef<BlogFormRef | null>(null);
   const [pending, setPending] = useState(false);
   const handlePending = useCallback((value: boolean) => {
