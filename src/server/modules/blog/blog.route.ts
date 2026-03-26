@@ -1,12 +1,11 @@
 import { describeRoute, validator } from 'hono-openapi';
 import { isNil } from 'lodash';
-import fs from 'node:fs';
-import path from 'node:path';
 import { z } from 'zod';
 
 import type { PostPaginationOptions } from '@/database/repositories/post.repo';
 import type { PageParams } from '@/database/types/pagination';
 
+import { uploadFile } from '@/lib/minio/client';
 import { createHonoApp } from '@/server/common/app';
 import { createErrorResult, defaultValidatorErrorHandler } from '@/server/common/error';
 import { createResponse } from '@/server/common/response';
@@ -231,19 +230,14 @@ export const blogRoutes = app
           return c.json(createErrorResult('缺少文件数据'), 400);
         }
 
-        const BLOG_UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads', 'blog');
-        if (!fs.existsSync(BLOG_UPLOAD_DIR)) {
-          fs.mkdirSync(BLOG_UPLOAD_DIR, { recursive: true });
-        }
-
         const ext = file.name.split('.').pop() || 'png';
         const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
-        const filepath = path.join(BLOG_UPLOAD_DIR, filename);
 
         const arrayBuffer = await file.arrayBuffer();
-        fs.writeFileSync(filepath, Buffer.from(arrayBuffer));
+        const buffer = Buffer.from(arrayBuffer);
+        const url = await uploadFile(`blog/${filename}`, buffer, file.type || 'image/png');
 
-        return c.json({ url: `/uploads/blog/${filename}` }, 201);
+        return c.json({ url }, 201);
       } catch (error) {
         return c.json(createErrorResult('图片上传失败', error), 500);
       }

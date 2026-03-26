@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
   ],
   // productionBrowserSourceMaps: true,
   images: {
+    unoptimized: process.env.NODE_ENV === 'development',
     remotePatterns: [
       {
         protocol: 'https',
@@ -38,6 +39,11 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'cn-nb1.rains3.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '9000',
       },
     ],
   },

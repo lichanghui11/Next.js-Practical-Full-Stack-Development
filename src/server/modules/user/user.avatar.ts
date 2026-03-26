@@ -1,20 +1,6 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import zlib from 'node:zlib';
 
-/**
- * 头像存储目录（相对于项目根目录的 public 文件夹）
- */
-const AVATAR_DIR = path.join(process.cwd(), 'public', 'uploads', 'avatars');
-
-/**
- * 确保头像存储目录存在
- */
-const ensureAvatarDir = () => {
-  if (!fs.existsSync(AVATAR_DIR)) {
-    fs.mkdirSync(AVATAR_DIR, { recursive: true });
-  }
-};
+import { uploadFile } from '@/lib/minio/client';
 
 /**
  * HSL 转 RGB
@@ -25,39 +11,25 @@ const ensureAvatarDir = () => {
  * @returns RGB 值的数组 [R, G, B]，每个值都是 0-255 之间的整数
  */
 const hslToRgb = (h: number, s: number, l: number): [number, number, number] => {
-  // 将饱和度从百分比(0-100)转换为小数(0-1)
   s /= 100;
-  // 将亮度从百分比(0-100)转换为小数(0-1)
   l /= 100;
-  // 计算色度(chroma)：用于 HSL 到 RGB 转换的中间值
   const a = s * Math.min(l, 1 - l);
-  // 定义一个内部函数，用于计算单个颜色分量(R、G 或 B)
   const f = (n: number) => {
-    // 根据偏移值 n 计算对应的色相位置
     const k = (n + h / 30) % 12;
-    // 使用三角函数的离散近似计算 RGB 值
     return l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
   };
-  // 计算 R、G、B 三个分量，转换为 0-255 范围的整数
   return [Math.round(f(0) * 255), Math.round(f(8) * 255), Math.round(f(4) * 255)];
 };
 
 /**
  * CRC32 查找表
- * 用于快速计算 CRC32 校验和，避免重复计算
  */
 const crc32Table: number[] = [];
-// 为查找表的每个可能的字节值(0-255)预计算 CRC32 值
 for (let n = 0; n < 256; n++) {
-  // 初始化当前字节的 CRC 值为字节本身
   let c = n;
-  // 对每个比特位(8位)进行迭代处理
   for (let k = 0; k < 8; k++) {
-    // 如果最低位是 1，则使用 CRC32 多项式(0xedb88320)进行异或运算
-    // 如果最低位是 0，则直接右移
     c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
   }
-  // 将计算结果保存到查找表中
   crc32Table.push(c);
 }
 
@@ -112,7 +84,7 @@ const createChunk = (type: string, data: Buffer): Buffer => {
 
 /**
  * 生成纯色的 PNG 图片（不依赖 canvas/sharp，使用原始 PNG 编码）
- * 生成一个 64x64 的纯色 PNG，用作用户的默认头像
+ * 生成一个 300x300 的纯色 PNG，用作用户的默认头像
  * @returns PNG 二进制数据缓冲区
  */
 const generateSolidColorPNG = (): Buffer => {
@@ -192,45 +164,21 @@ const generateSolidColorPNG = (): Buffer => {
  * - 如果没有提供，生成一个随机纯色图片
  * @param userId 用户ID（用作文件名）
  * @param base64Image 可选的 base64 编码的图片数据（data:image/... 开头）
- * @returns 头像的相对 URL 路径，例如 '/uploads/avatars/user123.webp'
+ * @returns 头像的 MinIO URL
  */
-export const saveAvatar = (userId: string, base64Image?: string): string => {
-  // 确保头像存储目录存在，如不存在则创建
-  ensureAvatarDir();
-
-  // 检查是否传入了有效的 base64 图片数据
+export const saveAvatar = async (userId: string, base64Image?: string): Promise<string> => {
   if (base64Image && base64Image.startsWith('data:image/')) {
-    // 使用正则表达式提取 base64 数据的格式信息和数据内容
-    // 匹配格式：data:image/(webp|png|jpeg);base64,xxxxx
     const matches = base64Image.match(/^data:image\/(\w+);base64,(.+)$/);
-    // 如果格式不匹配，抛出错误
     if (!matches) throw new Error('无效的图片数据格式');
 
-    // 根据图片格式确定文件扩展名
-    // 如果是 webp 格式，保存为 .webp；否则默认保存为 .png
     const ext = matches[1] === 'webp' ? 'webp' : 'png';
-    // 将 base64 数据(matches[2])解码为二进制 Buffer
     const buffer = Buffer.from(matches[2], 'base64');
-    // 组合用户ID和文件扩展名作为文件名
-    const filename = `${userId}.${ext}`;
-    // 构建完整的文件路径
-    const filepath = path.join(AVATAR_DIR, filename);
+    const contentType = ext === 'webp' ? 'image/webp' : 'image/png';
 
-    // 将二进制数据同步写入文件（覆盖已存在的文件）
-    fs.writeFileSync(filepath, buffer);
-    // 返回相对 URL 路径，前端可以直接使用此路径加载头像
-    return `/uploads/avatars/${filename}`;
+    return uploadFile(`avatars/${userId}.${ext}`, buffer, contentType);
   }
 
-  // 如果未提供 base64 数据，生成一个随机纯色的 PNG 图片作为默认头像
+  // 未提供 base64 数据，生成一个随机纯色的 PNG 图片作为默认头像
   const buffer = generateSolidColorPNG();
-  // 设置文件名为用户ID加 .png 扩展名
-  const filename = `${userId}.png`;
-  // 构建完整的文件路径
-  const filepath = path.join(AVATAR_DIR, filename);
-
-  // 将生成的 PNG 图片同步写入文件
-  fs.writeFileSync(filepath, buffer);
-  // 返回相对 URL 路径
-  return `/uploads/avatars/${filename}`;
+  return uploadFile(`avatars/${userId}.png`, buffer, 'image/png');
 };

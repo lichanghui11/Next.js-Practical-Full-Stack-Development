@@ -154,7 +154,7 @@ const UserRepo = {
       })) as unknown as { token: string; user: User };
 
       // 保存头像：上传了则保存上传的，未上传则生成随机纯色图片
-      const avatarUrl = saveAvatar(res.user.id, image);
+      const avatarUrl = await saveAvatar(res.user.id, image);
       // 更新用户头像路径
       await prismaClient.user.update({
         where: { id: res.user.id },
