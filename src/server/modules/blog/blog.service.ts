@@ -8,6 +8,7 @@ import type {
   PostCreateInput,
   PostPaginationOptions,
   PostUpdateInput,
+  PostWithRelations,
 } from '@/database/repositories/post.repo';
 import type { PageParams, PageResult } from '@/database/types/pagination';
 
@@ -26,27 +27,31 @@ export const queryPostTotalPage = async (
 };
 
 // 根据 id 或 slug 查询文章信息
-export const queryPostByIdOrSlug = async (item: string): Promise<Post | null> => {
+export const queryPostByIdOrSlug = async (item: string): Promise<PostWithRelations | null> => {
   return PostRepo.queryPostByIdOrSlug(item);
 };
 
 // 根据 Slug 查询文章信息
-export const queryPostBySlug = async (slug: string): Promise<Post | null | undefined> => {
+export const queryPostBySlug = async (
+  slug: string,
+): Promise<PostWithRelations | null | undefined> => {
   return PostRepo.queryPostBySlug(slug);
 };
 
 // 新增文章
-export const addPost = async (post: PostCreateInput): Promise<Post | null> => {
+export const addPost = async (post: PostCreateInput): Promise<PostWithRelations | null> => {
   return PostRepo.addPost(post);
 };
 
 // 更新文章
-export const updatePost = async (post: PostUpdateInput & { id: string }): Promise<Post | null> => {
+export const updatePost = async (
+  post: PostUpdateInput & { id: string },
+): Promise<PostWithRelations | null> => {
   return PostRepo.updatePost(post);
 };
 
 // 删除文章
-export const deletePost = async (id: string): Promise<Post | null> => {
+export const deletePost = async (id: string): Promise<PostWithRelations | null> => {
   return PostRepo.deletePost(id);
 };
 

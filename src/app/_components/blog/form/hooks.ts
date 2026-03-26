@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import type { DateToString } from '@/lib/types';
 import type { PostItem } from '@/server/modules/blog/blog.type';
 
+import { authApi } from '@/api/auth';
 import { blogApi } from '@/api/post';
 import { buildPostRequestSchema } from '@/server/modules/blog/blog.schema';
 
@@ -86,7 +87,18 @@ export const useBlogSubmit = (params: BlogFormProps) => {
         post = await result.json();
       } else if (params.type === 'update') {
         // 更新已有的博客
+        const user = await authApi.getAuth();
+        console.log('当前用户： ', user?.id);
+
+        console.log('当前文章： ', params.blog.author.id);
+        console.log('是不是同一个用户： ', user?.id === params.blog.author.id);
+        if (isNil(user) || user.id !== params.blog.author.id) {
+          toast.error('无权修改该文章，只允许文章作者进行修改');
+          return;
+        }
+
         const result = await blogApi.update(params.blog.id, data);
+        console.log('更新文章之后的结果: ', result);
         if (!result.ok) {
           throw new Error((await result.json()).message);
         }

@@ -112,7 +112,10 @@ export const useSignupSubmit = () => {
           toast.error('注册失败', {
             description: (await result.json()).message,
           });
+          return;
         }
+        toast.success('注册成功');
+        console.log('注册成功的结果： ', await result.json());
 
         // 注册成功后，跳转到登录页
         let signinPath = '/auth/signin';

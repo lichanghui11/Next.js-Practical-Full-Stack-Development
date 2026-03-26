@@ -304,25 +304,22 @@ export const blogRoutes = app
         const { id } = c.req.valid('param');
         const body = await c.req.json();
 
-        console.log('=== DEBUG PATCH ROUTE ===');
-        console.log('Extracted param id:', id);
-        console.log('Body id field:', body.id);
-
         const user = (c.get as any)('user');
+        console.log('更新文章路由----------------------------');
+        console.log('user: ', user);
+        console.log('id: ', id);
         // 鉴权：只有作者本人可以修改
         const post = await queryPostByIdOrSlug(id);
-
-        console.log('Query result for post:', post ? 'FOUND' : 'NULL');
-        console.log('=========================');
-
+        console.log('查出来的文章： ', post);
+        console.log('更新文章路由----------------------------');
         if (!post) {
           return c.json(createErrorResult('文章不存在'), 404);
         }
-        if (post.authorId !== user?.id) {
+        if (post.author.id !== user?.id) {
           return c.json(createErrorResult('没有修改该文章的权限'), 403);
         }
 
-        const result = await updatePost({ id, ...body });
+        const result = await updatePost({ id, ...body, authorId: user?.id });
         return c.json(result, 200);
       } catch (error) {
         return c.json(createErrorResult('更新文章失败', error), 500);
@@ -355,7 +352,7 @@ export const blogRoutes = app
         if (!post) {
           return c.json(createErrorResult('文章不存在'), 404);
         }
-        if (post.authorId !== user?.id) {
+        if (post.author.id !== user?.id) {
           return c.json(createErrorResult('没有删除该文章的权限'), 403);
         }
 

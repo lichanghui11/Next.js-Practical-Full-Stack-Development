@@ -46,6 +46,9 @@ const defaultPostItemQueryOptions = {
     author: true,
   },
 } as const;
+
+// 使用 Prisma.PostGetPayload 精确推导出经过 omit + include 后的返回类型
+export type PostWithRelations = Prisma.PostGetPayload<typeof defaultPostItemQueryOptions>;
 /**
  * 这个默认配置导致了select 和 include 不能同时使用的报错，因为它们在 Prisma 的查询里是互斥的。
  * omit 也算一种 select
@@ -151,7 +154,7 @@ const PostRepo = {
   },
 
   // 根据 id 或 slug  查询文章信息
-  queryPostByIdOrSlug: async (item: string): Promise<Post | null> => {
+  queryPostByIdOrSlug: async (item: string): Promise<PostWithRelations | null> => {
     const post = await prismaClient.post.findFirst({
       where: {
         OR: [{ id: item }, { slug: item }],
@@ -162,7 +165,7 @@ const PostRepo = {
   },
 
   // 根据 Slug 查询文章信息
-  queryPostBySlug: async (slug: string): Promise<Post | null | undefined> => {
+  queryPostBySlug: async (slug: string): Promise<PostWithRelations | null | undefined> => {
     const post = await prismaClient.post.findUnique({
       where: {
         slug,
@@ -185,7 +188,7 @@ const PostRepo = {
   },
 
   // 新增文章
-  addPost: async (post: PostCreateInput): Promise<Post | null> => {
+  addPost: async (post: PostCreateInput): Promise<PostWithRelations | null> => {
     // ① 构建 Prisma 的 CreateInput 数据
     //    omit(post, ['tags', 'categoryId']) → 去掉 tags 和 categoryId
     //    因为 tags 是多对多关系、categoryId 是外键，不能直接塞进 create 里
@@ -211,7 +214,7 @@ const PostRepo = {
     }
 
     // ③ 处理分类（多对一关系）
-    if (!isNil(post.categoryId)) {
+    if (!isNil(post.categoryId) && post.categoryId !== '') {
       createInput.category = {
         // connect：关联到一个已存在的分类，不创建新分类
         // 因为分类是预先创建好的，文章只是"选择"一个分类
@@ -220,7 +223,7 @@ const PostRepo = {
     }
 
     // ④ 处理作者（多对一关系）
-    if (!isNil(post.authorId)) {
+    if (!isNil(post.authorId) && post.authorId !== '') {
       createInput.author = {
         connect: { id: post.authorId },
       };
@@ -239,7 +242,8 @@ const PostRepo = {
   },
 
   // 更新文章 (支持部分更新，只需要传入 id 和要更新的字段)
-  updatePost: async (post: PostUpdateInput & { id: string }): Promise<Post | null> => {
+  updatePost: async (post: PostUpdateInput & { id: string }): Promise<PostWithRelations | null> => {
+    console.log('更新文章 repo: ', post);
     // ① 同样先去掉 tags 和 categoryId，剩余字段直接展开
     const updateInput: Prisma.PostUpdateInput = {
       ...omit(post, ['tags', 'categoryId', 'authorId']),
@@ -262,13 +266,17 @@ const PostRepo = {
       };
     }
     // ③ 处理分类更新（同创建逻辑）
-    if (!isNil(post.categoryId)) {
+    if (!isNil(post.categoryId) && post.categoryId !== '') {
       updateInput.category = {
         connect: { id: post.categoryId },
       };
+    } else if (post.categoryId === '') {
+      updateInput.category = {
+        disconnect: true,
+      };
     }
     // ④ 处理作者更新
-    if (!isNil(post.authorId)) {
+    if (!isNil(post.authorId) && post.authorId !== '') {
       updateInput.author = {
         connect: { id: post.authorId },
       };
@@ -286,7 +294,7 @@ const PostRepo = {
   },
 
   // 删除文章
-  deletePost: async (id: string): Promise<Post | null> => {
+  deletePost: async (id: string): Promise<PostWithRelations | null> => {
     // ① 先查一次完整文章数据（带关联数据）
     //    为什么不直接删？因为 delete 之后数据就没了
     //    直接删除返回的数据是一份裸数据，没有关联数据（tags, category, categories）
