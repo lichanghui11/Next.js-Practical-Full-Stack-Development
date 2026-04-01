@@ -13,12 +13,18 @@ import type { PageParams, PageResult } from '../types/pagination';
 import { paginationAdapter } from '../adapters/pagination.adapter';
 import prismaClient from '../client/app-client';
 
-export type PostCreateInput = Omit<Prisma.PostCreateInput, 'thumb' | 'tags' | 'category'> & {
+export type PostCreateInput = Omit<
+  Prisma.PostCreateInput,
+  'thumb' | 'tags' | 'category' | 'author'
+> & {
   tags?: TagType[];
   categoryId?: string;
   authorId?: string;
 };
-export type PostUpdateInput = Omit<Prisma.PostUpdateInput, 'thumb' | 'tags' | 'category'> & {
+export type PostUpdateInput = Omit<
+  Prisma.PostUpdateInput,
+  'thumb' | 'tags' | 'category' | 'author'
+> & {
   tags?: TagType[];
   categoryId?: string;
   authorId?: string;
@@ -193,9 +199,19 @@ const PostRepo = {
     //    omit(post, ['tags', 'categoryId']) → 去掉 tags 和 categoryId
     //    因为 tags 是多对多关系、categoryId 是外键，不能直接塞进 create 里
     //    Prisma 要求用专门的关联操作语法（connectOrCreate / connect）来处理它们
+    const base = omit(post, ['tags', 'categoryId', 'id', 'authorId']) as Omit<
+      Prisma.PostCreateInput,
+      'author' | 'tags' | 'category'
+    >;
+
     const createInput: Prisma.PostCreateInput = {
-      ...omit(post, ['tags', 'categoryId', 'id', 'authorId']),
+      ...base,
+      author: { connect: { id: post.authorId } }, // 显式补上必填关系
     };
+    // 处理 slug：空字符串视为未提供
+    if (typeof createInput.slug === 'string' && createInput.slug.trim() === '') {
+      delete createInput.slug;
+    }
 
     // ② 处理标签（多对多关系）
     if (!isNil(post.tags)) {
@@ -259,6 +275,13 @@ const PostRepo = {
     const updateInput: Prisma.PostUpdateInput = {
       ...omit(post, ['tags', 'categoryId', 'authorId']),
     };
+    // 处理 slug：空字符串代表清空 slug（置为 null）
+    if ('slug' in updateInput && typeof updateInput.slug === 'string') {
+      const s = updateInput.slug.trim();
+      if (s === '') {
+        updateInput.slug = { set: null };
+      }
+    }
     // ② 处理标签更新
     if (!isNil(post.tags)) {
       // set: [] = 清空关联，再按传入的标签“替换”

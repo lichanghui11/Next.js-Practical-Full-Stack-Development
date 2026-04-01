@@ -60,7 +60,7 @@ export const deletePost = async (id: string): Promise<PostWithRelations | null> 
  * 通过ID验证slug的唯一性
  * @param id
  */
-export const isSlugUnique = async (id?: string) => async (slug?: string | null) => {
+export const isSlugUnique = (id?: string) => async (slug?: string | null) => {
   if (isNil(slug) || !slug.length) return true;
   const post = await queryPostBySlug(slug);
   if (isNil(post) || post.id === id) return true;

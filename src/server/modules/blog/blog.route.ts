@@ -26,6 +26,7 @@ import {
 import {
   addPost,
   deletePost,
+  isSlugUnique,
   queryPostByIdOrSlug,
   queryPostBySlug,
   queryPosts,
@@ -258,11 +259,11 @@ export const blogRoutes = app
         ...createResponse(errorSchema, 500, '新增文章失败'),
       },
     }),
-    validator('json', buildPostRequestSchema(), defaultValidatorErrorHandler),
+    validator('json', buildPostRequestSchema(isSlugUnique()), defaultValidatorErrorHandler),
     AuthProtectedMiddleware,
     async (c) => {
       try {
-        const body = await c.req.json();
+        const body = c.req.valid('json');
         const user = (c.get as any)('user');
         console.log('后端路由----------------------------');
         console.log('body', body);
@@ -296,7 +297,12 @@ export const blogRoutes = app
     async (c) => {
       try {
         const { id } = c.req.valid('param');
-        const body = await c.req.json();
+        const body = c.req.valid('json');
+
+        // 额外校验：如果提供了 slug，校验其（除自身外）唯一
+        if (!(await isSlugUnique(id)(body.slug))) {
+          return c.json(createErrorResult('slug必须是唯一的,请重新设置'), 400);
+        }
 
         const user = (c.get as any)('user');
         console.log('更新文章路由----------------------------');

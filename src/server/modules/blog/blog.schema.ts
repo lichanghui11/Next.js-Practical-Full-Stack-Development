@@ -14,13 +14,16 @@ export const buildPostRequestSchema = (
   slugUniqueValidator?: (slug?: string | null) => Promise<boolean>,
 ) => {
   // 单独定义对 slug 这个字段的校验
-  let slug = z
-    .string()
-    .max(250, {
-      message: 'slug不得超过250个字符',
-    })
-    .optional()
-    .meta({ description: '文章唯一标识符' });
+  let slug = z.preprocess(
+    (val) => (typeof val === 'string' && val.trim() === '' ? undefined : val),
+    z
+      .string()
+      .max(250, {
+        message: 'slug不得超过250个字符',
+      })
+      .optional()
+      .meta({ description: '文章唯一标识符' }),
+  );
   // 这里是条件式地为 slug 添加这条校验规则
   if (!isNil(slugUniqueValidator)) {
     // 这个 slugUniqueValidator 是一个已经传入过 id 的校验器，而不是原始的工厂函数

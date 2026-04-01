@@ -74,7 +74,6 @@ export const BlogDetail: FC<{
                   <h1 className={styles.title}>{post.title}</h1>
                   <div className={styles.headerActions}>
                     <PostEditButton item={post} iconBtn />
-                    编辑文章
                   </div>
                   <div className={styles.meta}>
                     <div className={styles.metaItem}>
