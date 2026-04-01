@@ -16,9 +16,6 @@ import { BlogForm } from './form';
  * @param param0
  */
 export const PostPageForm: FC<{ post?: PostItem }> = ({ post }) => {
-  console.log('------------------PostPageForm');
-  console.log('post', post);
-  console.log('------------------PostPageForm');
   const ref = useRef<BlogFormRef | null>(null);
   const [pending, setPending] = useState(false);
   const handlePending = useCallback((value: boolean) => {
@@ -29,7 +26,6 @@ export const PostPageForm: FC<{ post?: PostItem }> = ({ post }) => {
     e.preventDefault();
     ref.current?.save && (await ref.current.save());
   }, []);
-
   /**
    * 	•	ref 是父组件创建的，传给子组件（子组件需 forwardRef 接收）。
 	•	子组件用 useImperativeHandle(ref, () => ({ ... })) 决定 父组件看到的 ref.current 是什么。

@@ -196,19 +196,30 @@ const PostRepo = {
     const createInput: Prisma.PostCreateInput = {
       ...omit(post, ['tags', 'categoryId', 'id', 'authorId']),
     };
-    console.log('---------addPost---------');
-    console.log('post: ', post);
-    console.log('createInput: ', createInput);
-    console.log('---------addPost---------');
 
     // ② 处理标签（多对多关系）
     if (!isNil(post.tags)) {
+      // 1) 去重与规范化：
+      //    - 对已有标签优先使用 id；
+      //    - 新增标签无 id，则用 text（转小写、trim 后）作为去重 key；
+      const normalizedTags = Array.from(
+        new Map(
+          post.tags.map(({ id, text }) => {
+            const nid = (id || '').trim();
+            const t = (text || '').trim();
+            const key = nid || t.toLowerCase();
+            return [key, { id: nid || undefined, text: t }];
+          }),
+        ).values(),
+      );
+
+      // 2) 关联或创建：
+      //    - 如果携带 id，用 id 作为唯一键；
+      //    - 否则用 text 作为唯一键（Tag.text 在 schema 中是 @unique）。
       createInput.tags = {
-        // connectOrCreate：如果标签已存在就关联（connect），不存在就先创建再关联（create）
-        // 这样前端传过来的标签不管是新的还是旧的，都能正确处理
-        connectOrCreate: post.tags.map(({ id, text }) => ({
-          where: { id }, // 用 id 查找是否已存在
-          create: { text }, // 不存在则用 text 创建新标签
+        connectOrCreate: normalizedTags.map(({ id, text }) => ({
+          where: id ? { id } : { text },
+          create: { text },
         })),
       };
     }
@@ -250,17 +261,22 @@ const PostRepo = {
     };
     // ② 处理标签更新
     if (!isNil(post.tags)) {
-      // set: [] 的含义
-      // set: [] = 把当前所有关联设置为空列表 = 清空所有关联。
-      // 它操作的是中间关联表（Prisma 自动管理的 _post_to_tags 表），不是 Tag 表本身：
+      // set: [] = 清空关联，再按传入的标签“替换”
+      const normalizedTags = Array.from(
+        new Map(
+          post.tags.map(({ id, text }) => {
+            const nid = (id || '').trim();
+            const t = (text || '').trim();
+            const key = nid || t.toLowerCase();
+            return [key, { id: nid || undefined, text: t }];
+          }),
+        ).values(),
+      );
+
       updateInput.tags = {
-        set: [], // ← 关键！先把所有现有的标签关联清空
-        //    如果不清空，新传的标签会"追加"而不是"替换"
-        //    比如原来有 [React, Vue]，传入 [React, Next.js]
-        //    不清空 → [React, Vue, Next.js]（错误）
-        //    清空后 → [React, Next.js]（正确）
-        connectOrCreate: post.tags.map(({ id, text }) => ({
-          where: { id },
+        set: [],
+        connectOrCreate: normalizedTags.map(({ id, text }) => ({
+          where: id ? { id } : { text },
           create: { text },
         })),
       };
