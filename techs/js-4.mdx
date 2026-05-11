@@ -1,0 +1,902 @@
+---
+title: JavaScript 基础笔记（四）
+tags: [javascript, heap, hash, regex, dom, events, browser, performance]
+draft: false
+---
+
+# JavaScript 基础笔记（四）
+
+本篇涵盖数据结构（堆、哈希表）、正则表达式、DOM 操作、浏览器渲染流水线、事件处理、Web Workers、定时器与性能优化（防抖/节流）。目录与阅读时间会自动生成。
+
+:::tip{title="学习建议"}
+- 堆与哈希表重在理解底层原理与复杂度对比。
+- DOM 和事件处理篇幅较长，建议结合浏览器 DevTools 实践。
+- 黄色块为"易踩坑点"。
+:::
+
+## 排序算法的稳定性
+
+稳定性：元素的相对位置在排序前后是否保持不变。
+
+| 算法 | 稳定性 |
+|------|--------|
+| 冒泡排序（Bubble Sort） | 稳定 |
+| 选择排序（Selection Sort） | 不稳定 |
+| 插入排序（Insertion Sort） | 稳定 |
+| 快速排序（Quick Sort） | 不稳定 |
+| 归并排序（Merge Sort） | 稳定 |
+| 堆排序（Heap Sort） | 不稳定 |
+| 二叉搜索树排序（BST） | 稳定 |
+| 希尔排序（Shell Sort） | 不稳定（插入排序的优化版） |
+| 计数排序（Counting Sort） | 不考虑稳定性，只能排序数值 |
+
+:::note{title="稳定性的作用"}
+保持具有相同排序键的元素在原始数据中的相对顺序，在多关键字排序等场景下非常重要。
+:::
+
+## 堆与优先队列
+
+### 基本概念
+
+优先队列只关注动态集合中的最值（最大值或最小值），通常由:mark[堆]来实现。堆是一种特殊的完全二叉树。
+
+- **最大堆**：父节点 ≥ 子节点，根节点为最大元素
+- **最小堆**：父节点 ≤ 子节点，根节点为最小元素
+
+### 存储方式
+
+堆通常用数组存储，父子关系通过索引规则实现：
+
+- 父节点索引 `i` → 左子节点 `2 * i + 1`，右子节点 `2 * i + 2`
+- 子节点索引 `i` → 父节点 `((i - 1) / 2) | 0`
+
+### 核心操作
+
+- **取出堆顶**：将最后一个元素移到根节点，通过:mark[下沉]（Sink / Heapify Down）恢复堆性质
+- **插入元素**：在末尾添加元素，通过:mark[上浮]（Swim / Heapify Up）恢复堆性质
+- **构建堆**：自底向上堆化，时间 `O(n)`
+
+### 时间复杂度
+
+| 操作 | 复杂度 |
+|------|--------|
+| 插入 | `O(log n)` |
+| 取出堆顶 | `O(log n)` |
+| 构建堆 | `O(n)` |
+
+### 堆排序
+
+- 时间复杂度：`O(n log n)`（:mark[不会退化]）
+- 空间复杂度：`O(1)`
+- 排序全部相同元素时有优势，但通常比快排略慢
+
+### 堆排序 vs 快速排序
+
+| 对比项 | 堆排序 | 快速排序 |
+|--------|--------|----------|
+| 思想 | 基于堆数据结构 | 基于分治 |
+| 时间（平均） | `O(n log n)` | `O(n log n)` |
+| 时间（最坏） | `O(n log n)` | `O(n²)` |
+| 空间 | `O(1)` | 平均 `O(log n)`，最坏 `O(n)` |
+| 稳定性 | 不稳定 | 不稳定（可实现稳定） |
+| 实际性能 | 常数因子较大，略慢 | 局部性原理好，通常更快 |
+
+:::note{title="浏览器 sort() 的策略"}
+元素少于 16 个用选择排序，多于 16 用快排，快排达到一定深度后切换为堆排序。
+:::
+
+## 哈希表
+
+### 核心原理
+
+- 通过映射的 key 直接计算出一个值作为下标，`get`/`set` 性能均为 :mark[O(1)]
+- **哈希冲突**：不同 key 可能计算出相同的值
+
+### 解决哈希冲突
+
+- **开放地址法**：在数组中寻找下一个空位
+- **重新哈希**：用不同哈希函数重新计算
+- **链式存储**：相同位置的映射对存在同一个链表上（早期 Java 使用，现已改进为红黑树）
+
+### 装载率（Load Factor）
+
+- 映射对数量与内部数组长度的比值
+- 装载率越低，哈希冲突越小
+- 装载率大于 1 时，:mark[一定]会产生哈希冲突
+
+### JS 内置 Map 的特点
+
+- key 可以为任意类型（数组、对象、布尔、`NaN` 等），区分不同 key 需要额外时间
+- 会记录映射对的插入顺序（很多语言没有此功能）
+- `Set` 是特殊的映射——每个值映射到自身
+
+### 哈希函数的扩展意义
+
+"哈希"可以表示从一份数据计算出一个确定但随机的值，数据一旦变化，计算结果就不同。
+
+- 常见哈希函数：`md5`、`sha1`、`sha256`、`sha384`、`sha1024`
+- 应用：文件完整性校验（计算文件"指纹"），发布者提前计算指纹，接收者重新验证
+
+## 高阶函数补充
+
+### forEach 的局限性
+
+JS 原生 `forEach` :mark[不支持提前返回]。`break` 必须直接出现在循环中，不能跨越函数边界。
+
+```javascript
+  for (let i = 0; i < 10; i++) {
+  if (i === 5) break; // 可以跳出循环
+
+  func(i); // func 内部的 break 无法跳出外层循环
+}
+```
+
+可以通过自定义实现支持提前返回：
+
+```javascript
+function forEach(arr, func) {
+  for (let i = 0; i < arr.length; i++) {
+    if (func(arr[i]) === false) break;
+  }
+}
+
+forEach([1, 2, 3, 4, 5, 6], item => {
+    if (item === 5) return false;
+});
+```
+
+### 常用工具方法
+
+- `console.table(对象/数组)`：以表格形式展示数据
+- `Array.prototype.flat(深度)`：扁平化嵌套数组
+- `new Set(数组)`：创建集合时自动去重
+- `new Map([["key1", 1], ["key2", 2]])`：创建映射时传入键值对数组
+- 集合可用展开运算符 `...` 或 `Array.from()` 转为数组
+
+### Lodash
+
+JS 中只有两个符号可作为变量名：`_`（Lodash/Underscore 库）和 `$`（jQuery 库）。
+
+- `_.forEach(func)` 可以在回调中提前返回（与 JS 原生不同）
+- Lodash 是为 JS 语言设计的工具函数库，开发者应熟悉 JS 标准库中的函数
+
+## 正则表达式
+
+:::warning{title="注意"}
+正则中不能随便加空格。
+:::
+
+### 创建方式
+
+```javascript
+let a = /esti/;                   // 直接量
+let b = new RegExp('esti');       // 构造函数（传入字符串）
+```
+
+:::warning{title="转义差异"}
+构造函数中特殊符号需要双重转义，直接量语法不需要。
+:::
+
+```javascript
+let a = /\d/;
+let b = new RegExp('\\d');        // 必须双反斜杠
+// a 和 b 等价
+
+let exp1 = /[a-z]?\.*\d/;
+let exp2 = new RegExp("[a-z]?\\.*\\d");
+// exp1 和 exp2 等价
+```
+
+### 正则方法
+
+| 方法 | 说明 |
+|------|------|
+| `/正则/.test(str)` | 返回 Boolean |
+| `/正则/.exec(str)` | 匹配存在返回对象，否则返回 `null` |
+| `str.match(/正则/)` | 类似 exec 但功能更多 |
+| `str.replace(arg1, arg2)` | 替换匹配内容 |
+| `str.replaceAll(arg1, arg2)` | 替换所有匹配 |
+| `str.split(正则/字符串)` | 分割字符串 |
+| `str.search(正则)` | 类似 `indexOf`，总是从头查找 |
+
+#### exec 详解
+
+- `exec` 是最底层的方法，所有其他方法都基于它
+- 分组可命名：`(?<year>\d{4})`
+
+#### match 的行为
+
+- **无 `g` 标志**：只捕获第一次匹配，包含子分组（与 `exec` 一致）
+- **有 `g` 标志**：捕获所有匹配，但不捕获子分组
+
+#### replace 详解
+
+```javascript
+  "Wee, Esti".replace(/(\w+), (\w+)/g, "$& -> $2 $1 $$1");
+// -> "Wee, Esti -> Esti Wee $1"
+// $& 表示整个匹配，$1/$2 表示分组，$$ 转义为字面 $
+```
+
+- `arg2` 为函数时，捕获到的分组会作为参数传入
+- `split()` 如果正则中有括号分组，会将捕获的分组插入到分割结果中
+
+### 正则语法速查
+
+#### 字符类
+
+| 语法 | 含义 |
+|------|------|
+| `[aeiou]` | 匹配方括号中任意一个字符 |
+| `[0-9]` | 匹配 0–9 的任意数字 |
+| `\d` / `\D` | 数字 / 非数字 |
+| `\w` / `\W` | 单词字符（`[a-zA-Z0-9_]`） / 非单词字符 |
+| `\s` / `\S` | 空白字符 / 非空白字符 |
+| `.` | 任意字符（不含换行） |
+| `[^01]` | 除 0 和 1 外的任意字符 |
+| `[^]` | 任意字符（包括换行） |
+
+:::note{title="方括号内的特殊行为"}
+- `.` 在 `[]` 内仅表示字面点，在 `[]` 外表示任意字符
+- `+` 在 `[]` 内仅表示字面加号
+- `-` 在 `[]` 内表示范围，在 `[]` 外无特殊含义
+:::
+
+#### 量词
+
+| 语法 | 含义 |
+|------|------|
+| `+` | 1 次或多次 |
+| `*` | 0 次或多次 |
+| `?` | 0 次或 1 次 |
+| `{4}` | 精确 4 次 |
+| `{2,4}` | 2 到 4 次 |
+| `{4,}` | 至少 4 次 |
+
+#### 锚点与边界
+
+| 语法 | 含义 |
+|------|------|
+| `^` | 字符串开始（`[]` 内表示取反） |
+| `$` | 字符串结束 |
+| `\b` | 单词边界 |
+| `\|` | 或运算符 |
+
+:::note{title="对单词取反"}
+正则中对单词取反只能使用零宽断言，`^` 仅在 `[]` 内表示取反。
+:::
+
+#### 分组与反向引用
+
+- 括号后有量词时，括号内容作为整体重复
+- 括号后无量词时，表示捕获分组
+- `\1`、`\2` 等在正则中引用已捕获的分组
+
+#### 零宽断言
+
+| 语法 | 名称 |
+|------|------|
+| `(?=...)` | 正向先行断言（Positive Lookahead） |
+| `(?!...)` | 负向先行断言（Negative Lookahead） |
+| `(?<=...)` | 正向后行断言（Positive Lookbehind） |
+| `(?<!...)` | 负向后行断言（Negative Lookbehind） |
+| `(?:...)` | 非捕获分组 |
+
+零宽断言等价表达：
+- `^` ≡ `(?<!.)` 或 `(?<![^])`
+- `$` ≡ `(?!.)` 或 `(?![^])`
+- `\b` ≡ `(?=\w)(?<!\w) | (?!\w)(?<=\w)`
+
+### 标志（Flags）
+
+| 标志 | 属性名 | 说明 |
+|------|--------|------|
+| `i` | `ignoreCase` | 忽略大小写 |
+| `g` | `global` | 全局匹配 |
+| `m` | `multiline` | `^` 和 `$` 可匹配每一行 |
+| `s` | `dotAll` | `.` 可匹配换行符 |
+| `d` | `hasIndices` | 返回所有分组的开始和结束位置 |
+| `u` | `unicode` | 启用 Unicode 模式 |
+| `y` | `sticky` | 粘滞模式，从上次结束位置严格匹配 |
+
+```javascript
+  let re = /[\u{4e00}-\u{9fff}]/u; 
+// 匹配 Unicode 编码在 4e00–9fff 范围内的字符（中文）
+```
+
+### 贪婪与非贪婪匹配
+
+在量词后加 `?` 启用非贪婪匹配（匹配尽可能少的字符）：`+?`、`*?`、`??`、`{}?`
+
+:::tip{title="建议"}
+优先使用非贪婪匹配，避免意外捕获过多内容。
+:::
+
+### lastIndex 属性
+
+- 仅在 `g` 或 `y` 标志下有效
+- 每次匹配后自动更新，下次从新位置开始
+- 匹配完所有内容后重置为 0
+
+:::warning{title="多字符串匹配陷阱"}
+用同一个全局正则匹配多个字符串时，`lastIndex` 不会自动重置，可能导致遗漏。建议一次只匹配一个字符串。
+:::
+
+### 动态创建正则
+
+```javascript
+new RegExp("\\d+", "g"); // 字符串中特殊符号需要转义
+```
+
+Python 原始字符串 `r"\nabc\1"` 在 JS 中的等价写法：
+
+```javascript
+String.raw`\nabc\1`; // -> "\\nabc\\1"
+```
+
+## 标签模板字面量（Tagged Template Literals）
+
+```javascript
+tagFunction`hello, ${name}!`;
+// tagFunction 接收字面量数组和表达式参数
+```
+
+- 第一个参数：字面量数组（模板中固定文本部分）
+- 其余参数：表达式插值内容
+
+应用场景：嵌入 HTML/CSS、防止 XSS 攻击、国际化（i18n）、格式化字符串、构建动态 SQL 查询。
+
+:::warning{title="合法性要求"}
+传入的模板字符串必须合法。末尾的反引号被转义（`` \` ``）会导致语法错误。
+:::
+
+## Date 类型
+
+### 创建与方法
+
+```javascript
+let date = new Date(); // 当前时间
+```
+
+:::warning{title="月份从零开始"}
+`Date` 对象中月份从 0 开始计数，11 表示 12 月。实际开发建议使用 Day.js 或 moment.js。
+:::
+
+常用方法：`getFullYear()`、`getMonth()`、`getDate()`、`setYear()`、`toLocaleDateString()`、`toLocaleTimeString()`、`toISOString()`、`toJSON()`、`toString()`
+
+### 时间戳（Timestamps）
+
+- 从 1970 年开始以毫秒计时，1970 年以前为负数
+- `getTime()` 返回 1970 年到给定时间点的总毫秒数
+- `Date.now()` 与 `new Date().getTime()` 效果相同，前者更快
+- `new Date(毫秒数)` 从 1970 年零点计算给定毫秒数的时间点
+
+### ISO 8601 格式
+
+`toISOString()` 返回 UTC 时间的 ISO 字符串，格式：`YYYY-MM-DDTHH:mm:ss.sssZ`
+
+| 符号 | 含义 |
+|------|------|
+| `YYYY` | 年 |
+| `MM` | 月 |
+| `DD` | 日 |
+| `T` | 日期和时间分隔符 |
+| `HH:mm:ss.sss` | 时:分:秒.毫秒（24 小时制） |
+| `Z` | UTC 时间（零时区） |
+
+### 时区
+
+- **GMT**（Greenwich Mean Time）：格林威治标准时间
+- **UTC**（Coordinated Universal Time）：协调世界时，比 GMT 更精确
+- `GMT+8` 表示比格林威治快 8 小时，`GMT-5` 表示慢 5 小时
+
+## 其他格式与概念
+
+### CSV 文件
+
+CSV（Comma-Separated Values）是用逗号分隔数据的纯文本文件格式，每行代表一条记录。
+
+```text
+姓名,年龄,职业
+ali,12,student
+lily,21,student
+```
+
+### 语法树与编译
+
+将一种语言转换为另一种语言的过程叫:mark[编译]。模拟 `JSON.parse` 和 `JSON.stringify` 实际上就是实现了一个简单的编译器。
+
+### JSON 解析
+
+- `parseInt(str)`：捕获字符串中的整数（前面不能有非数字字符，后面可以有）
+- `parseFloat(str)`：捕获浮点数
+- 递归下降法实现 JSON 解析：指定全局指针，为每种语法实现对应的解析函数
+
+## JavaScript 与浏览器
+
+### 网络层次
+
+| 概念 | 说明 |
+|------|------|
+| Network | 通过物理媒介互连的计算机集合（LAN / WAN） |
+| Internet | 全球范围的网络集合，连接无数本地网络 |
+| Web | 互联网之上的应用层，用于访问和展示信息 |
+
+### 沙箱（Sandbox）
+
+以隔离方式运行程序的安全机制：
+
+- 限制对系统资源的访问，防止 JS 直接访问文件系统
+- 隔离不同源（origin），阻止跨站点攻击
+- 保护用户隐私，防止恶意脚本读取敏感信息
+
+## DOM（文档对象模型）
+
+DOM 将 HTML/XML 文档组织成节点树，使开发者可以用 JS 动态修改页面。
+
+### 节点类型
+
+| nodeType | 类型 | 说明 |
+|----------|------|------|
+| 1 | `ELEMENT_NODE` | HTML 标签 |
+| 2 | 属性节点 | class、id 等 |
+| 3 | `TEXT_NODE` | 标签内的文本 |
+| 8 | 注释节点 | HTML 注释 |
+| 9 | `DOCUMENT_NODE` | 根节点 |
+
+```text
+Document（根节点）
+    html（元素节点）
+        head（元素节点）
+            title（元素节点）
+        文本节点："DOM Example"
+        body（元素节点）
+            h1（元素节点）
+        文本节点："Hello World"
+```
+
+:::note{title="类数组对象"}
+DOM 中几乎没有数组，都是类数组对象。可用 `Array.from()` 或展开运算符 `[...]` 转为真正的数组。`childNodes` 有 `forEach()`，`getElementsByTagName` 没有。
+:::
+
+### 查询元素
+
+| 方法 | 说明 |
+|------|------|
+| `getElementById(id)` | 通过 ID 获取（仅在 `document` 上） |
+| `getElementsByClassName(name)` | 通过类名获取集合 |
+| `getElementsByTagName(tag)` | 通过标签名获取集合（:mark[动态更新]） |
+| `querySelector(selector)` | CSS 选择器获取第一个匹配 |
+| `querySelectorAll(selector)` | CSS 选择器获取所有匹配（:mark[静态集合]） |
+
+:::warning{title="querySelectorAll 的行为"}
+- 返回静态集合，不会动态更新
+- 在全局范围内匹配选择器（即使在子元素上调用）
+- 可选择伪类，但不能选择伪元素（伪元素只存在于 CSS）
+:::
+
+- `$` / `$$`：控制台快捷方式，分别等价于 `querySelector` 和 `querySelectorAll`（与 jQuery 冲突）
+
+### 创建节点
+
+```javascript
+document.createElement('a'); // 创建空的 a 标签
+// 不能使用 new 关键字调用标签元素的构造函数
+```
+
+### Attribute vs Property
+
+- **Attribute**：HTML 标签的属性
+- **Property**：DOM 对象的属性
+- 常用标准属性两者相同（`lang`、`src`、`href` 等），但不总是一致
+
+```javascript
+element.getAttribute('src'); // 返回原始字符串
+element.src;                 // 返回完整可访问链接
+```
+
+两个特殊的标准属性不能直接读取：
+- HTML `class` → JS `element.className`
+- HTML `<label for>` → JS `element.htmlFor`
+
+自定义属性用 `getAttribute()`/`setAttribute()` 操作，HTML 建议以 `data-xxx` 命名：
+
+```javascript
+// <img src="" data-foo="hello">
+$0.dataset.foo;              // -> "hello"
+$0.dataset.isTrue = "yes";
+// -> <img src="" data-foo="hello" data-is-true="yes">
+// JS 的 camelCase 在 HTML 中自动转为中划线
+```
+
+### 内容操作
+
+| 属性 | 说明 |
+|------|------|
+| `innerHTML` | 获取/设置元素内部的 HTML 内容 |
+| `outerHTML` | 获取/设置元素自身的完整 HTML |
+| `innerText` / `outerText` | 获取页面可见的纯文本（考虑 CSS，`display:none` 的内容被忽略） |
+| `textContent` | 获取所有文本内容（:mark[不考虑 CSS]，性能更高，不触发重绘） |
+
+:::note{title="innerText vs textContent"}
+- `innerText` 会触发重绘和回流，性能较低
+- `textContent` 不考虑样式和布局，仅提取原始文本，性能更高
+:::
+
+### 子节点相关
+
+| 属性/方法 | 说明 |
+|-----------|------|
+| `children` | 所有元素子节点（不含文本和注释） |
+| `childNodes` | 所有子节点（含文本和注释） |
+| `className` | 所有类名的字符串形式 |
+| `classList` | 类名集合（`.add` / `.remove` / `.toggle` / `.contains`） |
+
+### 节点操作
+
+| 方法 | 说明 |
+|------|------|
+| `appendChild(node)` | 在末尾添加子节点（不接受字符串） |
+| `append()` | 在末尾添加（可接受字符串） |
+| `prepend()` | 在开头添加（可接受字符串） |
+| `removeChild(node)` | 移除子节点 |
+| `replaceChild(new, old)` | 替换子节点 |
+| `insertBefore(new, ref)` | 在参考节点前插入 |
+| `cloneNode(deep)` | 克隆节点，传 `true` 深层复制 |
+
+:::warning{title="循环中操作 DOM"}
+利用 DOM 修改节点时，循环需要从后往前遍历，因为改动会实时更新 `document` 对象。可先用 `Array.from()` 转为静态集合。
+:::
+
+### 其他常用方法
+
+- `closest(selector)`：返回最近的匹配选择器的祖先
+- `contains(node)`：判断是否包含某节点
+- `matches(selector)`：判断节点是否匹配选择器
+- `normalize()`：合并连续文本子节点
+- `getAttributeNames()`：获取所有 attribute 名称的数组
+
+### 尺寸属性
+
+| 属性 | 含义 | 包含内容 |
+|------|------|----------|
+| `offsetWidth` / `offsetHeight` | 可见宽高（border-box） | content + padding + scrollbar + border |
+| `clientWidth` / `clientHeight` | 内部宽高（padding-box） | content + padding |
+| `scrollWidth` / `scrollHeight` | 内容总宽高（含溢出不可见部分） | — |
+
+### 位置属性
+
+| 属性 | 含义 |
+|------|------|
+| `offsetLeft` / `offsetTop` | 相对于 `offsetParent` 的偏移 |
+| `scrollLeft` / `scrollTop` | 滚动条偏移量 |
+| `offsetParent` | 最近的已定位祖先（`fixed` 定位时为 `null`） |
+
+### getBoundingClientRect()
+
+返回元素相对于:mark[视口]的矩形信息：
+
+| 属性 | 说明 |
+|------|------|
+| `top` / `y` | 上边框到视口顶部的距离 |
+| `left` / `x` | 左边框到视口左侧的距离 |
+| `right` | 右边框到视口左侧的距离（= `left + width`） |
+| `bottom` | 下边框到视口顶部的距离（= `top + height`） |
+| `width` | 元素总宽度（含 padding 和 border） |
+| `height` | 元素总高度（含 padding 和 border） |
+
+- `getClientRects()`：返回 DOMRectList（多列/多行布局下有多个矩形）
+- `scrollIntoView()`：将元素滚动到视口中可见
+
+### 滚动相关
+
+| 属性/方法 | 说明 |
+|-----------|------|
+| `window.scrollX` / `pageXOffset` | 页面水平滚动距离 |
+| `window.scrollY` / `pageYOffset` | 页面垂直滚动距离 |
+| `window.scrollTo(x, y)` | 滚动到指定位置 |
+| `window.scrollBy(dx, dy)` | 相对当前位置滚动 |
+
+```javascript
+    window.scrollTo({
+      top: 500,
+      left: 100,
+  behavior: 'smooth' // 平滑滚动
+    });
+```
+
+## 浏览器渲染流水线
+
+### 渲染步骤
+
+1. **HTML 解析**（Parse HTML）→ 构建 DOM 树
+2. **CSS 解析**（Parse CSS）→ 构建 CSSOM 树
+3. **JavaScript 执行** → 可能读取/修改 DOM 和 CSSOM
+4. **样式重计算**（Recalculate Style）→ 生成渲染树
+5. **布局计算**（Layout / Reflow）→ 计算元素位置和大小
+6. **图层划分**（Layerize）→ 将 `fixed`/`transform` 等元素分到独立图层
+7. **绘制**（Paint）→ 将图层内容转换为位图
+8. **提交**（Commit）→ 主线程将图层信息交给合成线程
+9. **合成图层**（Composite Layers）→ 根据 z-index、透明度等整合最终图像
+
+:::note{title="优化跳过"}
+不是每次更新都经历所有阶段。仅修改 `transform`/`opacity` 时可跳过 Layout 和 Paint，直接进入合成。
+:::
+
+### 重排与重绘
+
+- **重排**（Reflow）：布局改变时重新计算位置和大小
+- **重绘**（Repaint）：仅样式改变不影响布局时重新绘制
+
+:::tip{title="浏览器优化"}
+- **延迟绘制**：等代码执行完毕后一次性绘制
+- **批处理**：合并多个 DOM 读写操作
+- 代码运行过程中浏览器不会更新页面，也不允许用户交互
+:::
+
+### 刷新率与帧率
+
+| 概念 | 说明 |
+|------|------|
+| 刷新率（Hz） | 显示器每秒刷新图像的次数（硬件属性） |
+| 帧率（FPS） | 显卡每秒生成的画面帧数（性能指标） |
+
+- 帧率 > 刷新率：超出的帧无法显示，可能产生画面撕裂（tearing）
+- 帧率 < 刷新率：显示器重复同一帧，产生卡顿
+
+## 事件处理（Handling Events）
+
+### 计算密集型分类
+
+| 类型 | 特征 | JS 应对方式 |
+|------|------|-------------|
+| 时间密集型（I/O） | 等待外部资源（数据库、网络） | 异步处理 |
+| CPU 密集型 | 大量计算、持续高负荷 | Web Workers |
+
+### 事件绑定方式
+
+```javascript
+div.addEventListener('click', handler);  // 可多次绑定
+div.onclick = handler;                   // 只能绑定一个，会覆盖
+```
+
+- `addEventListener` 多次调用绑定多个处理函数
+- 解绑需 `removeEventListener`，传入相同的函数引用（匿名函数无法解绑）
+- HTML 中 `onclick="..."` 属性值为字符串，JS 会将其转换为函数
+
+### 事件对象
+
+- `type`：事件类型字符串
+- `which`：鼠标按键（1 左 / 2 中 / 3 右，已不推荐）
+- `buttons`：二进制位标志（1 左 / 2 右 / 4 中，3 = 左+右）
+
+:::tip{title="推荐做法"}
+使用 `event.key`（按键字符）和 `event.code`（物理键位）代替 `which`/`keyCode`。
+:::
+
+### 事件冒泡与捕获
+
+事件传播分三个阶段：:mark[捕获] → 目标 → :mark[冒泡]
+
+- `stopPropagation()`：阻止传播到下一个元素，当前元素的其他处理函数仍运行
+- `stopImmediatePropagation()`：阻止当前元素上的后续处理函数也运行
+- `target`：指向事件最原始的触发元素
+- 默认绑定在冒泡阶段
+
+绑定到捕获阶段：
+
+```javascript
+div.addEventListener('click', handler, {
+  capture: true,   // 绑定在捕获阶段
+  once: true,      // 只触发一次
+  passive: true,   // 被动事件（不能调用 preventDefault）
+});
+
+// 简写
+div.addEventListener('click', handler, true);
+```
+
+:::note{title="被动事件监听器"}
+声明 `passive: true` 后不能调用 `preventDefault()`。常用于 `scroll`/`touchstart`/`touchmove` 事件，让默认行为更早发生，页面更流畅。
+:::
+
+### 默认行为
+
+- `e.preventDefault()` 阻止浏览器默认行为
+- 某些默认行为无法被 JS 关闭（如 Chrome 的关闭标签页）
+- 执行顺序：无论代码顺序如何，捕获阶段的事件总是先执行
+
+### 键盘事件
+
+| 事件 | 触发时机 |
+|------|----------|
+| `keydown` | 按下键时（按住会重复触发） |
+| `keypress` | 按下字符键时（:mark[已废弃]，用 `keydown` 代替） |
+| `keyup` | 松开键时（只触发一次） |
+
+键盘事件对象属性：
+
+| 属性 | 说明 |
+|------|------|
+| `key` | 按键字符值（区分大小写），推荐使用 |
+| `code` | 物理键位标识（不区分大小写），适合游戏控制 |
+| `keyCode` | ASCII 编码（已废弃） |
+| `ctrlKey`/`shiftKey`/`altKey`/`metaKey` | 修饰键是否按下 |
+
+- 无焦点元素时，键盘事件在 `body` 上触发
+- `tabindex="0"`：可通过 Tab 获取焦点；`tabindex="-1"`：仅可编程获取焦点
+
+### 鼠标事件
+
+**按键事件**：`mousedown` → `mouseup` → `click`、`dblclick`、`contextmenu`
+
+**移动事件**：
+
+| 事件 | 说明 |
+|------|------|
+| `mousemove` | 鼠标移动时持续触发 |
+| `mouseenter` / `mouseleave` | 进入/离开元素（:mark[不冒泡]，不在子元素上触发） |
+| `mouseover` / `mouseout` | 进入/离开元素（冒泡，子元素上也触发） |
+
+### 滚动事件
+
+- `scroll` 事件 / `onscroll`
+- `innerHeight`：视口高度
+- `scrollHeight`：整个网页高度
+- `wheel` 事件替代了旧的 `mousewheel` / `DOMMouseScroll`
+
+### 焦点事件
+
+- `focus` / `blur`：获得/失去焦点
+- `focusin` / `focusout`：类似但支持事件冒泡
+
+### 加载事件
+
+| 事件 | 说明 |
+|------|------|
+| `window.onload` | 页面及所有资源完全加载后触发 |
+| `DOMContentLoaded` | DOM 结构加载完毕（外部资源可能未完成） |
+| `beforeunload` | 页面关闭前触发（要求用户有交互） |
+
+:::note{title="async vs defer"}
+- `async`：异步加载，加载完立即执行，顺序不保证。适合独立脚本
+- `defer`：异步加载，DOMContentLoaded 后按顺序执行。适合依赖 DOM 的脚本
+:::
+
+## Web Workers
+
+- JS 运行在单线程环境中，Web Workers 允许创建独立工作线程分担耗时任务
+- Worker 线程:mark[无法访问 DOM]，拥有独立的内存和执行环境
+
+### 通信方式
+
+通过 `postMessage` 和事件机制。消息经过深度复制，不共享数据对象。
+
+```javascript
+// 主线程
+const worker = new Worker('worker.js');
+worker.postMessage({ key: 'value' });
+
+// worker.js
+self.onmessage = function (event) {
+  console.log('Received:', event.data);
+  self.postMessage('Hello from worker');
+};
+```
+
+- 结束 Worker：`worker.terminate()`
+- Worker 处理结果通过 `postMessage` 传回主线程，由主线程更新 DOM
+
+## 定时函数与动画
+
+### setTimeout / clearTimeout
+
+```javascript
+const timerId = setTimeout(() => {
+  console.log("2 秒后执行");
+}, 2000);
+
+clearTimeout(timerId); // 取消定时器
+```
+
+- `delay` 设为 0 不会立即执行，会进入事件队列等待
+- 返回定时器 ID
+
+### setInterval / clearInterval
+
+```javascript
+const intervalId = setInterval(() => {
+  console.log("每秒执行");
+}, 1000);
+
+clearInterval(intervalId); // 取消
+```
+
+### requestAnimationFrame / cancelAnimationFrame
+
+```javascript
+function animate() {
+  // 更新动画逻辑
+  requestAnimationFrame(animate); // 递归调用
+}
+requestAnimationFrame(animate); // 启动
+```
+
+- 与显示器刷新率同步（60Hz ≈ 每 16.7ms 一次）
+- 页面不可见时:mark[自动暂停]，节省资源
+- 返回动画帧 ID，可用 `cancelAnimationFrame()` 取消
+
+#### 动画中的时间策略
+
+| 方式 | 特点 |
+|------|------|
+| 基于时间差（`time - lastTime`） | 不同帧率下动画效果一致，切换页面后位置更新 |
+| 每帧固定增量 | 依赖帧率，帧率下降则动画变慢 |
+| `requestAnimationFrame` 的 `time` 参数 | 与时间严格同步 |
+| `Date.now()` | 精度略低于 `time` |
+
+## 防抖与节流
+
+### 防抖（Debounce）
+
+确保操作在:mark[停止触发后]才执行。每次触发重置计时器，只有最后一次触发后的等待时间内不再触发，函数才执行。
+
+```javascript
+function debounce(func, time) {
+  let id = null;
+  return function (...args) {
+    clearTimeout(id);
+    id = setTimeout(() => {
+      func(...args);
+    }, time);
+  };
+}
+```
+
+应用场景：输入搜索框延迟请求、窗口 resize 优化、按钮防重复提交、自动存盘。
+
+### 节流（Throttle）
+
+在固定时间间隔内:mark[最多执行一次]，无论事件触发多频繁。
+
+```javascript
+function throttle(func, time) {
+  let scheduled = false, lastArgs = [];
+  return function (...args) {
+    lastArgs = args;
+    if (!scheduled) {
+      scheduled = true;
+      setTimeout(() => {
+        scheduled = false;
+        func(...lastArgs);
+      }, time);
+    }
+  };
+}
+```
+
+:::tip{title="如何选择"}
+- 函数只需在事件停止后运行一次 → **防抖**
+- 函数需要降低运行频率 → **节流**
+:::
+
+### Lodash 中的防抖与节流
+
+```javascript
+const throttledLog = _.throttle(logMessage, 1000, {
+  leading: true,   // 首次立即触发
+  trailing: true   // 等待期结束后再触发一次
+});
+
+const debouncedSearch = _.debounce(search, 1000, {
+  leading: false,  // 首次不触发
+  trailing: true   // 等待期结束后触发
+});
+```
+
+### 全局错误处理
+
+```javascript
+window.onerror = (message, source, lineno, colno, error) => {
+    console.log(`Error: ${message} at ${source}:${lineno}:${colno}`);
+};
+```

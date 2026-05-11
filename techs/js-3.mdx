@@ -1,0 +1,785 @@
+---
+title: JavaScript 基础笔记（三）
+tags: [javascript, algorithms, data-structures, oop, types, errors, testing]
+draft: false
+---
+
+# JavaScript 基础笔记（三）
+
+本篇围绕排序算法、链表与二叉树等数据结构、面向对象编程、类型判断、错误处理与测试基础展开。
+
+:::tip{title="学习建议"}
+- 排序与数据结构部分重在理解复杂度推导过程。
+- OOP 部分对比了多种对象创建方式，注意 ES6 类与原型的关系。
+- 黄色块为"易踩坑点"。
+:::
+
+## 排序算法
+
+### 冒泡排序（Bubble Sort）
+
+两个循环嵌套，依次把最大的数往后放。
+
+- 时间复杂度：`O(n²)`
+- 空间复杂度：`O(1)`
+- 可通过 `swapped` 标记提前结束循环
+
+### 选择排序（Selection Sort）
+
+两个循环嵌套，记录最小值的下标，依次将最小值往前面放。
+
+- 时间复杂度：`O(n²)`
+- 空间复杂度：`O(1)`
+
+### 插入排序（Insertion Sort）
+
+从前往后依次选择较小的元素，往前插入到合适位置。
+
+- 时间复杂度：`O(n²)`
+- 空间复杂度：`O(1)`
+
+两种实现思路：
+
+1. **课堂解法**：第一层循环 1 → 末端，第二层循环 0 → 末端 - 1，每次需要交换
+2. **优化解法**：暂存当前值，第二层循环向前查找直到找到不大于暂存值的位置（大于则后移），最终将暂存值放入空位
+
+:::note{title="两种方法对比"}
+两种方法原理一样，实现过程略有不同。优化解法减少了交换次数，只在最终位置做一次赋值。
+:::
+
+### 归并排序（Merge Sort）
+
+:mark[复杂度推导] 是归并排序的核心考点，基于递归与分治（Divide and Conquer）。
+
+**时间复杂度推导：**
+
+- **分割过程**：数组长度为 n，每次减半，总共分割 `log₂n` 次（即 `log₂n` 层递归）
+- **合并过程**：每次合并需要线性时间 `O(n)`（对每个元素操作一次）
+- **递推公式**：`T(n) = 2T(n/2) + O(n)`——排序大小为 n 的数组，先递归排序两个 `n/2` 的子数组，再花 `O(n)` 合并
+- **结论**：递归树深度 `log₂n`，每层合并代价 `O(n)`，总时间复杂度为 :mark[O(n log n)]
+
+:::note{title="对数底数说明"}
+以 2 为底意味着每次除以 2（减半），以 3 为底意味着每次除以 3，以此类推。
+:::
+
+**空间复杂度推导：**（空间消耗不累计）
+
+- 递归树深度：`log₂n`
+- 每层消耗：固定变量 `O(1)` + 当前层数组大小（随递归深入每次减半）
+- 临时数组总量：`n + n/2 + n/4 + n/8 + … → 2n`
+- 递归栈：`log₂n`（与二分查找不同，归并需要额外空间存储临时数据）
+- 总空间复杂度：`2n + log₂n → O(n) + O(log n) →` :mark[O(n)]（`log n` 为低阶项，可省略）
+
+### 快速排序（Quick Sort）
+
+- 创建额外数组时：时间 `O(n log n)`，空间 `O(n)`（与归并排序相同）
+- **原地快速排序**：时间 `O(n log n)`，空间 :mark[O(log n)]（仅递归栈开销）
+
+### 排序的高阶抽象
+
+排序算法可以抽象为高阶函数。JS 自带的 `sort()` 接受比较函数：
+
+```javascript
+let arr = [5, 4, 1, 2, 3];
+arr.sort((a, b) => a - b); // -> [1, 2, 3, 4, 5] 升序
+arr.sort((a, b) => b - a); // -> [5, 4, 3, 2, 1] 降序
+```
+
+## 链表（Linked List）
+
+### 基本概念
+
+- 链表在计算机中存储的是地址（引用），不是连续空间
+- 字符串在底层是当作对象存储的，因为字符串可以变得很长
+- 链表是:mark[不能逆向访问]的
+- 在 C 语言中可以清楚看到存储方式，但在高级语言（Python / Java / JavaScript）中是隐藏的
+
+:::note{title="JS 中链表的内存模型"}
+- 每个节点是一个对象，数据部分存储任意类型，`next` 指针是另一个节点的引用
+- JS 引擎通过堆内存管理这些对象
+- JS 是高级语言，不能操作内存地址，`next` 存储的是对象引用而非具体地址
+- 内存分配/释放由垃圾回收机制自动管理
+:::
+
+### 数组与链表互转
+
+- **数组 → 链表**：创建新数组、利用 dummy 节点（常用）、递归
+- **链表 → 数组**：常规遍历（`head = head.next`）、递归（仅作练习，实际不建议）
+
+### 常用操作
+
+- `prepend()`：往链表前面增加节点
+- `append()`：往链表末尾增加节点
+- `nth()`：取出第 n 个节点的值
+- `insert(head, idx, value)`：将 value 创建的节点插入到索引 idx 处
+- `remove(head, idx)`：删除索引为 idx 的节点
+
+:::tip{title="为什么每个函数都能用递归写？"}
+因为链表本身就是递归结构——每个节点包含一个指向"下一个链表"的引用。
+:::
+
+### 链表 vs 数组
+
+| 操作 | 数组 | 链表 |
+|------|------|------|
+| 查找 | 快（`O(1)` 随机访问） | 慢（`O(n)` 顺序访问） |
+| 增删 | 慢（需要移动元素） | 快（修改指针即可） |
+
+## 二叉树（Binary Tree）
+
+### 基本术语
+
+- **根节点**（Root Node）、**子节点**（Child Node）、**叶子节点**（Leaf Node）
+- **父节点**（Parent Node）、**兄弟节点**（Sibling Nodes）
+- 一棵 n 个节点的树有 `n - 1` 条边，因此 null 值（空指针）个数为 `n + 1`
+
+### 深度与高度
+
+- **深度**（Depth）：从根节点到某节点的路径长度，根节点深度为 0
+- **高度**（Height）：根节点到最远叶子节点的路径长度，等于所有节点中的最大深度
+
+### 二叉树类型
+
+| 类型 | 定义 |
+|------|------|
+| 完全二叉树（Complete） | 除最后一层外每层满，最后一层从左到右连续排列 |
+| 满二叉树（Full） | 除叶子节点外，每个节点都有两个子节点 |
+| 完美二叉树（Perfect） | 所有内部节点都有两个子节点，所有叶子在同一层 |
+| 平衡二叉树（Balanced） | 左右子树高度差不超过 1（如 AVL 树、红黑树） |
+| 二叉搜索树（BST） | 左子节点 < 当前节点 ≤ 右子节点；中序遍历有序 |
+
+:::note{title="BST 复杂度"}
+- 时间复杂度：`O(n log n)` → 退化时 `O(n²)`
+- 空间复杂度：`O(n)`
+:::
+
+### 编号规则（完全/满二叉树）
+
+**根节点编号为 1 时**（对于编号 `i` 的节点）：
+- 左子节点：`2 * i`
+- 右子节点：`2 * i + 1`
+- 父节点：`floor(i / 2)`
+
+**根节点编号为 0 时**（对于编号 `n` 的节点）：
+- 左子节点：`2 * n + 1`
+- 右子节点：`2 * n + 2`
+
+### 节点数与层数
+
+- 满二叉树高度为 h 时，节点总数：`2^h - 1`
+- 完全二叉树有 N 个节点时，高度：`h = floor(log₂N) + 1`
+
+### 遍历方式
+
+| 遍历 | 顺序 |
+|------|------|
+| 前序（Preorder） | 根 → 左 → 右 |
+| 中序（Inorder） | 左 → 根 → 右 |
+| 后序（Postorder） | 左 → 右 → 根 |
+| 层次（Level Order） | 逐层从左到右 |
+
+- **宽度优先搜索**（BFS）：层次遍历
+- **深度优先搜索**（DFS）：前序/中序/后序遍历
+
+## 面向对象编程（OOP）
+
+### 基本概念
+
+面向对象编程是一种通过"对象"来组织代码的编程范式。对象是数据与行为（方法）的封装体，基于类/构造函数创建，类是对象的蓝图。
+
+:::note{title="JS 中对象的两种用法"}
+1. **作为映射**：属性数量会动态变化
+2. **在 OOP 中**：包含一个复杂事物的多种属性（属性数量一般固定）
+:::
+
+### 创建对象的方式
+
+#### 1. 对象字面量
+
+不能复用，每个方法都需要手动定义。
+
+```javascript
+let person = {
+  name: 'Esti',
+  age: 23,
+  greet() {
+    console.log("I'm " + this.name + ", Say hello to me!");
+  }
+};
+person.greet(); // -> I'm Esti, Say hello to me!
+```
+
+#### 2. 构造函数
+
+传统方式，可复用。构造函数本质是普通函数，通过 `new` 调用时会创建新对象并将 `this` 绑定到该对象。
+
+```javascript
+function Person(name) {
+  this.name = name;
+  this.greet = function () {
+    console.log("I'm " + this.name + ", Say hello to me!");
+  };
+}
+let person1 = new Person("Wee");
+let person2 = new Person("Esti");
+person1.greet(); // -> I'm Wee, Say hello to me!
+person2.greet(); // -> I'm Esti, Say hello to me!
+```
+
+#### 3. 构造函数 + prototype
+
+为避免每次创建对象时重复创建相同的方法，将方法放到 `prototype` 上，所有实例共享。
+
+```javascript
+function Person(name) {
+  this.name = name;
+}
+Person.prototype.greet = function () {
+  console.log("I'm " + this.name + ", Say hello to me!");
+};
+let person1 = new Person("Wee");
+let person2 = new Person("Esti");
+person1.greet(); // -> I'm Wee, Say hello to me!
+person2.greet(); // -> I'm Esti, Say hello to me!
+```
+
+#### 4. ES6 类语法
+
+本质上是基于原型的语法糖，所有方法定义在 `Person.prototype` 上，但更接近传统 OOP 语言的类概念。所创建的方法/属性:mark[不可枚举]。
+
+```javascript
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+  greet() {
+    console.log("I'm " + this.name + ", Say hello to me!");
+  }
+}
+
+let person1 = new Person("Wee");
+let person2 = new Person("Esti");
+person1.greet(); // -> I'm Wee, Say hello to me!
+person2.greet(); // -> I'm Esti, Say hello to me!
+```
+
+#### 5. 工厂函数
+
+不使用 `new`，通过返回对象来创建实例。适用于不需要类或构造函数的场景。
+
+```javascript
+function createPerson(name) {
+  return {
+    name,
+    greet() {
+      console.log("I'm " + name + ", Say hello to me!");
+    }
+  };
+}
+
+let person1 = createPerson("Wee");
+let person2 = createPerson("Esti");
+person1.greet(); // -> I'm Wee, Say hello to me!
+person2.greet(); // -> I'm Esti, Say hello to me!
+```
+
+#### 6. 类的继承（Inheritance）
+
+通过 `extends` 实现类之间的继承，使用 `super` 在子类中调用父类的构造函数或方法。
+
+:::note{title="使用频率"}
+继承很少用，一般在大型项目中出现。使用时查看 MDN 文档。
+:::
+
+### 原型（Prototypes）
+
+JS 是:mark[基于原型]的语言，几乎所有对象都与一个原型对象相关联。
+
+- 每个函数（包括构造函数）都有一个 `prototype` 属性，指向它的原型对象
+- 原型对象包含所有实例共享的属性和方法
+- **原型链**：访问属性时，先在当前对象查找 → 顺着原型链向上查找 → 最终到 `Object.prototype`
+- 使用 `new` 创建对象时，构造函数的 `prototype` 成为新对象的原型
+- 动态向 `prototype` 添加方法，所有实例自动继承
+
+```javascript
+Person.prototype.greet = function () {
+  console.log("Say hello to me!");
+};
+```
+
+**`__proto__` vs `prototype`**：
+- `__proto__`：每个对象的隐藏属性，指向该对象自身的原型
+- `prototype`：构造函数的属性，指向实例对象共享的原型对象
+
+:::warning{title="属性遮蔽"}
+如果在实例上定义了与原型相同名称的属性或方法，实例会遮蔽原型中的同名属性。
+:::
+
+### this 指向
+
+`this` 是函数内部的隐含参数，值取决于:mark[函数的调用方式]，而非书写位置或传参方式。
+
+| 场景 | this 指向 |
+|------|-----------|
+| 全局上下文 | 全局对象（浏览器中为 `window`） |
+| 对象方法调用 | 调用该方法的对象 |
+| 构造函数 / ES6 类 | 新创建的实例对象 |
+| 箭头函数 | 继承外层上下文的 this |
+| `call()` / `apply()` / `bind()` | 手动指定的对象 |
+| 事件处理函数 | 触发事件的 DOM 元素 |
+| 严格模式 | `undefined`（不再指向全局） |
+
+- `call(thisArg, arg1, arg2)` 与 `apply(thisArg, [arg1, arg2])` 的区别仅在参数传递方式
+- `bind()` 返回一个绑定了 this 的新函数
+- `Math.max.apply(null, [数组])` 中 `null` 用于设定 `max` 方法里 this 的指向
+- 如果给 this 传入原始值，会被包装成对象（包装对象）
+
+:::warning{title="ES6 类中的 this"}
+创建类实例时没有加 `new` 关键字会报错，相当于严格模式环境。
+:::
+
+### OOP 三大核心概念
+
+#### 封装（Encapsulation）
+
+将数据（属性）和行为（方法）封装在一个对象中，通过公开接口访问，不暴露实现细节。
+
+#### 继承（Inheritance）
+
+允许子类从父类继承属性和方法，减少重复代码，增加可维护性与可扩展性。
+
+:::note{title="使用频率"}
+继承在 JS 中用得较少，一般在大型项目中才有。
+:::
+
+#### 多态（Polymorphism）
+
+子类共享同一个方法名或接口，但可以定义自己的行为。核心思想：对象在不同上下文中表现不同行为。
+
+JS 中多态的体现形式：
+
+- **方法重写**（Method Overriding）：如 Dog 和 Cat 继承自 Animal 并重写 `sound()` 方法
+- **鸭子类型**（Duck Typing）：不需要声明类型，只要对象具有必要的方法就可以被调用
+- **函数多态**：同一函数根据参数类型或数量执行不同逻辑
+- **接口模拟**（Protocol Polymorphism）：通过约定同名方法实现
+
+```javascript
+Object.prototype.toString.call(function () {}); // -> [object Function]
+Object.prototype.toString.call(null);            // -> [object Null]
+// 同一个 toString() 方法，因 this 不同而结果不同
+```
+
+- **类型组合和扩展**：通过原型继承动态修改或扩展对象行为（设置同名属性会遮蔽原型）
+
+:::note{title="与其他语言的区别"}
+Java 等语言要求多态和封装一起使用，JS 可以单独使用。
+:::
+
+### Getter 与 Setter
+
+- **Getter**：获取属性值时，定义如何返回
+- **Setter**：设置属性值时，定义如何修改或处理
+
+通过 getter/setter 可以隐藏内部实现细节，保护私有数据或进行数据验证。
+
+#### 四种定义方式
+
+**1. 对象字面量中定义**（访问 getter 不需要括号）：
+
+```javascript
+let person = {
+  firstName: 'Esti',
+  lastName: 'Wee',
+  _age: 0,
+  get age() {
+    return this._age;
+  },
+  set age(val) {
+    this._age = val;
+  }
+};
+person.age = 25;
+console.log(person.age); // -> 25
+```
+
+**2. `Object.defineProperty()`**（更灵活，可定义 `enumerable`/`configurable`）：
+
+```javascript
+let person = { name: 'Esti', age: 23 };
+
+Object.defineProperty(person, 'getAge', {
+  get() {
+    return this.age;
+  },
+  set(val) {
+    this.age = val;
+  },
+  enumerable: true,
+  configurable: true,
+});
+```
+
+**3. 在类中使用**：
+
+```javascript
+class Person {
+  constructor(name) {
+    this.name = name;
+    this._age = 0;
+  }
+  get age() {
+    return this._age;
+  }
+  set age(val) {
+    this._age = val;
+  }
+}
+```
+
+**4. 通过 `Proxy` 实现**（适合需要复杂逻辑处理的场景）：
+
+```javascript
+let person = { firstName: 'John', lastName: 'Doe' };
+
+let handler = {
+  get(target, prop) {
+    if (prop === 'fullName') {
+      return `${target.firstName} ${target.lastName}`;
+    }
+    return target[prop];
+  },
+  set(target, prop, value) {
+    if (prop === 'fullName') {
+      let parts = value.split(' ');
+      target.firstName = parts[0];
+      target.lastName = parts[1];
+    } else {
+      target[prop] = value;
+    }
+    return true;
+  }
+};
+
+let proxyPerson = new Proxy(person, handler);
+console.log(proxyPerson.fullName); // -> 'John Doe'
+
+proxyPerson.fullName = 'Jane Smith';
+console.log(proxyPerson.firstName); // -> 'Jane'
+console.log(proxyPerson.lastName);  // -> 'Smith'
+```
+
+Proxy 的简单实现（帮助理解原理）：
+
+```javascript
+function myProxy(target, handler) {
+  const proxy = {};
+  for (let prop in target) {
+    Object.defineProperty(proxy, prop, {
+      get() {
+        return handler.get ? handler.get(target, prop) : target[prop];
+      },
+      set(val) {
+        return handler.set ? handler.set(target, prop, val) : (target[prop] = val);
+      }
+    });
+  }
+  return proxy;
+}
+```
+
+#### 使用 Getter/Setter 的意义
+
+- **数据封装**：隐藏内部实现细节，控制可访问性与可修改性
+- **只读属性**：只定义 getter 不定义 setter，属性即为只读
+- **数据验证**：在赋值时执行自定义验证逻辑
+
+```javascript
+let person = {
+  _age: 0,
+  get age() {
+    return this._age;
+  },
+  set age(val) {
+    if (typeof val === 'number' && val > 0 && val < 150) {
+      this._age = val;
+    } else {
+      console.log('Invalid value!');
+    }
+  }
+};
+```
+
+### ES6 私有属性
+
+#### `#` 私有字段（真正的私有）
+
+使用 `#` 符号定义，只能在类内部访问，外部无法直接访问或修改。私有属性必须在 `constructor` 前声明。
+
+```javascript
+class Person {
+  #name;
+  #age = 0;
+  #gender;
+  constructor(name, age, gender) {
+    this.#name = name;
+    this.#age = age;
+    this.#gender = gender;
+  }
+}
+```
+
+:::note{title="constructor 省略"}
+如果 `constructor` 内部没有代码，可以省略。
+:::
+
+#### 其他实现私有属性的方式
+
+- **下划线命名约定**（`_name`）：仅是开发者间的约定，实际仍然公有
+- **闭包**：利用函数作用域实现真正的私有
+- **WeakMap**：将私有数据存储在外部 WeakMap 中
+- **Getter/Setter 搭配**：控制访问权限
+
+### 常用 Object 方法
+
+- `Object.create(obj)`：以 `obj` 为原型创建新对象，原型为隐含属性，可通过 `__proto__` 读取
+- `Object.create(null)`：创建没有原型的纯净对象
+- `Object.setPrototypeOf(a.prototype, b.prototype)`：将 a 的原型设置为 b 的原型
+- `a instanceof b`：判断 a 的原型链上是否能找到 b 的 `prototype`
+
+#### `Object.prototype.toString()`
+
+返回 `"[object Type]"` 格式字符串，是判断类型最可靠的方法。搭配 `call()`/`apply()` 指定 this：
+
+```javascript
+Object.prototype.toString.call({});             // -> [object Object]
+Object.prototype.toString.call([]);             // -> [object Array]
+Object.prototype.toString.call(function () {}); // -> [object Function]
+Object.prototype.toString.call(null);           // -> [object Null]
+Object.prototype.toString.call(undefined);      // -> [object Undefined]
+Object.prototype.toString.call(123);            // -> [object Number]
+Object.prototype.toString.call("abc");          // -> [object String]
+Object.prototype.toString.call(Symbol());       // -> [object Symbol]
+```
+
+:::warning{title="局限性"}
+`Object.prototype.toString.call()` 只能区分系统自带的类型，无法区分自定义构造函数创建的对象。
+:::
+
+自定义类型名可通过 `Symbol.toStringTag` 实现：
+
+```javascript
+let myObj = { [Symbol.toStringTag]: "MyCustomObject" };
+Object.prototype.toString.call(myObj); // -> [object MyCustomObject]
+```
+
+模拟 JS 内部的 toString 写法：
+
+```javascript
+Object.prototype.toString2 = function () {
+  return '[object ' + this.constructor.name + ']';
+};
+```
+
+#### `Object.defineProperty()`
+
+```javascript
+Object.defineProperty(obj, 'propName', {
+  enumerable: true,   // 可否枚举
+  writable: true,     // 可否修改
+  value: '值',
+  // 如果有 getter/setter，就不要写 value
+  get() { },
+  set(val) { },
+});
+```
+
+:::note{title="可见性"}
+即使 `enumerable` 设为 `false`，`in` 运算符仍然可以检测到该属性。
+:::
+
+#### `Object.hasOwnProperty()`
+
+只检查对象自身的属性。与 `in` 的区别：`in` 会检查原型链上的属性，`hasOwnProperty()` 不会。
+
+#### `new` 关键字
+
+- 创建新的实例对象
+- `new.target`：表示被 `new` 的目标，只能在函数里面使用
+
+## 类型判断方法总结
+
+| 方法 | 适用场景 | 优点 | 缺点 |
+|------|----------|------|------|
+| `typeof` | 基本类型、函数 | 语法简单 | `null` 和对象判断不够准确 |
+| `instanceof` | 对象类型判断 | 判断对象的构造函数 | 仅适用于对象类型 |
+| `Array.isArray()` | 判断数组 | 专门判断数组类型 | 仅限数组 |
+| `Object.prototype.toString.call()` | 精确类型判断 | 能区分对象类型 | 语法相对繁琐 |
+| `constructor` | 构造函数判断 | 语法简洁 | `constructor` 可被更改 |
+| `isNaN()` / `Number.isNaN()` | 判断 NaN | 能判断 NaN | `isNaN()` 宽松、可能误判 |
+| `=== null` / `typeof undefined` | 判断 null/undefined | 直接、清晰 | 无法处理复杂对象类型 |
+
+### typeof
+
+只能判断原始类型（对 `null` 返回 `"object"` 是历史遗留 bug）。
+
+### instanceof
+
+仅适用于对象类型，无法判断原始类型。检查 A 的原型链上是否有 B 的 `prototype`。
+
+```javascript
+[] instanceof Array;          // -> true
+({}) instanceof Object;       // -> true
+new Date() instanceof Date;   // -> true
+"hello" instanceof String;    // -> false
+```
+
+### Array.isArray()
+
+专用于解决 `typeof` / `instanceof` 无法可靠区分数组的问题。
+
+## 错误处理
+
+### 语法错误 vs 运行时错误
+
+- **语法错误**（Syntax Errors）：代码运行前就被检测到，程序无法执行
+- **运行时错误**（Runtime Errors）：通过语法检查后，执行过程中发生的错误，与逻辑或运行环境有关
+
+常见运行时错误类型：`TypeError`、`ReferenceError`、`RangeError`
+
+### try…catch…finally
+
+```javascript
+try {
+  // 可能出错的代码
+} catch (error) {
+  console.log('捕获错误:', error.message);
+} finally {
+  // 不管有没有错误都会执行
+}
+```
+
+- `try` 中某个操作失败，JS 停止执行并跳转到 `catch`
+- `catch` 中的 error 对象包含 `message`（描述）和 `stack`（堆栈跟踪）
+- `finally` 可选，无论是否出错都会执行
+
+### throw 语句
+
+开发者可以主动抛出错误。`throw` 可以抛出任何类型，但通常抛出 `Error` 对象或其子类。
+
+```javascript
+function isNumber(num) {
+  if (typeof num !== 'number') {
+    throw new TypeError('This is not a number!');
+  }
+}
+
+try {
+  isNumber('number');
+} catch (error) {
+  console.log("错误名称:", error.message);
+}
+```
+
+### 错误对象（Error Object）
+
+JS 提供内置 `Error` 对象和多个子类：
+
+| 错误类型 | 说明 |
+|----------|------|
+| `Error` | 通用错误 |
+| `TypeError` | 不是期望的类型 |
+| `ReferenceError` | 变量未定义 |
+| `SyntaxError` | 语法错误 |
+| `RangeError` | 数值超出有效范围 |
+| `EvalError` | 现代 JS 很少见 |
+
+Error 对象的属性：`message`（描述信息）、`name`（错误类型名称）、`stack`（调用堆栈信息）
+
+### 全局错误处理
+
+当错误未被 `try…catch` 捕获时，可通过全局处理器兜底：
+
+- `window.onerror`：捕获未处理的错误
+- `unhandledrejection` 事件：捕获未处理的 Promise 错误
+
+:::note{title="异步错误处理"}
+Promise 和异步的错误处理方式（如 `async/await` + `try…catch`）将在后续内容补充。
+:::
+
+## ECMAScript 与 TC39
+
+### ECMAScript
+
+ECMAScript 是 JavaScript 的标准化名称，由 ECMA（European Computer Manufacturers Association）发布。它定义了 JavaScript 的语法、类型、对象模型和内置功能，确保不同浏览器和环境对 JS 的实现一致。
+
+:::note{title="注意"}
+ECMAScript 不是具体的编程语言，而是语言标准。其他语言（如 ActionScript）也基于 ECMAScript 标准。
+:::
+
+### TC39
+
+TC39（Technical Committee 39）是 ECMA 国际的技术委员会，由 Google、Microsoft、Apple、Mozilla 等公司成员组成，负责：
+
+- 提出 JavaScript 语言的新特性
+- 讨论并批准新功能是否纳入 ECMAScript 标准
+- 确保不同环境一致地实现这些标准
+
+## Bug 调试与代码质量
+
+- JS 中变量是:mark[动态类型]的，某些低级语言是静态类型的
+- `eval('字符串')`：将字符串内容转换成代码执行（应避免使用）
+- 严格模式（`'use strict'`）的详细内容参见 MDN 文档
+
+:::warning{title="早期 undefined 的坑"}
+早期 `undefined` 是一个变量名，值也是 `undefined`，因此可以给它赋值（不会生效）。严格模式下会报错。
+:::
+
+## 测试基础
+
+:::note{title="前端测试现状"}
+一般库会写测试，业务和技术代码不一定写，前端整体测试覆盖率偏低。
+:::
+
+### 测试框架核心概念
+
+#### describe
+
+定义测试组（test suite），为一组相关测试提供上下文和描述。
+
+```javascript
+describe('对数组的测试', () => {
+  // 在这里定义测试用例
+});
+```
+
+#### it / test
+
+表示具体的测试用例。`it` 和 `test` 可互换。
+
+```javascript
+it('应该返回数组的长度', () => {
+  const arr = [1, 2, 3];
+  expect(arr.length).toBe(3);
+});
+```
+
+#### expect 与 assert
+
+- **expect**（现代测试框架常用）：`expect(value).toBe(expected)`
+- **assert**（Node.js 内置模块）：`assert.strictEqual(a, b)`
+
+```javascript
+expect(2 + 2).toBe(4);
+
+const assert = require('assert');
+assert.strictEqual(2 + 2, 4);
+```
+
+### 常见匹配器
+
+| 匹配器 | 用途 |
+|--------|------|
+| `toBe` | 比较基本类型的相等（值和类型） |
+| `toEqual` | 比较对象和数组的深度相等 |
+| `toBeTruthy` / `toBeFalsy` | 验证真值或假值 |
+| `toThrow` | 验证函数是否抛出错误 |

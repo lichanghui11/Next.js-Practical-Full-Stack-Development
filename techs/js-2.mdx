@@ -1,0 +1,192 @@
+---
+title: JavaScript 基础笔记（二）
+tags: [javascript, algorithms, bitwise, encoding, functions, config]
+draft: false
+---
+
+# JavaScript 基础笔记（二）
+
+本篇继续面向零基础，围绕算法复杂度、位运算、编码、高阶函数与常见配置格式展开。目录与阅读时间会自动生成。
+
+:::tip{title="学习建议"}
+- 每节附示例；黄色块为“易踩坑点”。
+- 需要扩展的地方加了“视频建议”，可按占位语法嵌入。
+:::
+
+## 算法复杂度与 Big O
+
+### 核心概念
+- 将每个原子操作抽象为同一时间单位，关注“规模很大时”的增长趋势（渐进分析）。
+- Big-O 给出上界：:mark[最坏情况] 下随输入规模 n 增长的时间/空间上界。
+
+:::warning{title="只看主导项"}
+常数项与低阶项在复杂度里可忽略：例如 `3n^2 + 10n + 6 ⇒ O(n^2)`；`O(2n)` 与 `O(n)` 等价为 `O(n)`。
+:::
+
+### 常见复杂度与典型场景
+
+| 复杂度 | 示例 |
+|---|---|
+| `O(1)` | 随机访问 `arr[i]` |
+| `O(log n)` | 二分/分治 |
+| `O(n)` | 单层遍历 |
+| `O(n log n)` | 快排/归并 |
+| `O(n^2)` | 双重循环 |
+| `O(2^n)` | 穷举/子集枚举 |
+
+### 空间复杂度要点
+- 变量占 `O(1)`；长度为 n 的数组占 `O(n)`；对象视内部字段而定。
+- 递归要计入调用栈，一般 `O(n)`。
+
+:::note{title="视频建议"}
+- YouTube：`::youtube{id=<视频ID>}`
+- B 站：`::bilibili{bvid=<BV号>}`
+:::
+
+## 整数的底层表示（补码）
+
+JS 的数值是双精度浮点；但理解整数在底层的:mark[补码]很重要：正数原码、负数为反码+1。
+
+- `+5`（8 位示例）：`0000 0101`
+- `-5`：取反 `1111 1010`，+1 得 `1111 1011`
+- 补码优点：统一用“加法电路”完成加/减；零只有一种表示（`0000 0000`）。
+
+## 位运算精要
+
+位运算满足交换律/结合律，能高效解决判幂、计数等问题。
+
+### 与（`&`）
+- 判 2 的幂：
+
+```javascript
+const isPowerOfTwo = (n) => n > 0 && (n & (n - 1)) === 0;
+```
+
+- 判 4 的幂（在 2 的幂基础上，最高位 1 必在奇数位）：
+
+```javascript
+const isPowerOfFour = (n) => n > 0 && (n & (n - 1)) === 0 && (n & 0x55555555) !== 0;
+```
+
+- 统计 1 的个数（Brian Kernighan）：
+
+```javascript
+const popcount = (n) => { let c = 0; while (n) { n &= (n - 1); c++; } return c; };
+```
+
+- DP 计数（Counting Bits）：`dp[i] = dp[i & (i - 1)] + 1`
+
+### 或（`|`）
+- 将指定位设为 1：`x | (1 << k)`
+
+### 异或（`^`）
+- 相同为 0，不同为 1。
+- 汉明距离：
+
+```javascript
+const hammingDistance = (a, b) => popcount(a ^ b);
+```
+
+### 示例：逐步消 1（演算演示）
+
+```text
+1101 1101 & 1101 1100 -> 1101 1100
+1101 1100 & 1101 1011 -> 1101 1000
+1101 1000 & 1101 0111 -> 1101 0000
+```
+
+:::note{title="视频建议"}
+位运算常见题型与模板。
+- YouTube：`::youtube{id=<视频ID>}`
+- B 站：`::bilibili{bvid=<BV号>}`
+:::
+
+## 字符编码与 JS 字符串
+
+- UTF-8：变长编码；UTF-16：:mark[双字节为主]，有大小端（BOM 标记）。
+- JS 字符串由 UTF-16 码元组成；某些字符（如 emoji）占两个码元。
+
+```javascript
+'😀'.length;        // 2（两个 UTF-16 码元）
+[..."😀"].length;  // 1（按码点计数）
+```
+
+:::note{title="视频建议"}
+字符编码基础与 JS 字符串注意事项。
+- YouTube：`::youtube{id=<视频ID>}`
+- B 站：`::bilibili{bvid=<BV号>}`
+:::
+
+## 随机数生成（概要）
+
+常见：线性同余（LCG）、平方取中等。
+
+```javascript
+// 线性同余：X_{n+1} = (a X_n + c) mod m
+function lcg(seed, a = 1664525, c = 1013904223, m = 2 ** 32) {
+  let x = seed >>> 0;
+  return () => (x = (a * x + c) % m) / m;
+}
+```
+
+:::warning{title="安全性提示"}
+LCG/Math.random() 不适合安全用途，涉加密/令牌生成需使用加密安全 RNG。
+:::
+
+## 高阶函数与常用技巧
+
+### 函数是一等公民
+- 函数可作为值传参/返回，形成闭包；遵循词法作用域。
+
+### 剩余参数与展开
+
+```javascript
+function print(...numbers) { console.log(numbers); }
+const arr = [1, 2, 3];
+const newArr = [...arr, 4, 5];
+```
+
+旧写法：`Math.max.apply(null, arr)`；现代写法：`Math.max(...arr)`。
+
+### 数组高阶函数
+- `forEach` 遍历；`filter` 过滤；`map` 映射；`reduce` 汇总。
+
+```javascript
+// 在线平均值（一次 reduce 完成）
+[1, 2, 3, 4, 5].reduce((avg, x, i) => (avg * i + x) / (i + 1)); // 3
+```
+
+### this 绑定
+- `bind` 返回新函数（可“预填参数”）；`call/apply` 立即调用，区别在于参数传法。
+
+### some/every 与德摩根定律
+
+```javascript
+const not = (pred) => (...args) => !pred(...args);
+// A && B ≡ !(!A || !B)
+```
+
+## 常见配置文件格式速览
+
+### INI
+
+```ini
+; Application Settings
+[GENERAL]
+app_name=MyApplication
+version=1.0
+is_active=true
+```
+
+### YAML / JSON / XML / TOML
+
+:::note{title="JSON 与 JS 对象的差异"}
+- JSON 键必须双引号；不允许尾逗号、Tab、表达式（无 `NaN/Infinity`）。
+- JS 对象键可不加引号；允许尾逗号；允许 `NaN/Infinity`（但序列化会处理）。
+:::
+
+```javascript
+const obj = { a: 1 };
+const json = JSON.stringify(obj);
+const back = JSON.parse(json);
+```

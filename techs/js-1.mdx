@@ -1,0 +1,315 @@
+---
+title: JavaScript 基础笔记（一）
+date: 2024-01-01
+tags: [javascript, fundamentals]
+draft: false
+---
+
+# JavaScript 基础笔记（一）
+
+面向零基础的新手，帮助快速建立对 JavaScript 的整体直觉。目录与阅读时间会自动生成和显示。
+
+:::tip{title="新手阅读指南"}
+- 每节都附带小示例；遇到黄色块是“易踩坑点”。
+- 需要扩展学习处，我会用“视频建议”标注可插入教学视频的位置（含嵌入语法）。
+:::
+
+## 二进制
+
+- Bit（位）：只有两种值（1/0）
+
+| 单位 | 换算关系 |
+|------|----------|
+| 1 byte | 8 bits |
+| 1 kilobyte (KB) | 1024 bytes |
+| 1 megabyte (MB) | 1024 KB |
+| 1 gigabyte (GB) | 1024 MB |
+| 1 terabyte (TB) | 1024 GB |
+
+:::note{title="视频建议"}
+本节可插入“计算机中信息的表示（位与字节）”基础讲解视频：
+- YouTube：`::youtube{id=<视频ID>}`
+- B 站：`::bilibili{bvid=<BV号>}`
+:::
+
+## 值（Values）
+
+JavaScript 常见基本类型：数字、字符串、布尔值、`null`、`undefined`、对象/函数。:mark[进阶] 还包括 `symbol`、`bigint`（此处不展开）。
+
+### 1. 数字 (numbers)
+- JS 使用 64 位浮点数存储，能表示约 `2^64` 种不同位模式
+- 科学记数法：`2e5 === 2 * 10**5`
+- 运算符：`+ - * / %`
+- 特殊值：`Infinity`、`-Infinity`、`NaN`
+- 比较：`NaN !== NaN`；`Infinity === Infinity`
+
+:::warning 易踩坑：浮点与 `NaN`
+- 任意包含 `NaN` 的算式结果为 `NaN`
+- 使用 `Number.isNaN(x)` 精准判断是否为 `NaN`
+:::
+
+### 2. 字符串 (strings)
+- 支持单/双引号以及模板字符串（反引号 `）
+- 常见转义：`\n` 换行、`\t` 制表、`\uXXXX` Unicode、`\xXX` 十六进制
+- `\0` 空字符不会显示，可用 `charCodeAt()` 验证
+- 若 `\` 后跟普通字母（如 `\a`），则视为普通 `a`
+
+```javascript
+let a = '\\a';
+console.log(a); // -> 'a'
+```
+
+### 3. 布尔值 (booleans)
+- 只有 `true` / `false`
+
+### 4. 对象与函数 (objects / functions)
+- 万物皆对象，函数也是一等公民（可作为值传递）
+
+### 5. 未定义值 (undefined values)
+- `null` 与 `undefined` 都表示“空”，但语义不同：
+  - `null`：开发者主动设置的“空”
+  - `undefined`：缺少定义/未赋值
+
+## 运算符
+
+### 分类
+- 一元：`typeof` `-` `!`
+- 二元：`+` `-` `*` `/` `%` `<` `>` `>=` `<=` `==` `===` `!=` `!==` `in`
+- 逻辑：`&&` `||`（短路运算，常用于默认值）
+- 三元：`条件 ? 表达式1 : 表达式2`
+
+:::note{title="短路运算"}
+- `||`：左侧为真直接返回左值；否则返回右值
+- `&&`：左侧为假直接返回左值；否则返回右值
+:::
+
+### 自动类型转换
+
+:::warning{title="不建议依赖隐式转换"}
+不同语言行为不一，建议写出显式转换，避免歧义。
+:::
+
+```javascript
+false == 0      // true
+"five" * 3     // NaN
+"3" + 1        // '31'
+"3" - 1        // 2
+8 * null        // 0
+```
+
+- `==` 会做类型转换；`===` 不会
+
+### Falsy 值（会被当作 false）
+- `0` / `-0`
+- `false`
+- `""`（空字符串）
+- `null`
+- `undefined`
+- `NaN`
+
+## 内存与存储
+
+### 内存与硬盘
+- 内存断电丢失；硬盘断电数据仍在
+
+### 字符编码
+
+#### ASCII
+- 为英文字符编号（常见 128/256 范围）
+
+#### Unicode
+- 为全语言字符编号（数十万字符）
+
+:::note{title="视频建议"}
+此处可插入“字符编码与 Unicode 基础”讲解视频：
+- YouTube：`::youtube{id=<视频ID>}`
+- B 站：`::bilibili{bvid=<BV号>}`
+:::
+
+## 语法错误的“滞后性”
+
+有些错误不是写码时暴露，而是运行到相应语句时才报错。
+
+1. 解释执行逐行运行（非预编译全量检查）
+2. 运行时错误示例：
+
+```javascript
+let a = 10;
+if (a > 5) {
+  let b = a * 2;
+}
+console.log(b); // ReferenceError: b is not defined
+```
+
+3. 动态类型/隐式转换可能延后暴露问题
+4. 事件驱动与异步也会推迟错误出现
+5. 语言具备一定“宽容/容错”特性
+
+```javascript
+var a = 10;
+if (a == 10) {
+  // 非严格相等不会报错
+  console.log('a is 10');
+}
+```
+
+### 严格模式
+在严格模式下，不规范用法（如未声明变量）会立即抛错。
+
+:::note{title="视频建议"}
+此处可插入“严格模式与常见报错”讲解视频。
+- YouTube：`::youtube{id=<视频ID>}`
+- B 站：`::bilibili{bvid=<BV号>}`
+:::
+
+## 表达式和语句
+
+### 表达式
+- 产生一个值；可嵌套组合
+
+### 语句
+- 最简单的语句可以是一个表达式
+- 常见：表达式语句、变量声明、`if` 等
+
+```javascript
+console.log(3); // 表达式语句
+```
+
+### 语句块
+- 用 `{}` 将多条语句合为一条，末尾不必加分号
+
+## 保留字与命名规则
+
+### 变量命名
+- 不能以数字开头
+- 不能包含标点符号（除 `$` 与 `_`）
+- 不能使用保留字/关键字（如 `if`、`for`、`class` 等）
+
+## 函数
+
+- 函数调用本身也是表达式
+- 示例：`alert()` 仅接收一个参数
+
+### 常见数学函数
+
+| 函数 | 功能 | 示例 |
+|------|------|------|
+| `Math.abs(x)` | 绝对值 | `Math.abs(-5) // 5` |
+| `Math.max()` | 最大值 | `Math.max(1, 2, 3) // 3` |
+| `Math.min()` | 最小值 | `Math.min(1, 2, 3) // 1` |
+| `Math.floor(3.66)` | 下取整 | `Math.floor(3.66) // 3` |
+| `Math.ceil(3.33)` | 上取整 | `Math.ceil(3.33) // 4` |
+| `Math.trunc(3.55)` | 截断小数 | `Math.trunc(3.55) // 3` |
+| `Math.round(3.33)` | 四舍五入 | `Math.round(3.33) // 3` |
+| `Math.sin(x)` | 正弦 | `Math.sin(Math.PI/2) // 1` |
+| `Math.cos(x)` | 余弦 | `Math.cos(0) // 1` |
+| `Math.tan(x)` | 正切 | `Math.tan(Math.PI/4) // 1` |
+| `Math.sqrt(x)` | 平方根 | `Math.sqrt(9) // 3` |
+
+### 弧度与度数转换
+
+```javascript
+const radians = degrees * (Math.PI / 180);
+```
+
+### 数字格式化
+- `num.toFixed(3)` 保留 3 位小数（字符串）
+- `num.toPrecision(3)` 保留 3 位有效数字（字符串）
+
+### 取整小技巧
+
+```javascript
+// x = 3.25
+// 下取整：
+x - (x % 1);         // 3
+// 上取整：
+x - (x % 1) + 1;     // 4
+// 四舍五入：
+(x + 0.5) - ((x + 0.5) % 1); // 3
+```
+
+## 报错中的专业名词
+
+### Token（令牌）
+- 代码被拆分为最小单元 token：关键字、标识符、字面量、运算符、分隔符等
+
+### Identifier（标识符）
+- 用于命名的 token，如变量名、函数名
+
+## 控制流
+
+### 常用转换/判断
+- `Number(x)` 将 `x` 转为数字
+- `String(x)` 将 `x` 转为字符串
+- `isNaN(x)` 先转数字再判断是否 `NaN`
+- `Number.isNaN(x)` 严格判断是否 `NaN`
+
+:::tip{title="精准判断 `NaN`"}
+优先使用 `Number.isNaN()`，不做隐式类型转换。
+:::
+
+- `'abc'.charCodeAt(0)` 返回字符编码
+- `String.fromCharCode(65)` 返回对应字符
+
+### if 语句
+
+```javascript
+if (条件) { 语句1 } else { 语句2 }
+```
+
+### 循环
+- `while (...) { ... }`
+- `do { ... } while (...)`（至少执行一次）
+- `for (初始; 条件; 迭代) { ... }`
+
+### 控制语句
+- `break;` 立即终止当前循环
+- `continue;` 跳过本次循环剩余部分
+
+### 标签语句
+
+```javascript
+theLabel: for (let i = 0; i < 10; i++) {
+  for (let j = 3; j < 12; j++) {
+    if (true) break theLabel;
+  }
+}
+```
+
+### switch 语句
+
+```javascript
+switch (表达式) {
+  case 值1:
+    语句1;
+    break;
+  case 值2:
+    语句2;
+    break;
+  default:
+    语句3;
+}
+```
+
+:::note{title="小贴士"}
+- 未写 `break` 会发生“贯穿”（fall-through）
+- `switch` 判断不做类型转换，等价于 `===`
+:::
+
+## 调试与性能小记
+
+- 控制台里选中变量会显示其值；表达式求值会产生副作用
+- 死循环处理：结束页面、结束进程，或在断点处修改关键变量
+- 优化思路：减少不必要计算，用数学规律降维
+
+```javascript
+// m 到 n 之间奇数和：
+const nums = (n - m) / 2 + 1; // 个数
+const result = (m + n) * nums / 2;
+```
+
+:::note{title="视频建议"}
+此处可插入“控制流/调试技巧/复杂度基础”讲解视频：
+- YouTube：`::youtube{id=<视频ID>}`
+- B 站：`::bilibili{bvid=<BV号>}`
+:::
